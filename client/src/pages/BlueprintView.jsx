@@ -24,18 +24,6 @@ const BlueprintView = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setIdea(res.data);
-
-                // Load saved chat messages
-                try {
-                    const chatRes = await axios.get(`http://localhost:5000/api/generate/chat/${id}`, {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    if (chatRes.data.messages?.length > 0) {
-                        setChatMessages(chatRes.data.messages);
-                    }
-                } catch (chatErr) {
-                    console.log('No saved chat found');
-                }
             } catch (err) {
                 setError(err.response?.data?.error || 'Failed to load blueprint');
             } finally {
@@ -69,7 +57,6 @@ const BlueprintView = () => {
                 blueprint: idea.blueprint,
                 chatHistory: chatMessages,
                 message: userMsg,
-                blueprintId: id,
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });

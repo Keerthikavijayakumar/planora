@@ -62,7 +62,7 @@ const Auth = () => {
                 transform: 'translate(-50%, -50%)',
                 width: '500px',
                 height: '500px',
-                background: 'radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 70%)',
+                background: 'radial-gradient(circle, rgba(212,114,122,0.06) 0%, transparent 70%)',
                 borderRadius: '50%',
                 pointerEvents: 'none',
             }} />
@@ -79,18 +79,18 @@ const Auth = () => {
                         width: '48px',
                         height: '48px',
                         borderRadius: '14px',
-                        background: 'linear-gradient(135deg, #F59E0B, #EF4444)',
+                        background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         margin: '0 auto 20px',
                     }}>
-                        <Sparkles size={24} color="#000" />
+                        <Sparkles size={24} color="#fff" />
                     </div>
-                    <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>
+                    <h1 className="heading-serif" style={{ fontSize: '24px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
                         {isLogin ? 'Welcome back' : 'Create account'}
                     </h1>
-                    <p style={{ fontSize: '14px', color: '#666' }}>
+                    <p style={{ fontSize: '14px', color: '#999' }}>
                         {isLogin ? 'Sign in to continue building' : 'Start generating project blueprints'}
                     </p>
                 </div>
@@ -100,9 +100,9 @@ const Auth = () => {
                     <div style={{
                         padding: '12px 16px',
                         borderRadius: '10px',
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        border: '1px solid rgba(239, 68, 68, 0.2)',
-                        color: '#EF4444',
+                        background: 'rgba(239, 68, 68, 0.06)',
+                        border: '1px solid rgba(239, 68, 68, 0.15)',
+                        color: '#dc2626',
                         fontSize: '13px',
                         marginBottom: '24px',
                     }}>
@@ -115,9 +115,9 @@ const Auth = () => {
                     width: '100%',
                     padding: '14px',
                     borderRadius: '12px',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: '#fff',
+                    background: '#fff',
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    color: '#333',
                     fontSize: '14px',
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -126,11 +126,11 @@ const Auth = () => {
                     justifyContent: 'center',
                     gap: '12px',
                     transition: 'all 0.3s ease',
-                    fontFamily: 'Inter, sans-serif',
+                    fontFamily: "'Inter', sans-serif",
                     marginBottom: '24px',
                 }}
-                    onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.1)'}
-                    onMouseLeave={e => e.target.style.background = 'rgba(255,255,255,0.06)'}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#f9f9f9'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.06)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.boxShadow = 'none'; }}
                 >
                     <svg width="18" height="18" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.76h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -148,15 +148,15 @@ const Auth = () => {
                     gap: '16px',
                     marginBottom: '24px',
                 }}>
-                    <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
-                    <span style={{ fontSize: '12px', color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em' }}>or</span>
-                    <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+                    <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.08)' }} />
+                    <span style={{ fontSize: '12px', color: '#bbb', textTransform: 'uppercase', letterSpacing: '0.05em' }}>or</span>
+                    <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.08)' }} />
                 </div>
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div style={{ position: 'relative' }}>
-                        <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#555' }} />
+                        <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#bbb' }} />
                         <input
                             type="email"
                             placeholder="Email address"
@@ -169,7 +169,7 @@ const Auth = () => {
                     </div>
 
                     <div style={{ position: 'relative' }}>
-                        <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#555' }} />
+                        <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#bbb' }} />
                         <input
                             type={showPassword ? 'text' : 'password'}
                             placeholder="Password"
@@ -182,7 +182,7 @@ const Auth = () => {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#555', cursor: 'pointer' }}
+                            style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#bbb', cursor: 'pointer' }}
                         >
                             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
@@ -194,11 +194,11 @@ const Auth = () => {
                 </form>
 
                 {/* Toggle */}
-                <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: '#666' }}>
+                <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: '#999' }}>
                     {isLogin ? "Don't have an account? " : "Already have an account? "}
                     <button
                         onClick={() => { setIsLogin(!isLogin); setError(''); }}
-                        style={{ color: '#F59E0B', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '14px', fontFamily: 'Inter, sans-serif' }}
+                        style={{ color: 'var(--color-accent)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '14px', fontFamily: "'Inter', sans-serif" }}
                     >
                         {isLogin ? 'Sign Up' : 'Sign In'}
                     </button>

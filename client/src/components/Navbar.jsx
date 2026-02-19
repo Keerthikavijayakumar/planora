@@ -17,7 +17,6 @@ const Navbar = () => {
         }
     };
 
-    // Get user initials for avatar
     const getInitials = () => {
         if (!currentUser?.email) return '?';
         const name = currentUser.email.split('@')[0];
@@ -31,10 +30,10 @@ const Navbar = () => {
             left: 0,
             right: 0,
             zIndex: 50,
-            background: 'rgba(10, 10, 10, 0.8)',
+            background: 'rgba(255, 255, 255, 0.85)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            borderBottom: '1px solid rgba(0,0,0,0.06)',
         }}>
             <div style={{
                 maxWidth: '1200px',
@@ -51,18 +50,19 @@ const Navbar = () => {
                         width: '32px',
                         height: '32px',
                         borderRadius: '10px',
-                        background: 'linear-gradient(135deg, #F59E0B, #EF4444)',
+                        background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                     }}>
-                        <Sparkles size={18} color="#000" />
+                        <Sparkles size={18} color="#fff" />
                     </div>
                     <span style={{
                         fontSize: '20px',
-                        fontWeight: 800,
-                        color: '#fff',
+                        fontWeight: 700,
+                        color: '#1a1a1a',
                         letterSpacing: '-0.02em',
+                        fontFamily: "'Playfair Display', serif",
                     }}>Planora</span>
                 </Link>
 
@@ -72,53 +72,53 @@ const Navbar = () => {
                 >
                     {currentUser ? (
                         <>
-                            <Link to="/dashboard" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', transition: 'color 0.2s' }}
-                                onMouseEnter={e => e.target.style.color = '#fff'}
-                                onMouseLeave={e => e.target.style.color = '#999'}
+                            <Link to="/dashboard" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px', borderRadius: '8px', transition: 'color 0.2s' }}
+                                onMouseEnter={e => e.target.style.color = '#1a1a1a'}
+                                onMouseLeave={e => e.target.style.color = '#888'}
                             >Dashboard</Link>
                             <Link to="/generate" className="btn-primary" style={{ padding: '8px 20px', fontSize: '13px', textDecoration: 'none' }}>
                                 New Idea
                             </Link>
-                            <Link to="/saved" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', fontWeight: 500, padding: '8px 16px', borderRadius: '8px', transition: 'color 0.2s' }}
-                                onMouseEnter={e => e.target.style.color = '#fff'}
-                                onMouseLeave={e => e.target.style.color = '#999'}
+                            <Link to="/saved" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px', borderRadius: '8px', transition: 'color 0.2s' }}
+                                onMouseEnter={e => e.target.style.color = '#1a1a1a'}
+                                onMouseLeave={e => e.target.style.color = '#888'}
                             >Saved</Link>
 
                             {/* User Profile */}
                             <div style={{
                                 display: 'flex', alignItems: 'center', gap: '10px',
                                 marginLeft: '8px', padding: '4px 12px 4px 4px',
-                                borderRadius: '12px', background: 'rgba(255,255,255,0.04)',
-                                border: '1px solid rgba(255,255,255,0.08)',
+                                borderRadius: '12px', background: 'rgba(212, 114, 122, 0.06)',
+                                border: '1px solid rgba(212, 114, 122, 0.1)',
                             }}>
                                 <div style={{
                                     width: '32px', height: '32px', borderRadius: '8px',
-                                    background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
+                                    background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     fontSize: '14px', fontWeight: 700, color: '#fff',
                                 }}>
                                     {getInitials()}
                                 </div>
-                                <span style={{ fontSize: '13px', color: '#ccc', fontWeight: 500, maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                <span style={{ fontSize: '13px', color: '#555', fontWeight: 500, maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {currentUser.email?.split('@')[0]}
                                 </span>
                             </div>
 
                             <button onClick={handleLogout} style={{
-                                background: 'none', border: 'none', color: '#666', cursor: 'pointer', padding: '8px',
+                                background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', padding: '8px',
                                 display: 'flex', alignItems: 'center', transition: 'color 0.2s'
                             }}
-                                onMouseEnter={e => e.target.style.color = '#fff'}
-                                onMouseLeave={e => e.target.style.color = '#666'}
+                                onMouseEnter={e => e.target.style.color = '#1a1a1a'}
+                                onMouseLeave={e => e.target.style.color = '#aaa'}
                             >
                                 <LogOut size={18} />
                             </button>
                         </>
                     ) : (
                         <>
-                            <Link to="/auth" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', fontWeight: 500, padding: '8px 16px' }}
-                                onMouseEnter={e => e.target.style.color = '#fff'}
-                                onMouseLeave={e => e.target.style.color = '#999'}
+                            <Link to="/auth" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px' }}
+                                onMouseEnter={e => e.target.style.color = '#1a1a1a'}
+                                onMouseLeave={e => e.target.style.color = '#888'}
                             >Login</Link>
                             <Link to="/auth" className="btn-primary" style={{ padding: '8px 24px', fontSize: '13px', textDecoration: 'none' }}>
                                 Get Started
@@ -131,7 +131,7 @@ const Navbar = () => {
                 <button
                     className="md:hidden"
                     onClick={() => setMobileOpen(!mobileOpen)}
-                    style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: '#1a1a1a', cursor: 'pointer' }}
                 >
                     {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
@@ -141,8 +141,9 @@ const Navbar = () => {
             {mobileOpen && (
                 <div style={{
                     padding: '16px 24px 24px',
-                    borderTop: '1px solid rgba(255,255,255,0.06)',
-                    background: 'rgba(10, 10, 10, 0.95)',
+                    borderTop: '1px solid rgba(0,0,0,0.06)',
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(20px)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '4px',
@@ -155,29 +156,29 @@ const Navbar = () => {
                             <div style={{
                                 display: 'flex', alignItems: 'center', gap: '12px',
                                 padding: '12px 0', marginBottom: '8px',
-                                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                                borderBottom: '1px solid rgba(0,0,0,0.06)',
                             }}>
                                 <div style={{
                                     width: '36px', height: '36px', borderRadius: '10px',
-                                    background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
+                                    background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     fontSize: '15px', fontWeight: 700, color: '#fff',
                                 }}>
                                     {getInitials()}
                                 </div>
                                 <div>
-                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{currentUser.email?.split('@')[0]}</div>
-                                    <div style={{ fontSize: '12px', color: '#666' }}>{currentUser.email}</div>
+                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a1a' }}>{currentUser.email?.split('@')[0]}</div>
+                                    <div style={{ fontSize: '12px', color: '#999' }}>{currentUser.email}</div>
                                 </div>
                             </div>
-                            <Link to="/dashboard" onClick={() => setMobileOpen(false)} style={{ color: '#ccc', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Dashboard</Link>
-                            <Link to="/generate" onClick={() => setMobileOpen(false)} style={{ color: '#F59E0B', textDecoration: 'none', padding: '12px 0', fontSize: '15px', fontWeight: 600 }}>+ New Idea</Link>
-                            <Link to="/saved" onClick={() => setMobileOpen(false)} style={{ color: '#ccc', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Saved Ideas</Link>
-                            <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ color: '#666', background: 'none', border: 'none', padding: '12px 0', fontSize: '15px', cursor: 'pointer', textAlign: 'left' }}>Logout</button>
+                            <Link to="/dashboard" onClick={() => setMobileOpen(false)} style={{ color: '#555', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Dashboard</Link>
+                            <Link to="/generate" onClick={() => setMobileOpen(false)} style={{ color: 'var(--color-accent)', textDecoration: 'none', padding: '12px 0', fontSize: '15px', fontWeight: 600 }}>+ New Idea</Link>
+                            <Link to="/saved" onClick={() => setMobileOpen(false)} style={{ color: '#555', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Saved Ideas</Link>
+                            <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ color: '#999', background: 'none', border: 'none', padding: '12px 0', fontSize: '15px', cursor: 'pointer', textAlign: 'left' }}>Logout</button>
                         </>
                     ) : (
                         <>
-                            <Link to="/auth" onClick={() => setMobileOpen(false)} style={{ color: '#ccc', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Login</Link>
+                            <Link to="/auth" onClick={() => setMobileOpen(false)} style={{ color: '#555', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Login</Link>
                             <Link to="/auth" onClick={() => setMobileOpen(false)} className="btn-primary" style={{ textDecoration: 'none', textAlign: 'center', marginTop: '8px' }}>Get Started</Link>
                         </>
                     )}

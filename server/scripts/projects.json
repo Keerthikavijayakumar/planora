@@ -1,0 +1,417 @@
+[
+  {
+    "title": "AI Resume Analyzer",
+    "domain": "AIML",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "Flask", "Scikit-learn", "NLP"],
+    "solution": "Build an AI system that analyzes resumes and scores candidates based on job description.",
+    "features": ["Resume parsing", "Skill extraction", "Match scoring", "PDF upload"],
+    "implementationSteps": [
+      "Collect sample resumes",
+      "Perform NLP preprocessing",
+      "Extract skills using ML",
+      "Build scoring algorithm",
+      "Deploy using Flask"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Spam Email Classifier",
+    "domain": "AIML",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["Python", "Scikit-learn", "Pandas"],
+    "solution": "Create a machine learning model to classify spam emails.",
+    "features": ["Text preprocessing", "Naive Bayes model", "Accuracy metrics"],
+    "implementationSteps": [
+      "Load dataset",
+      "Clean text",
+      "Train model",
+      "Evaluate performance"
+    ],
+    "difficultyScore": 5,
+    "estimatedWeeks": 2,
+    "learningCurve": "Easy",
+    "marketPotential": 6,
+    "resumeImpact": 7
+  },
+
+  {
+    "title": "E-commerce Web Platform",
+    "domain": "Web Dev",
+    "level": "Intermediate",
+    "teamType": "Team of 4",
+    "techStack": ["React", "Node.js", "MongoDB"],
+    "solution": "Build a full-stack e-commerce application with cart and payment integration.",
+    "features": ["User authentication", "Cart system", "Order management", "Admin dashboard"],
+    "implementationSteps": [
+      "Design UI",
+      "Build backend APIs",
+      "Integrate database",
+      "Implement payment gateway"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Portfolio Generator Website",
+    "domain": "Web Dev",
+    "level": "Freshers",
+    "teamType": "Solo",
+    "techStack": ["HTML", "CSS", "JavaScript"],
+    "solution": "Create a simple tool that generates personal portfolio websites.",
+    "features": ["Template selection", "Live preview", "Export option"],
+    "implementationSteps": [
+      "Design templates",
+      "Create form inputs",
+      "Generate HTML dynamically"
+    ],
+    "difficultyScore": 3,
+    "estimatedWeeks": 1,
+    "learningCurve": "Easy",
+    "marketPotential": 6,
+    "resumeImpact": 6
+  },
+
+  {
+    "title": "Expense Tracker Mobile App",
+    "domain": "Mobile Application",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["Flutter", "Firebase"],
+    "solution": "Develop a mobile app to track daily expenses.",
+    "features": ["Add expenses", "Category filter", "Monthly summary"],
+    "implementationSteps": [
+      "Design UI",
+      "Connect Firebase",
+      "Implement CRUD operations"
+    ],
+    "difficultyScore": 4,
+    "estimatedWeeks": 2,
+    "learningCurve": "Easy",
+    "marketPotential": 7,
+    "resumeImpact": 7
+  },
+
+  {
+    "title": "Ride Sharing App",
+    "domain": "Mobile Application",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["React Native", "Node.js", "Firebase", "Google Maps API"],
+    "solution": "Develop a real-time ride sharing platform.",
+    "features": ["Live tracking", "Driver matching", "Payment integration"],
+    "implementationSteps": [
+      "Design system architecture",
+      "Build backend services",
+      "Integrate maps",
+      "Implement matching algorithm"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 8,
+    "learningCurve": "Hard",
+    "marketPotential": 10,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "Password Strength Checker",
+    "domain": "Cybersecurity",
+    "level": "Freshers",
+    "teamType": "Solo",
+    "techStack": ["JavaScript"],
+    "solution": "Build a tool to evaluate password strength.",
+    "features": ["Strength meter", "Suggestions", "Validation rules"],
+    "implementationSteps": [
+      "Define rules",
+      "Build UI",
+      "Implement validation logic"
+    ],
+    "difficultyScore": 2,
+    "estimatedWeeks": 1,
+    "learningCurve": "Easy",
+    "marketPotential": 5,
+    "resumeImpact": 5
+  },
+
+  {
+    "title": "Intrusion Detection System",
+    "domain": "Cybersecurity",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["Python", "Machine Learning", "Network Analysis"],
+    "solution": "Build a system to detect suspicious network activities.",
+    "features": ["Traffic monitoring", "Anomaly detection", "Alert system"],
+    "implementationSteps": [
+      "Collect traffic data",
+      "Train anomaly model",
+      "Build monitoring dashboard"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 7,
+    "learningCurve": "Hard",
+    "marketPotential": 9,
+    "resumeImpact": 10
+  },
+  {
+    "title": "Fake News Detection System",
+    "domain": "AIML",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "TensorFlow", "Flask", "NLP"],
+    "solution": "Build a machine learning model that detects fake news articles using text classification.",
+    "features": ["Text preprocessing", "Classification model", "Confidence score display"],
+    "implementationSteps": [
+      "Collect labeled news dataset",
+      "Clean and preprocess text",
+      "Train classification model",
+      "Build frontend to display results"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Face Mask Detection System",
+    "domain": "AIML",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["Python", "OpenCV", "TensorFlow"],
+    "solution": "Create a computer vision system to detect whether a person is wearing a mask.",
+    "features": ["Image detection", "Real-time camera support", "Bounding box visualization"],
+    "implementationSteps": [
+      "Collect image dataset",
+      "Train CNN model",
+      "Integrate webcam feed",
+      "Display detection results"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 3,
+    "learningCurve": "Moderate",
+    "marketPotential": 7,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Online Learning Management System",
+    "domain": "Web Dev",
+    "level": "Intermediate",
+    "teamType": "Team of 4",
+    "techStack": ["React", "Node.js", "MongoDB"],
+    "solution": "Develop a platform for students to access courses and track progress.",
+    "features": ["User login", "Course upload", "Progress tracking", "Admin dashboard"],
+    "implementationSteps": [
+      "Design database schema",
+      "Develop REST APIs",
+      "Build frontend interface",
+      "Deploy application"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "URL Shortener Service",
+    "domain": "Web Dev",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["Node.js", "Express", "MongoDB"],
+    "solution": "Create a web application that converts long URLs into short links.",
+    "features": ["Short link generation", "Redirect system", "Click analytics"],
+    "implementationSteps": [
+      "Design database structure",
+      "Create short code generator",
+      "Build redirect API",
+      "Deploy application"
+    ],
+    "difficultyScore": 5,
+    "estimatedWeeks": 2,
+    "learningCurve": "Easy",
+    "marketPotential": 7,
+    "resumeImpact": 7
+  },
+
+  {
+    "title": "Fitness Tracking Mobile App",
+    "domain": "Mobile Application",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Flutter", "Firebase", "REST API"],
+    "solution": "Develop a fitness tracking app to monitor workouts and calories.",
+    "features": ["Workout logging", "Progress charts", "Goal setting"],
+    "implementationSteps": [
+      "Design mobile UI",
+      "Integrate Firebase backend",
+      "Add tracking logic",
+      "Test and deploy"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Augmented Reality Shopping App",
+    "domain": "Mobile Application",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["Unity", "ARCore", "Firebase"],
+    "solution": "Build a mobile app that allows users to preview products in real-world environments using AR.",
+    "features": ["AR visualization", "Product catalog", "Purchase integration"],
+    "implementationSteps": [
+      "Set up AR environment",
+      "Integrate 3D models",
+      "Connect backend services",
+      "Deploy mobile app"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 8,
+    "learningCurve": "Hard",
+    "marketPotential": 10,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "Two-Factor Authentication System",
+    "domain": "Cybersecurity",
+    "level": "Beginner",
+    "teamType": "Team of 2",
+    "techStack": ["Node.js", "Twilio API", "MongoDB"],
+    "solution": "Implement a secure authentication system using OTP verification.",
+    "features": ["OTP generation", "SMS verification", "Session handling"],
+    "implementationSteps": [
+      "Design user authentication flow",
+      "Integrate OTP API",
+      "Store user sessions",
+      "Test security"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 3,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Vulnerability Scanner Tool",
+    "domain": "Cybersecurity",
+    "level": "Intermediate",
+    "teamType": "Team of 4",
+    "techStack": ["Python", "Nmap", "Flask"],
+    "solution": "Build a tool that scans systems for common security vulnerabilities.",
+    "features": ["Port scanning", "Vulnerability detection", "Report generation"],
+    "implementationSteps": [
+      "Integrate Nmap scanning",
+      "Analyze scan results",
+      "Generate security reports",
+      "Build dashboard"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Customer Segmentation Dashboard",
+    "domain": "Data Science",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "Pandas", "Scikit-learn", "Power BI"],
+    "solution": "Use clustering algorithms to segment customers based on purchasing behavior.",
+    "features": ["Data preprocessing", "K-means clustering", "Visualization dashboard"],
+    "implementationSteps": [
+      "Clean dataset",
+      "Apply clustering algorithm",
+      "Visualize clusters",
+      "Deploy dashboard"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Cloud-Based File Storage System",
+    "domain": "Cloud Computing",
+    "level": "Beginner",
+    "teamType": "Team of 2",
+    "techStack": ["AWS S3", "Node.js", "Express"],
+    "solution": "Develop a cloud file storage system with user authentication.",
+    "features": ["File upload", "File download", "User authentication"],
+    "implementationSteps": [
+      "Configure AWS S3",
+      "Build backend API",
+      "Implement file handling",
+      "Deploy to cloud"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 3,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Smart Contract Voting System",
+    "domain": "Blockchain",
+    "level": "Intermediate",
+    "teamType": "Team of 4",
+    "techStack": ["Solidity", "Ethereum", "React"],
+    "solution": "Create a decentralized voting system using smart contracts.",
+    "features": ["Secure voting", "Transparent results", "Wallet authentication"],
+    "implementationSteps": [
+      "Write smart contract",
+      "Deploy to testnet",
+      "Build frontend",
+      "Connect blockchain wallet"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 5,
+    "learningCurve": "Hard",
+    "marketPotential": 9,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "CI/CD Pipeline Automation",
+    "domain": "DevOps",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Docker", "GitHub Actions", "AWS"],
+    "solution": "Automate application deployment using CI/CD pipelines.",
+    "features": ["Build automation", "Automated testing", "Cloud deployment"],
+    "implementationSteps": [
+      "Containerize application",
+      "Configure CI pipeline",
+      "Set up cloud deployment",
+      "Monitor build status"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  }
+]

@@ -46,8 +46,8 @@ const SavedIdeas = () => {
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '64px' }}>
                 <div style={{
                     width: '48px', height: '48px',
-                    border: '3px solid rgba(255,255,255,0.08)',
-                    borderTop: '3px solid #F59E0B',
+                    border: '3px solid rgba(0,0,0,0.06)',
+                    borderTop: '3px solid var(--color-accent)',
                     borderRadius: '50%',
                     animation: 'spin-slow 1s linear infinite',
                 }} />
@@ -58,8 +58,8 @@ const SavedIdeas = () => {
     return (
         <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '900px', margin: '0 auto' }}>
             <div className="animate-fadeInUp">
-                <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>Saved Blueprints</h1>
-                <p style={{ color: '#666', fontSize: '15px', marginBottom: '36px' }}>
+                <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>Saved Blueprints</h1>
+                <p style={{ color: '#999', fontSize: '15px', marginBottom: '36px' }}>
                     {ideas.length} blueprint{ideas.length !== 1 ? 's' : ''} in your library
                 </p>
 
@@ -70,14 +70,14 @@ const SavedIdeas = () => {
                     }}>
                         <div style={{
                             width: '64px', height: '64px', borderRadius: '16px',
-                            background: 'rgba(245,158,11,0.08)',
+                            background: 'rgba(212,114,122,0.06)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             margin: '0 auto 20px',
                         }}>
-                            <Layers size={28} style={{ color: '#F59E0B' }} />
+                            <Layers size={28} style={{ color: 'var(--color-accent)' }} />
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>No blueprints yet</h3>
-                        <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to get started.</p>
+                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>No blueprints yet</h3>
+                        <p style={{ color: '#999', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to get started.</p>
                         <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                             Generate Idea <ArrowRight size={16} />
                         </Link>
@@ -96,32 +96,32 @@ const SavedIdeas = () => {
                                         transition: 'all 0.2s ease',
                                         cursor: 'pointer',
                                     }}
-                                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(245,158,11,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(212,114,122,0.2)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.06)'; }}
+                                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.04)'; }}
                                 >
                                     {/* Top row: title + actions */}
                                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
                                         <div style={{ flex: 1 }}>
-                                            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>
+                                            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>
                                                 {bp?.title || 'Untitled Blueprint'}
                                             </h3>
                                             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '8px' }}>
                                                 <span style={{
                                                     padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                    background: 'rgba(245,158,11,0.1)', color: '#F59E0B',
+                                                    background: 'rgba(212,114,122,0.08)', color: 'var(--color-accent-dark)',
                                                 }}>
                                                     {idea.domain}
                                                 </span>
                                                 <span style={{
                                                     padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                    background: 'rgba(139,92,246,0.1)', color: '#8B5CF6',
+                                                    background: 'rgba(139,92,138,0.06)', color: '#8B5C8A',
                                                 }}>
                                                     {idea.skillLevel}
                                                 </span>
                                                 {bp?.market_potential_score && (
                                                     <span style={{
                                                         padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                        background: 'rgba(34,197,94,0.1)', color: '#22C55E',
+                                                        background: 'rgba(34,197,94,0.06)', color: '#16a34a',
                                                     }}>
                                                         Score: {bp.market_potential_score}/10
                                                     </span>
@@ -132,12 +132,12 @@ const SavedIdeas = () => {
                                             <button
                                                 onClick={(e) => handleDelete(e, idea.id)}
                                                 style={{
-                                                    background: 'none', border: 'none', color: '#555', cursor: 'pointer',
+                                                    background: 'none', border: 'none', color: '#ccc', cursor: 'pointer',
                                                     padding: '10px', borderRadius: '10px', transition: 'all 0.2s ease',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 }}
-                                                onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; }}
-                                                onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.background = 'none'; }}
+                                                onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.06)'; }}
+                                                onMouseLeave={e => { e.currentTarget.style.color = '#ccc'; e.currentTarget.style.background = 'none'; }}
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -162,7 +162,7 @@ const SavedIdeas = () => {
                                                     bp.recommended_tech_stack[key] && (
                                                         <span key={key} style={{
                                                             padding: '3px 10px', borderRadius: '6px', fontSize: '11px',
-                                                            background: 'rgba(255,255,255,0.04)', color: '#666', fontWeight: 500,
+                                                            background: 'rgba(0,0,0,0.03)', color: '#999', fontWeight: 500,
                                                         }}>
                                                             {bp.recommended_tech_stack[key]}
                                                         </span>
@@ -170,7 +170,7 @@ const SavedIdeas = () => {
                                                 ))}
                                             </div>
                                         )}
-                                        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px', color: '#F59E0B', fontSize: '12px', fontWeight: 600 }}>
+                                        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-accent)', fontSize: '12px', fontWeight: 600 }}>
                                             View Full Plan <ChevronRight size={14} />
                                         </div>
                                     </div>

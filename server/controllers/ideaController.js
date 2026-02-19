@@ -79,7 +79,7 @@ exports.createIdea = async (req, res) => {
 
 exports.saveIdea = async (req, res) => {
     try {
-        const { blueprint, domain, skillLevel } = req.body;
+        const { blueprint, domain, skillLevel, historyId } = req.body;
         const uid = req.user.uid;
 
         if (!blueprint) return res.status(400).json({ error: 'Blueprint is required' });
@@ -94,6 +94,23 @@ exports.saveIdea = async (req, res) => {
         };
 
         const docRef = await db.collection('savedIdeas').add(savedIdea);
+
+        // If historyId is provided, copy chat history to the new saved idea
+        if (historyId) {
+            const historyChatRef = db.collection('blueprintChats').doc(`${uid}_${historyId}`);
+            const historyChatDoc = await historyChatRef.get();
+
+            if (historyChatDoc.exists) {
+                const chatData = historyChatDoc.data();
+                const newChatRef = db.collection('blueprintChats').doc(`${uid}_${docRef.id}`);
+                await newChatRef.set({
+                    ...chatData,
+                    blueprintId: docRef.id,
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        }
+
         res.json({ success: true, id: docRef.id });
     } catch (error) {
         console.error("Save Error", error);

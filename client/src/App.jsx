@@ -16,7 +16,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-neutral-50 font-sans selection:bg-yellow-200 selection:text-black">
+        <div style={{ minHeight: '100vh', background: 'var(--gradient-page)', backgroundAttachment: 'fixed', color: 'var(--text-primary)', fontFamily: "'Inter', sans-serif" }} className="selection:bg-primary-100 selection:text-primary-800">
           <Navbar />
           <Routes>
             <Route path="/" element={<Landing />} />
