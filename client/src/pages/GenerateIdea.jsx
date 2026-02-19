@@ -263,7 +263,7 @@ const GenerateIdea = () => {
                     <h2 className="heading-serif" style={{ fontSize: '24px', fontWeight: 800, color: '#1a1a1a', marginBottom: '12px' }}>
                         Free Limit Reached
                     </h2>
-                    <p style={{ color: '#888', fontSize: '15px', lineHeight: 1.6, marginBottom: '24px' }}>
+                    <p style={{ color: '#555', fontSize: '15px', lineHeight: 1.6, marginBottom: '24px' }}>
                         You've used all <strong style={{ color: 'var(--color-accent)' }}>5 free blueprints</strong> this week.
                         Your limit will reset in <strong style={{ color: '#16a34a' }}>{daysLeft} day{daysLeft !== 1 ? 's' : ''}</strong>.
                     </p>
@@ -329,7 +329,7 @@ const GenerateIdea = () => {
             <div className="page-generate" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '620px', margin: '0 auto' }}>
                 <div className="animate-fadeInUp">
                     <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>New Blueprint</h1>
-                    <p style={{ color: '#999', fontSize: '15px', marginBottom: '36px' }}>Define your constraints, let AI architect the rest.</p>
+                    <p style={{ color: '#666', fontSize: '15px', marginBottom: '36px' }}>Define your constraints, let AI architect the rest.</p>
 
                     {error && (
                         <div style={{
@@ -455,7 +455,7 @@ const GenerateIdea = () => {
                 }} />
                 <div style={{ textAlign: 'center' }}>
                     <h2 className="heading-serif" style={{ fontSize: '22px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>Architecting your blueprint...</h2>
-                    <p style={{ color: '#999', fontSize: '14px' }}>Analyzing {formData.domain} trends for {formData.skillLevel}s</p>
+                    <p style={{ color: '#666', fontSize: '14px' }}>Analyzing {formData.domain} trends for {formData.skillLevel}s</p>
                 </div>
             </div>
         );
@@ -470,18 +470,25 @@ const GenerateIdea = () => {
             <div className="result-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', flexWrap: 'wrap', gap: '16px' }}>
                 <div>
                     <button onClick={() => setStep(1)} style={{
-                        background: 'none', border: 'none', color: '#999', cursor: 'pointer',
+                        background: 'none', border: 'none', color: '#666', cursor: 'pointer',
                         fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px',
                         fontFamily: "'Inter', sans-serif",
                     }}>
                         <ArrowLeft size={14} /> Back to parameters
                     </button>
+<<<<<<< HEAD
                     <div>
                         <h1 className="heading-serif" style={{ fontSize: '36px', fontWeight: 800, color: '#1a1a1a', marginBottom: '12px' }}>
                             {blueprint.title}
                         </h1>
                         <p style={{ fontSize: '17px', color: '#666', maxWidth: '700px', lineHeight: 1.7, fontWeight: 400 }}>{blueprint.problem_statement}</p>
                     </div>
+=======
+                    <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
+                        {blueprint.title}
+                    </h1>
+                    <p style={{ fontSize: '16px', color: '#555', maxWidth: '600px', lineHeight: 1.6 }}>{blueprint.problem_statement}</p>
+>>>>>>> 6133155 (ui changes)
                 </div>
                 <div className="result-actions" style={{ display: 'flex', gap: '10px' }}>
                     <button onClick={handleGenerate} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 20px', fontSize: '13px' }}>
@@ -522,6 +529,7 @@ const GenerateIdea = () => {
                                 ))}
                             </ul>
                         </div>
+<<<<<<< HEAD
                         <div>
                             <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#8B5C8A', marginBottom: '12px' }}>Future Scope</h4>
                             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -532,6 +540,43 @@ const GenerateIdea = () => {
                                     </li>
                                 ))}
                             </ul>
+=======
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <div>
+                                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#3B82F6', marginBottom: '10px' }}>Should Have</h4>
+                                {blueprint.core_features?.should_have?.map((f, i) => (
+                                    <p key={i} style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>• {f}</p>
+                                ))}
+                            </div>
+                            <div>
+                                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#8B5C8A', marginBottom: '10px' }}>Future Scope</h4>
+                                {blueprint.core_features?.future_scope?.map((f, i) => (
+                                    <p key={i} style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>• {f}</p>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Roadmap */}
+                    <div className="glass-card" style={{ padding: '32px' }}>
+                        <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Execution Roadmap</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', borderLeft: '2px solid rgba(0,0,0,0.06)', marginLeft: '12px', paddingLeft: '28px' }}>
+                            {blueprint.roadmap_4_weeks && Object.entries(blueprint.roadmap_4_weeks).map(([week, task], i) => (
+                                <div key={week} style={{ position: 'relative' }}>
+                                    <div style={{
+                                        position: 'absolute', left: '-39px', top: '2px',
+                                        width: '24px', height: '24px', borderRadius: '50%',
+                                        background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontSize: '11px', fontWeight: 800, color: '#fff',
+                                    }}>{i + 1}</div>
+                                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', marginBottom: '4px', textTransform: 'capitalize' }}>
+                                        {week.replace('week', 'Week ')}
+                                    </h4>
+                                    <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.6 }}>{task}</p>
+                                </div>
+                            ))}
+>>>>>>> 6133155 (ui changes)
                         </div>
                     </div>
                 </div>
@@ -541,8 +586,14 @@ const GenerateIdea = () => {
                     {/* Market Potential & Tech Stack Combined */}
                     <div className="glass-card" style={{
                         padding: '28px',
+<<<<<<< HEAD
                         background: 'linear-gradient(135deg, rgba(212,114,122,0.08) 0%, rgba(212,114,122,0.04) 100%)',
                         border: '1px solid rgba(212,114,122,0.2)',
+=======
+                        borderRadius: '6px',
+                        background: 'rgba(212,114,122,0.04)',
+                        border: '1px solid rgba(212,114,122,0.1)',
+>>>>>>> 6133155 (ui changes)
                     }}>
                         <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--color-accent-dark)', marginBottom: '20px' }}>Project Metrics</h3>
                         {[
@@ -571,19 +622,29 @@ const GenerateIdea = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             {blueprint.recommended_tech_stack && ['frontend', 'backend', 'database', 'deployment'].map(key => (
                                 <div key={key} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+<<<<<<< HEAD
                                     <span style={{ fontSize: '14px', color: '#888', textTransform: 'capitalize', fontWeight: 500 }}>{key}</span>
                                     <span style={{ fontSize: '14px', color: '#1a1a1a', fontWeight: 700 }}>{blueprint.recommended_tech_stack[key]}</span>
+=======
+                                    <span style={{ fontSize: '13px', color: '#666', textTransform: 'capitalize' }}>{key}</span>
+                                    <span style={{ fontSize: '13px', color: '#1a1a1a', fontWeight: 600 }}>{blueprint.recommended_tech_stack[key]}</span>
+>>>>>>> 6133155 (ui changes)
                                 </div>
                             ))}
                         </div>
                         {blueprint.recommended_tech_stack?.reasoning && (
+<<<<<<< HEAD
                             <p style={{ fontSize: '12px', color: '#999', marginTop: '12px', fontStyle: 'italic', lineHeight: 1.5 }}>
+=======
+                            <p style={{ fontSize: '12px', color: '#888', marginTop: '12px', fontStyle: 'italic' }}>
+>>>>>>> 6133155 (ui changes)
                                 "{blueprint.recommended_tech_stack.reasoning}"
                             </p>
                         )}
                     </div>
                 </div>
 
+<<<<<<< HEAD
                 {/* Roadmap */}
                 <div className="glass-card" style={{ padding: '32px' }}>
                     <h3 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>4-Week Execution Roadmap</h3>
@@ -618,24 +679,45 @@ const GenerateIdea = () => {
                         <p style={{ fontSize: '15px', color: '#444', lineHeight: 1.7, marginBottom: '18px', fontWeight: 400 }}>{blueprint.what_is_new}</p>
                         <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-accent-dark)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>COMPETITORS</h4>
                         <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.6 }}>{blueprint.existing_solutions}</p>
+=======
+                    {/* Differentiation */}
+                    <div style={{
+                        padding: '28px', borderRadius: '6px',
+                        background: 'rgba(212,114,122,0.03)', border: '1px solid rgba(212,114,122,0.08)',
+                    }}>
+                        <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-accent-dark)', marginBottom: '10px' }}>Innovation Angle</h3>
+                        <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.7, marginBottom: '16px' }}>{blueprint.what_is_new}</p>
+                        <h4 style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-accent-dark)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Competitors</h4>
+                        <p style={{ fontSize: '13px', color: '#555', lineHeight: 1.6 }}>{blueprint.existing_solutions}</p>
+>>>>>>> 6133155 (ui changes)
                     </div>
 
                     {/* Learning Path */}
                     {blueprint.educational_resources && (
+<<<<<<< HEAD
                         <div className="glass-card" style={{
                             padding: '28px',
                             background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.04) 100%)',
                             border: '1px solid rgba(59,130,246,0.2)',
+=======
+                        <div style={{
+                            padding: '28px', borderRadius: '6px',
+                            background: 'rgba(59,130,246,0.03)', border: '1px solid rgba(59,130,246,0.08)',
+>>>>>>> 6133155 (ui changes)
                         }}>
                             <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#3B82F6', marginBottom: '12px' }}>🎓 Learning Path</h3>
                             <p style={{ fontSize: '15px', color: '#444', lineHeight: 1.7, marginBottom: '18px', fontWeight: 400 }}>{blueprint.educational_resources.learning_path}</p>
                             <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#3B82F6', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>KEY CONCEPTS</h4>
                             <ul style={{ listStyle: 'none', padding: 0, marginBottom: blueprint.educational_resources.recommended_resources?.length ? '16px' : 0 }}>
                                 {blueprint.educational_resources.key_concepts?.map((c, i) => (
+<<<<<<< HEAD
                                     <li key={i} style={{ fontSize: '14px', color: '#555', marginBottom: '6px', lineHeight: 1.5, paddingLeft: '16px', position: 'relative' }}>
                                         <span style={{ position: 'absolute', left: 0, color: '#3B82F6' }}>•</span>
                                         {c}
                                     </li>
+=======
+                                    <li key={i} style={{ fontSize: '13px', color: '#555', marginBottom: '4px' }}>{c}</li>
+>>>>>>> 6133155 (ui changes)
                                 ))}
                             </ul>
                             {blueprint.educational_resources.recommended_resources?.length > 0 && (
@@ -858,7 +940,7 @@ const GenerateIdea = () => {
                     </div>
                     <div>
                         <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1a1a1a' }}>Ask about this Blueprint</h3>
-                        <p style={{ fontSize: '12px', color: '#999' }}>Get implementation help, code snippets, or advice</p>
+                        <p style={{ fontSize: '12px', color: '#666' }}>Get implementation help, code snippets, or advice</p>
                     </div>
                 </div>
 
@@ -925,7 +1007,7 @@ const GenerateIdea = () => {
                                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-accent)', animation: 'pulse 1s infinite' }} />
                                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-accent)', animation: 'pulse 1s infinite 0.2s' }} />
                                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-accent)', animation: 'pulse 1s infinite 0.4s' }} />
-                                    <span style={{ color: '#999', fontSize: '13px', marginLeft: '6px' }}>Thinking...</span>
+                                    <span style={{ color: '#666', fontSize: '13px', marginLeft: '6px' }}>Thinking...</span>
                                 </div>
                             </div>
                         )}

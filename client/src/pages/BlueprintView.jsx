@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, Trash2, Check, Clock, Download, Sparkles } from 'lucide-react';
+import { ArrowLeft, Trash2, Check, Clock, Save, Sparkles } from 'lucide-react';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
@@ -16,13 +16,21 @@ const BlueprintView = () => {
     const [chatMessages, setChatMessages] = useState([]);
     const [chatInput, setChatInput] = useState('');
     const [chatSending, setChatSending] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
+    const [saving, setSaving] = useState(false);
+
+    // Detect if this is a history view or saved view
+    const isHistory = window.location.pathname.startsWith('/history');
 
     useEffect(() => {
         const fetchBlueprint = async () => {
             if (!currentUser) return;
             try {
                 const token = await currentUser.getIdToken();
-                const res = await axios.get(`${apiBaseUrl}/api/generate/saved/${id}`, {
+                const endpoint = isHistory
+                    ? `${apiBaseUrl}/api/generate/history/${id}`
+                    : `${apiBaseUrl}/api/generate/saved/${id}`;
+                const res = await axios.get(endpoint, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setIdea(res.data);
@@ -33,7 +41,7 @@ const BlueprintView = () => {
             }
         };
         fetchBlueprint();
-    }, [id, currentUser]);
+    }, [id, currentUser, isHistory]);
 
     const handleDelete = async () => {
         try {
@@ -44,6 +52,26 @@ const BlueprintView = () => {
             navigate('/saved');
         } catch (err) {
             setError('Failed to delete blueprint');
+        }
+    };
+
+    const handleSave = async () => {
+        setSaving(true);
+        try {
+            const token = await currentUser.getIdToken();
+            await axios.post(`${apiBaseUrl}/api/generate/save`, {
+                blueprint: idea.blueprint,
+                domain: idea.domain,
+                skillLevel: idea.skillLevel,
+                historyId: id
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setIsSaved(true);
+        } catch (err) {
+            setError('Failed to save');
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -64,7 +92,7 @@ const BlueprintView = () => {
             });
             setChatMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
         } catch (err) {
-            setChatMessages(prev => [...prev, { role: 'assistant', content: '⚠️ ' + (err.response?.data?.error || 'Failed to get response. Please try again.') }]);
+            setChatMessages(prev => [...prev, { role: 'assistant', content: '⚠️ ' + (err.response?.data?.error || 'Failed to get response.') }]);
         } finally {
             setChatSending(false);
         }
@@ -74,14 +102,14 @@ const BlueprintView = () => {
         if (!text) return '';
         let html = text;
         html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
-            return `<div style="background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.06);border-radius:10px;padding:14px 16px;margin:10px 0;overflow-x:auto;font-family:'Fira Code',monospace;font-size:13px;line-height:1.5;color:#333"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;').trim()}</code></div>`;
+            return `<div style="background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.06);border-radius:6px;padding:14px 16px;margin:10px 0;overflow-x:auto;font-family:'Fira Code',monospace;font-size:13px;line-height:1.5;color:#333"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;').trim()}</code></div>`;
         });
         html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(212,114,122,0.08);color:#a0505a;padding:2px 6px;border-radius:4px;font-size:13px;font-family:monospace">$1</code>');
-        html = html.replace(/^### (.+)$/gm, '<h4 style="font-size:15px;font-weight:700;color:var(--color-accent-dark);margin:16px 0 8px;letter-spacing:-0.01em">$1</h4>');
-        html = html.replace(/^## (.+)$/gm, '<h3 style="font-size:16px;font-weight:700;color:#1a1a1a;margin:18px 0 8px;letter-spacing:-0.01em">$1</h3>');
-        html = html.replace(/^# (.+)$/gm, '<h2 style="font-size:18px;font-weight:800;color:#1a1a1a;margin:20px 0 10px;letter-spacing:-0.01em">$1</h2>');
+        html = html.replace(/^### (.+)$/gm, '<h4 style="font-size:15px;font-weight:700;color:var(--color-accent-dark);margin:16px 0 8px">$1</h4>');
+        html = html.replace(/^## (.+)$/gm, '<h3 style="font-size:16px;font-weight:700;color:#1a1a1a;margin:18px 0 8px">$1</h3>');
+        html = html.replace(/^# (.+)$/gm, '<h2 style="font-size:18px;font-weight:800;color:#1a1a1a;margin:20px 0 10px">$1</h2>');
         html = html.replace(/\*\*(.+?)\*\*/g, '<strong style="color:#1a1a1a;font-weight:600">$1</strong>');
-        html = html.replace(/\*(.+?)\*/g, '<em style="color:#666">$1</em>');
+        html = html.replace(/\*(.+?)\*/g, '<em style="color:#555">$1</em>');
         html = html.replace(/^\d+\.\s+(.+)$/gm, '<li style="margin:4px 0;padding-left:4px;color:#555">$1</li>');
         html = html.replace(/^[\-\*]\s+(.+)$/gm, '<li style="margin:4px 0;padding-left:4px;color:#555;list-style-type:disc">$1</li>');
         html = html.replace(/((<li[^>]*>.*?<\/li>\s*)+)/g, '<ul style="padding-left:20px;margin:8px 0">$1</ul>');
@@ -98,8 +126,8 @@ const BlueprintView = () => {
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{
                     width: '48px', height: '48px',
-                    border: '3px solid rgba(255,255,255,0.08)',
-                    borderTop: '3px solid #F59E0B',
+                    border: '3px solid rgba(0,0,0,0.06)',
+                    borderTop: '3px solid var(--color-accent)',
                     borderRadius: '50%',
                     animation: 'spin-slow 1s linear infinite',
                 }} />
@@ -111,9 +139,9 @@ const BlueprintView = () => {
         return (
             <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
                 <div className="glass-card" style={{ padding: '64px 32px' }}>
-                    <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>Blueprint not found</h2>
-                    <p style={{ color: '#888', marginBottom: '24px' }}>{error}</p>
-                    <Link to="/saved" className="btn-primary" style={{ textDecoration: 'none' }}>Back to Saved</Link>
+                    <h2 className="heading-serif" style={{ fontSize: '22px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>Blueprint not found</h2>
+                    <p style={{ color: '#666', marginBottom: '24px' }}>{error}</p>
+                    <Link to={isHistory ? "/dashboard" : "/saved"} className="btn-primary" style={{ textDecoration: 'none' }}>Go Back</Link>
                 </div>
             </div>
         );
@@ -122,6 +150,11 @@ const BlueprintView = () => {
     const blueprint = idea?.blueprint;
     if (!blueprint) return null;
 
+    const formatDate = (ts) => {
+        if (!ts?._seconds) return 'recently';
+        return new Date(ts._seconds * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    };
+
     return (
         <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '1100px', margin: '0 auto' }}
             className="animate-fadeInUp page-blueprint"
@@ -129,33 +162,52 @@ const BlueprintView = () => {
             {/* Header */}
             <div className="result-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', flexWrap: 'wrap', gap: '16px' }}>
                 <div>
-                    <Link to="/saved" style={{
+                    <Link to={isHistory ? "/dashboard" : "/saved"} style={{
                         color: '#666', textDecoration: 'none', fontSize: '13px',
                         display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px',
                     }}>
-                        <ArrowLeft size={14} /> Back to Saved Blueprints
+                        <ArrowLeft size={14} /> Back to {isHistory ? 'Dashboard' : 'Saved Blueprints'}
                     </Link>
-                    <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
+                    {isHistory && (
+                        <span style={{ padding: '3px 10px', borderRadius: '4px', fontSize: '10px', fontWeight: 700, background: 'rgba(212,114,122,0.08)', color: 'var(--color-accent-dark)', textTransform: 'uppercase', display: 'inline-block', marginBottom: '10px' }}>History</span>
+                    )}
+                    <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
                         {blueprint.title}
                     </h1>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '12px' }}>
                         <span style={{
-                            padding: '4px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                            background: 'rgba(245,158,11,0.1)', color: '#F59E0B',
+                            padding: '4px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+                            background: 'rgba(212,114,122,0.08)', color: 'var(--color-accent-dark)',
                         }}>{idea.domain}</span>
                         <span style={{
-                            padding: '4px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                            background: 'rgba(139,92,246,0.1)', color: '#8B5CF6',
+                            padding: '4px 14px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+                            background: 'rgba(139,92,138,0.06)', color: '#8B5C8A',
                         }}>{idea.skillLevel}</span>
                     </div>
-                    <p style={{ fontSize: '16px', color: '#888', maxWidth: '600px', lineHeight: 1.6 }}>{blueprint.problem_statement}</p>
+                    <p style={{ fontSize: '16px', color: '#555', maxWidth: '600px', lineHeight: 1.6 }}>{blueprint.problem_statement}</p>
                 </div>
-                <button onClick={handleDelete} className="btn-secondary" style={{
-                    display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 20px', fontSize: '13px',
-                    color: '#EF4444', borderColor: 'rgba(239,68,68,0.2)',
-                }}>
-                    <Trash2 size={15} /> Delete
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    {isHistory && !isSaved && (
+                        <button onClick={handleSave} disabled={saving} className="btn-primary" style={{
+                            display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 20px', fontSize: '13px',
+                        }}>
+                            <Save size={15} /> {saving ? 'Saving...' : 'Save Blueprint'}
+                        </button>
+                    )}
+                    {isSaved && (
+                        <span style={{ color: '#16a34a', fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Check size={14} /> Saved!
+                        </span>
+                    )}
+                    {!isHistory && (
+                        <button onClick={handleDelete} className="btn-secondary" style={{
+                            display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 20px', fontSize: '13px',
+                            color: '#EF4444', borderColor: 'rgba(239,68,68,0.2)',
+                        }}>
+                            <Trash2 size={15} /> Delete
+                        </button>
+                    )}
+                </div>
             </div>
 
             <div className="blueprint-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px' }}>
@@ -163,15 +215,15 @@ const BlueprintView = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     {/* Features */}
                     <div className="glass-card" style={{ padding: '32px' }}>
-                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Core Features</h3>
+                        <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Core Features</h3>
                         {blueprint.core_features?.must_have && (
                             <div style={{ marginBottom: '20px' }}>
-                                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#22C55E', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#16a34a', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     <Check size={14} /> Must Have
                                 </h4>
                                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {blueprint.core_features.must_have.map((f, i) => (
-                                        <li key={i} style={{ fontSize: '14px', color: '#555', padding: '10px 14px', borderRadius: '10px', background: 'rgba(0,0,0,0.02)' }}>
+                                        <li key={i} style={{ fontSize: '14px', color: '#444', padding: '10px 14px', borderRadius: '6px', background: 'rgba(0,0,0,0.02)' }}>
                                             {f}
                                         </li>
                                     ))}
@@ -183,15 +235,15 @@ const BlueprintView = () => {
                                 <div>
                                     <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#3B82F6', marginBottom: '10px' }}>Should Have</h4>
                                     {blueprint.core_features.should_have.map((f, i) => (
-                                        <p key={i} style={{ fontSize: '13px', color: '#777', marginBottom: '6px' }}>• {f}</p>
+                                        <p key={i} style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>• {f}</p>
                                     ))}
                                 </div>
                             )}
                             {blueprint.core_features?.future_scope && (
                                 <div>
-                                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#8B5CF6', marginBottom: '10px' }}>Future Scope</h4>
+                                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#8B5C8A', marginBottom: '10px' }}>Future Scope</h4>
                                     {blueprint.core_features.future_scope.map((f, i) => (
-                                        <p key={i} style={{ fontSize: '13px', color: '#777', marginBottom: '6px' }}>• {f}</p>
+                                        <p key={i} style={{ fontSize: '13px', color: '#555', marginBottom: '6px' }}>• {f}</p>
                                     ))}
                                 </div>
                             )}
@@ -201,21 +253,21 @@ const BlueprintView = () => {
                     {/* Roadmap */}
                     {blueprint.roadmap_4_weeks && (
                         <div className="glass-card" style={{ padding: '32px' }}>
-                            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Execution Roadmap</h3>
+                            <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Execution Roadmap</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', borderLeft: '2px solid rgba(0,0,0,0.06)', marginLeft: '12px', paddingLeft: '28px' }}>
                                 {Object.entries(blueprint.roadmap_4_weeks).map(([week, task], i) => (
                                     <div key={week} style={{ position: 'relative' }}>
                                         <div style={{
                                             position: 'absolute', left: '-39px', top: '2px',
                                             width: '24px', height: '24px', borderRadius: '50%',
-                                            background: 'linear-gradient(135deg, #F59E0B, #EF4444)',
+                                            background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontSize: '11px', fontWeight: 800, color: '#000',
+                                            fontSize: '11px', fontWeight: 800, color: '#fff',
                                         }}>{i + 1}</div>
                                         <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', marginBottom: '4px', textTransform: 'capitalize' }}>
                                             {week.replace('week', 'Week ')}
                                         </h4>
-                                        <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.6 }}>{task}</p>
+                                        <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.6 }}>{task}</p>
                                     </div>
                                 ))}
                             </div>
@@ -227,22 +279,21 @@ const BlueprintView = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {/* Scores */}
                     <div style={{
-                        padding: '28px', borderRadius: '16px',
-                        background: 'linear-gradient(145deg, rgba(245,158,11,0.08), rgba(139,92,246,0.05))',
-                        border: '1px solid rgba(245,158,11,0.15)',
+                        padding: '28px', borderRadius: '6px',
+                        background: 'rgba(212,114,122,0.04)', border: '1px solid rgba(212,114,122,0.1)',
                     }}>
-                        <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#F59E0B', marginBottom: '20px' }}>Market Potential</h3>
+                        <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-accent-dark)', marginBottom: '20px' }}>Market Potential</h3>
                         {[
-                            { label: 'Demand', score: blueprint.market_potential_score, color: '#F59E0B' },
+                            { label: 'Demand', score: blueprint.market_potential_score, color: 'var(--color-accent)' },
                             { label: 'Difficulty', score: blueprint.difficulty_score, color: '#EF4444' },
-                            { label: 'Resume Impact', score: blueprint.resume_impact_score, color: '#22C55E' },
+                            { label: 'Resume Impact', score: blueprint.resume_impact_score, color: '#16a34a' },
                         ].map((s, i) => (
                             <div key={i} style={{ marginBottom: i < 2 ? '16px' : 0 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
-                                    <span style={{ color: '#666' }}>{s.label}</span>
+                                    <span style={{ color: '#555' }}>{s.label}</span>
                                     <span style={{ color: '#1a1a1a', fontWeight: 700 }}>{s.score}/10</span>
                                 </div>
-                                <div style={{ height: '6px', borderRadius: '3px', background: 'rgba(0,0,0,0.06)' }}>
+                                <div style={{ height: '6px', borderRadius: '3px', background: 'rgba(0,0,0,0.04)' }}>
                                     <div style={{
                                         height: '100%', borderRadius: '3px', width: `${(s.score || 0) * 10}%`,
                                         background: s.color, transition: 'width 0.5s ease',
@@ -255,19 +306,19 @@ const BlueprintView = () => {
                     {/* Tech Stack */}
                     {blueprint.recommended_tech_stack && (
                         <div className="glass-card" style={{ padding: '28px' }}>
-                            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', marginBottom: '16px' }}>Recommended Stack</h3>
+                            <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', marginBottom: '16px' }}>Recommended Stack</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {['frontend', 'backend', 'database', 'deployment'].map(key => (
                                     blueprint.recommended_tech_stack[key] && (
-                                        <div key={key} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-                                            <span style={{ fontSize: '13px', color: '#888', textTransform: 'capitalize' }}>{key}</span>
+                                        <div key={key} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                                            <span style={{ fontSize: '13px', color: '#666', textTransform: 'capitalize' }}>{key}</span>
                                             <span style={{ fontSize: '13px', color: '#1a1a1a', fontWeight: 600 }}>{blueprint.recommended_tech_stack[key]}</span>
                                         </div>
                                     )
                                 ))}
                             </div>
                             {blueprint.recommended_tech_stack?.reasoning && (
-                                <p style={{ fontSize: '12px', color: '#555', marginTop: '12px', fontStyle: 'italic' }}>
+                                <p style={{ fontSize: '12px', color: '#888', marginTop: '12px', fontStyle: 'italic' }}>
                                     "{blueprint.recommended_tech_stack.reasoning}"
                                 </p>
                             )}
@@ -277,34 +328,34 @@ const BlueprintView = () => {
                     {/* Differentiation */}
                     {blueprint.what_is_new && (
                         <div style={{
-                            padding: '28px', borderRadius: '16px',
-                            background: 'rgba(245,158,11,0.04)', border: '1px solid rgba(245,158,11,0.1)',
+                            padding: '28px', borderRadius: '6px',
+                            background: 'rgba(212,114,122,0.03)', border: '1px solid rgba(212,114,122,0.08)',
                         }}>
-                            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#F59E0B', marginBottom: '10px' }}>Innovation Angle</h3>
-                            <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.7, marginBottom: '16px' }}>{blueprint.what_is_new}</p>
+                            <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-accent-dark)', marginBottom: '10px' }}>Innovation Angle</h3>
+                            <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.7, marginBottom: '16px' }}>{blueprint.what_is_new}</p>
                             {blueprint.existing_solutions && (
                                 <>
-                                    <h4 style={{ fontSize: '11px', fontWeight: 700, color: '#F59E0B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Competitors</h4>
-                                    <p style={{ fontSize: '13px', color: '#777', lineHeight: 1.6 }}>{blueprint.existing_solutions}</p>
+                                    <h4 style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-accent-dark)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Competitors</h4>
+                                    <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.6 }}>{blueprint.existing_solutions}</p>
                                 </>
                             )}
                         </div>
                     )}
 
-                    {/* Education (Fresher Only) */}
+                    {/* Education */}
                     {blueprint.educational_resources && (
                         <div style={{
-                            padding: '28px', borderRadius: '16px',
-                            background: 'rgba(59,130,246,0.04)', border: '1px solid rgba(59,130,246,0.1)',
+                            padding: '28px', borderRadius: '6px',
+                            background: 'rgba(59,130,246,0.03)', border: '1px solid rgba(59,130,246,0.08)',
                         }}>
-                            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#3B82F6', marginBottom: '10px' }}>🎓 Learning Path</h3>
-                            <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.7, marginBottom: '16px' }}>{blueprint.educational_resources.learning_path}</p>
+                            <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: '#3B82F6', marginBottom: '10px' }}>🎓 Learning Path</h3>
+                            <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.7, marginBottom: '16px' }}>{blueprint.educational_resources.learning_path}</p>
                             {blueprint.educational_resources.key_concepts && (
                                 <>
                                     <h4 style={{ fontSize: '11px', fontWeight: 700, color: '#3B82F6', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Key Concepts</h4>
                                     <ul style={{ listStyle: 'disc', paddingLeft: '20px' }}>
                                         {blueprint.educational_resources.key_concepts.map((c, i) => (
-                                            <li key={i} style={{ fontSize: '13px', color: '#777', marginBottom: '4px' }}>{c}</li>
+                                            <li key={i} style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}>{c}</li>
                                         ))}
                                     </ul>
                                 </>
@@ -312,10 +363,10 @@ const BlueprintView = () => {
                         </div>
                     )}
 
-                    {/* Saved timestamp */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#444', fontSize: '12px', padding: '0 4px' }}>
+                    {/* Timestamp */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666', fontSize: '13px', padding: '0 4px' }}>
                         <Clock size={14} />
-                        Saved {idea.createdAt?._seconds ? new Date(idea.createdAt._seconds * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'recently'}
+                        {isHistory ? 'Generated' : 'Saved'} {formatDate(idea.createdAt)}
                     </div>
                 </div>
             </div>
@@ -325,14 +376,14 @@ const BlueprintView = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                     <div style={{
                         width: '36px', height: '36px', borderRadius: '10px',
-                        background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
+                        background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                         <Sparkles size={18} color="#fff" />
                     </div>
                     <div>
                         <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1a1a1a' }}>Ask about this Blueprint</h3>
-                        <p style={{ fontSize: '12px', color: '#999' }}>Get implementation help, code snippets, or advice</p>
+                        <p style={{ fontSize: '12px', color: '#666' }}>Get implementation help, code snippets, or advice</p>
                     </div>
                 </div>
 
@@ -340,7 +391,7 @@ const BlueprintView = () => {
                     <div style={{
                         maxHeight: '500px', overflowY: 'auto', marginBottom: '16px',
                         display: 'flex', flexDirection: 'column', gap: '16px',
-                        padding: '20px', borderRadius: '12px',
+                        padding: '20px', borderRadius: '6px',
                         background: 'rgba(0,0,0,0.02)',
                     }}>
                         {chatMessages.map((msg, i) => (
@@ -353,7 +404,7 @@ const BlueprintView = () => {
                                 {msg.role !== 'user' && (
                                     <div style={{
                                         width: '28px', height: '28px', borderRadius: '8px', flexShrink: 0,
-                                        background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
+                                        background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         marginTop: '2px',
                                     }}>
@@ -364,11 +415,9 @@ const BlueprintView = () => {
                                     maxWidth: msg.role === 'user' ? '75%' : '90%',
                                     padding: msg.role === 'user' ? '10px 16px' : '16px 20px',
                                     borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '4px 16px 16px 16px',
-                                    background: msg.role === 'user'
-                                        ? 'linear-gradient(135deg, #F59E0B, #EF4444)'
-                                        : 'rgba(255,255,255,0.7)',
+                                    background: msg.role === 'user' ? '#1a1a1a' : 'rgba(255,255,255,0.7)',
                                     border: msg.role === 'user' ? 'none' : '1px solid rgba(0,0,0,0.06)',
-                                    color: msg.role === 'user' ? '#000' : '#333',
+                                    color: msg.role === 'user' ? '#fff' : '#333',
                                     fontSize: '14px',
                                     lineHeight: 1.7,
                                     fontWeight: msg.role === 'user' ? 600 : 400,
@@ -383,7 +432,7 @@ const BlueprintView = () => {
                             <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '10px', alignItems: 'flex-start' }}>
                                 <div style={{
                                     width: '28px', height: '28px', borderRadius: '8px', flexShrink: 0,
-                                    background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
+                                    background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 }}>
                                     <Sparkles size={14} color="#fff" />
@@ -394,10 +443,10 @@ const BlueprintView = () => {
                                     border: '1px solid rgba(0,0,0,0.06)',
                                     display: 'flex', gap: '6px', alignItems: 'center',
                                 }}>
-                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8B5CF6', animation: 'pulse 1s infinite' }} />
-                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8B5CF6', animation: 'pulse 1s infinite 0.2s' }} />
-                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8B5CF6', animation: 'pulse 1s infinite 0.4s' }} />
-                                    <span style={{ color: '#999', fontSize: '13px', marginLeft: '6px' }}>Thinking...</span>
+                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-accent)', animation: 'pulse 1s infinite' }} />
+                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-accent)', animation: 'pulse 1s infinite 0.2s' }} />
+                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-accent)', animation: 'pulse 1s infinite 0.4s' }} />
+                                    <span style={{ color: '#666', fontSize: '13px', marginLeft: '6px' }}>Thinking...</span>
                                 </div>
                             </div>
                         )}
@@ -438,12 +487,12 @@ const BlueprintView = () => {
                                 onClick={() => { setChatInput(q); }}
                                 style={{
                                     padding: '6px 14px', borderRadius: '20px', fontSize: '12px',
-                                    background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)',
-                                    color: '#8B5CF6', cursor: 'pointer', fontWeight: 500,
-                                    fontFamily: 'Inter, sans-serif', transition: 'all 0.2s ease',
+                                    background: 'rgba(212,114,122,0.06)', border: '1px solid rgba(212,114,122,0.12)',
+                                    color: 'var(--color-accent-dark)', cursor: 'pointer', fontWeight: 500,
+                                    fontFamily: "'Inter', sans-serif", transition: 'all 0.2s ease',
                                 }}
-                                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(139,92,246,0.15)'; }}
-                                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(139,92,246,0.08)'; }}
+                                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(212,114,122,0.12)'; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(212,114,122,0.06)'; }}
                             >
                                 {q}
                             </button>

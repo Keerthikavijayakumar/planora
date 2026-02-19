@@ -73,14 +73,14 @@ const Navbar = () => {
                 >
                     {currentUser ? (
                         <>
-                            <Link to="/dashboard" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px', borderRadius: '8px', transition: 'color 0.2s' }}
+                            <Link to="/dashboard" style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px', borderRadius: '8px', transition: 'color 0.2s' }}
                                 onMouseEnter={e => e.target.style.color = '#1a1a1a'}
                                 onMouseLeave={e => e.target.style.color = '#888'}
                             >Dashboard</Link>
                             <Link to="/generate" className="btn-primary" style={{ padding: '8px 20px', fontSize: '13px', textDecoration: 'none' }}>
                                 New Idea
                             </Link>
-                            <Link to="/saved" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px', borderRadius: '8px', transition: 'color 0.2s' }}
+                            <Link to="/saved" style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px', borderRadius: '8px', transition: 'color 0.2s' }}
                                 onMouseEnter={e => e.target.style.color = '#1a1a1a'}
                                 onMouseLeave={e => e.target.style.color = '#888'}
                             >Saved</Link>
@@ -110,7 +110,7 @@ const Navbar = () => {
                             </div>
 
                             <button onClick={handleLogout} style={{
-                                background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', padding: '8px',
+                                background: 'none', border: 'none', color: '#777', cursor: 'pointer', padding: '8px',
                                 display: 'flex', alignItems: 'center', transition: 'color 0.2s'
                             }}
                                 onMouseEnter={e => e.target.style.color = '#1a1a1a'}
@@ -121,7 +121,7 @@ const Navbar = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/auth" style={{ color: '#888', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px' }}
+                            <Link to="/auth" style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: 400, padding: '8px 16px' }}
                                 onMouseEnter={e => e.target.style.color = '#1a1a1a'}
                                 onMouseLeave={e => e.target.style.color = '#888'}
                             >Login</Link>
@@ -171,13 +171,12 @@ const Navbar = () => {
                                 </div>
                                 <div>
                                     <div style={{ fontSize: '14px', fontWeight: 600, color: '#1a1a1a' }}>{currentUser.email?.split('@')[0]}</div>
-                                    <div style={{ fontSize: '12px', color: '#999' }}>{currentUser.email}</div>
+                                    <div style={{ fontSize: '12px', color: '#666' }}>{currentUser.email}</div>
                                 </div>
                             </div>
                             <Link to="/dashboard" onClick={() => setMobileOpen(false)} style={{ color: '#555', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Dashboard</Link>
                             <Link to="/generate" onClick={() => setMobileOpen(false)} style={{ color: 'var(--color-accent)', textDecoration: 'none', padding: '12px 0', fontSize: '15px', fontWeight: 600 }}>+ New Idea</Link>
                             <Link to="/saved" onClick={() => setMobileOpen(false)} style={{ color: '#555', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Saved Ideas</Link>
-                            <Link to="/premium" onClick={() => setMobileOpen(false)} style={{ color: '#D4A017', textDecoration: 'none', padding: '12px 0', fontSize: '15px', fontWeight: 600 }}>👑 Premium</Link>
                             <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ color: '#999', background: 'none', border: 'none', padding: '12px 0', fontSize: '15px', cursor: 'pointer', textAlign: 'left' }}>Logout</button>
                         </>
                     ) : (

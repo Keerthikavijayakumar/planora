@@ -1,105 +1,5 @@
 const { db, admin } = require('../config/firebase');
-const { generateInnovationAngle, generateAdditionalFeatures, generateProjectDescription, generateLearningPath, generateTechnicalDetails } = require('../services/geminiService');
-const fs = require('fs');
-const path = require('path');
-
-// Load projects from JSON file
-const projectsData = JSON.parse(
-    fs.readFileSync(path.join(__dirname, '../scripts/projects.json'), 'utf8')
-);
-
-const normalizeDomain = (value) => (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-
-const DOMAIN_ALIASES = {
-    aiml: ['AIML', 'AI/ML', 'AI ML', 'Artificial Intelligence', 'Machine Learning'],
-    webdevelopment: ['Web Development', 'Web Dev', 'WebDev', 'Web'],
-    mobiledevelopment: ['Mobile Development', 'Mobile Dev', 'MobileDev', 'Mobile Application', 'Mobile App', 'App Development'],
-    cybersecurity: ['Cybersecurity', 'Cyber Security'],
-    datascience: ['Data Science', 'DataScience', 'Data Analytics'],
-    cloudcomputing: ['Cloud Computing', 'CloudComputing', 'Cloud'],
-    blockchain: ['Blockchain', 'Block Chain'],
-    devops: ['DevOps', 'Dev Ops']
-};
-
-const getDomainAliases = (domain) => {
-    const key = normalizeDomain(domain);
-    const aliases = DOMAIN_ALIASES[key] || [domain];
-    return Array.from(new Set(aliases.filter(Boolean)));
-};
-
-const normalizeLevel = (value) => (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-
-const LEVEL_ALIASES = {
-    fresher: ['Fresher', 'Freshers'],
-    beginner: ['Beginner'],
-    intermediate: ['Intermediate'],
-    advanced: ['Advanced', 'Hard']
-};
-
-const getLevelAliases = (level) => {
-    const key = normalizeLevel(level);
-    const aliases = LEVEL_ALIASES[key] || [level];
-    return Array.from(new Set(aliases.filter(Boolean)));
-};
-
-const resolveDomainDefaults = (domain) => {
-    const key = normalizeDomain(domain);
-
-    if (['aiml', 'aimachinelearning', 'artificialintelligence', 'machinelearning'].includes(key)) {
-        return { frontend: 'Streamlit', backend: 'Python', database: 'PostgreSQL', deployment: 'Docker' };
-    }
-    if (['webdevelopment', 'webdev', 'web'].includes(key)) {
-        return { frontend: 'React', backend: 'Node.js', database: 'MongoDB', deployment: 'Vercel' };
-    }
-    if (['mobiledevelopment', 'mobiledev', 'mobileapplication', 'mobileapp', 'appdevelopment'].includes(key)) {
-        return { frontend: 'Flutter', backend: 'Node.js', database: 'Firebase', deployment: 'Play Store / App Store' };
-    }
-    if (['cybersecurity', 'cybersecurity'].includes(key)) {
-        return { frontend: 'React', backend: 'Python', database: 'Elasticsearch', deployment: 'Docker' };
-    }
-    if (['datascience', 'dataanalytics'].includes(key)) {
-        return { frontend: 'Streamlit', backend: 'Python', database: 'PostgreSQL', deployment: 'AWS' };
-    }
-    if (['cloudcomputing', 'cloud'].includes(key)) {
-        return { frontend: 'React', backend: 'Node.js', database: 'DynamoDB', deployment: 'AWS' };
-    }
-    if (['blockchain', 'blockchain'].includes(key)) {
-        return { frontend: 'React', backend: 'Node.js', database: 'IPFS', deployment: 'Ethereum Testnet' };
-    }
-    if (['devops', 'devops'].includes(key)) {
-        return { frontend: 'React', backend: 'Node.js', database: 'PostgreSQL', deployment: 'Kubernetes' };
-    }
-
-    return { frontend: 'React', backend: 'Node.js', database: 'Firestore', deployment: 'Vercel' };
-};
-
-const pickTech = (techStack, keywords, fallback) => {
-    const found = techStack.find((tech) => {
-        const normalized = (tech || '').toLowerCase();
-        return keywords.some((word) => normalized.includes(word));
-    });
-    return found || fallback;
-};
-
-const inferRecommendedStack = (project, domain) => {
-    const techStack = Array.isArray(project?.techStack) ? project.techStack : [];
-    const defaults = resolveDomainDefaults(domain || project?.domain);
-
-    const frontend = pickTech(techStack, ['react', 'vue', 'angular', 'svelte', 'next', 'nuxt', 'flutter', 'react native', 'swift', 'kotlin', 'html', 'css', 'javascript', 'canvas', 'streamlit'], defaults.frontend);
-    const backend = pickTech(techStack, ['node', 'express', 'nestjs', 'flask', 'django', 'fastapi', 'spring', 'laravel', 'asp.net', 'dotnet', 'go', 'gin', 'ruby', 'rails', 'php', 'python'], defaults.backend);
-    const database = pickTech(techStack, ['mongodb', 'postgres', 'mysql', 'firestore', 'firebase', 'dynamodb', 'supabase', 'sqlite', 'redis', 'elasticsearch', 'ipfs'], defaults.database);
-    const deployment = pickTech(techStack, ['vercel', 'aws', 'azure', 'gcp', 'docker', 'kubernetes', 'heroku', 'netlify', 'render', 'cloud run', 'lambda'], defaults.deployment);
-
-    return {
-        frontend,
-        backend,
-        database,
-        deployment,
-        reasoning: techStack.length
-            ? `Derived from project stack: ${techStack.join(', ')}.`
-            : 'Derived from domain best practices.'
-    };
-};
+const { analyzeInnovation, explainTechStack } = require('../services/geminiService');
 
 exports.searchProjects = async (req, res) => {
     try {
@@ -149,66 +49,51 @@ exports.searchProjects = async (req, res) => {
             });
         }
 
-        const domainAliases = getDomainAliases(domain);
-        const levelAliases = getLevelAliases(skillLevel);
-        console.log(`Searching for project with domain aliases: ${domainAliases.join(', ')}`);
+        // Map frontend domains to Firestore domains
+        const domainMap = {
+            'AI/ML': 'AIML',
+            'Web Development': 'WebDev',
+            'Mobile Development': 'MobileDev',
+            'Cybersecurity': 'Cybersecurity',
+            'Data Science': 'DataScience',
+            'Cloud Computing': 'CloudComputing',
+            'Blockchain': 'Blockchain',
+            'DevOps': 'DevOps'
+        };
+        const searchDomain = domainMap[domain] || domain;
 
-        // Filter projects from JSON file
-        const normalizedDomainAliases = domainAliases.map(normalizeDomain);
-        const allMatchedProjects = projectsData
-            .map((project, index) => ({ id: `project_${index}`, ...project }))
-            .filter((project) => {
-                const projectDomain = normalizeDomain(project.domain);
-                return normalizedDomainAliases.includes(projectDomain);
-            });
+        console.log(`Searching for project with domain: ${searchDomain}, level: ${skillLevel}`);
 
-        if (!allMatchedProjects.length) {
-            console.log("No matching projects found.");
-            return res.json({ projects: [] });
-        }
-
-        let candidateProjects = allMatchedProjects;
-        const normalizedLevelAliases = levelAliases.map(normalizeLevel);
-        const levelMatchedProjects = allMatchedProjects.filter((project) => normalizedLevelAliases.includes(normalizeLevel(project.level)));
-        if (levelMatchedProjects.length) {
-            candidateProjects = levelMatchedProjects;
-        }
-
-        // 2. Check if this exact project was already generated by this user
-        const existingHistorySnapshot = await db.collection('generationHistory')
-            .where('userId', '==', uid)
+        const projectsRef = db.collection('project');
+        const snapshot = await projectsRef
+            .where('domain', '==', searchDomain)
+            .where('level', '==', skillLevel)
             .get();
 
-        let mostRecentMatchingProjectId = null;
-        let mostRecentTimestamp = 0;
-        let existingHistoryId = null;
-        existingHistorySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const createdAtSeconds = data?.createdAt?._seconds || 0;
-
-            if (data?.isProject && data?.domain === domain && data?.skillLevel === skillLevel && createdAtSeconds >= mostRecentTimestamp) {
-                mostRecentTimestamp = createdAtSeconds;
-                mostRecentMatchingProjectId = data?.projectId || null;
+        if (snapshot.empty) {
+            // Fallback: try domain-only search if no exact match
+            const fallbackSnapshot = await projectsRef
+                .where('domain', '==', searchDomain)
+                .limit(1)
+                .get();
+            if (fallbackSnapshot.empty) {
+                console.log("No matching projects found.");
+                return res.json({ projects: [] });
             }
-        });
-
-        if (candidateProjects.length > 1 && mostRecentMatchingProjectId) {
-            const nonRepeatingCandidates = candidateProjects.filter((project) => project.id !== mostRecentMatchingProjectId);
-            if (nonRepeatingCandidates.length) {
-                candidateProjects = nonRepeatingCandidates;
-            }
+            const projects = [];
+            fallbackSnapshot.forEach(doc => {
+                projects.push({ id: doc.id, ...doc.data() });
+            });
+            // Continue with fallback project
+            var selectedProject = projects[Math.floor(Math.random() * projects.length)];
+        } else {
+            const projects = [];
+            snapshot.forEach(doc => {
+                projects.push({ id: doc.id, ...doc.data() });
+            });
+            // Pick a random project from matches
+            var selectedProject = projects[Math.floor(Math.random() * projects.length)];
         }
-
-        const selectedProject = candidateProjects[Math.floor(Math.random() * candidateProjects.length)];
-
-        existingHistorySnapshot.forEach((doc) => {
-            const data = doc.data();
-            if (!existingHistoryId && data?.projectId === selectedProject.id) {
-                existingHistoryId = doc.id;
-            }
-        });
-
-        const isDuplicateGeneration = Boolean(existingHistoryId);
 
         // 3. Increment usage only for a new project generation
         if (!isDuplicateGeneration) {
@@ -217,13 +102,25 @@ exports.searchProjects = async (req, res) => {
             });
         }
 
-        // 4. Save to generation history only for first-time generation
-        // Map project data to blueprint format for history
+        // 3. AI-powered innovation analysis
+        const projectTitle = selectedProject.title || selectedProject.name || 'Project Idea';
+        const projectFeatures = selectedProject.features || [];
+        const innovationData = await analyzeInnovation(projectTitle, domain, projectFeatures);
+
+        // 3b. For Freshers, generate tech stack explanations
+        let techExplanations = null;
+        if (skillLevel === 'Fresher') {
+            techExplanations = await explainTechStack(selectedProject.techStack, projectTitle, domain);
+        }
+
+        // 4. Save to generation history
+        // Build tech stack from project data
+        const techStack = selectedProject.techStack || [];
         const blueprint = {
-            title: selectedProject.title || selectedProject.name || 'Project Idea',
+            title: projectTitle,
             problem_statement: selectedProject.problemStatement || selectedProject.description || `A ${domain} project for ${skillLevel} developers.`,
             core_features: {
-                must_have: selectedProject.features || [],
+                must_have: projectFeatures,
                 should_have: [],
                 future_scope: []
             },
@@ -232,189 +129,39 @@ exports.searchProjects = async (req, res) => {
                     acc[`week${index + 1}`] = step;
                     return acc;
                 }, {}) : {},
-            market_potential_score: parseInt(selectedProject.difficultyScore) || 5,
+            market_potential_score: parseInt(selectedProject.marketPotential) || 7,
             difficulty_score: parseInt(selectedProject.difficultyScore) || 5,
-            resume_impact_score: 8,
-            recommended_tech_stack: inferRecommendedStack(selectedProject, domain),
-            what_is_new: "Community sourced project.",
-            existing_solutions: "Standard implementation.",
+            resume_impact_score: parseInt(selectedProject.resumeImpact) || 8,
+            recommended_tech_stack: {
+                frontend: techStack[0] || 'React',
+                backend: techStack[1] || 'Node.js',
+                database: techStack[2] || 'Firebase',
+                deployment: techStack[3] || 'Vercel',
+                reasoning: `Using ${techStack.join(', ')} for this ${domain} project.`
+            },
+            what_is_new: innovationData.what_is_new,
+            existing_solutions: innovationData.existing_solutions,
+            ...(techExplanations ? { tech_explanations: techExplanations } : {}),
             educational_resources: {
-                learning_path: `Start with ${selectedProject.features?.[0] || 'basics'}.`,
-                key_concepts: ["Core Concepts"]
+                learning_path: `Start with ${projectFeatures[0] || 'basics'}.`,
+                key_concepts: techStack.length > 0 ? techStack : ['Core Concepts']
             }
         };
 
-        let historyId = existingHistoryId;
-        if (!isDuplicateGeneration) {
-            // Generate AI-powered innovation angle and competitor analysis
-            let innovationData = {
-                innovation_angle: "Focus on user experience and modern implementation patterns.",
-                competitors: "Similar projects exist but this follows a structured development path."
-            };
-            
-            let additionalFeatures = {
-                should_have: [],
-                future_scope: []
-            };
-            
-            let aiDescription = null;
-            let learningPathData = null;
-            let technicalDetailsData = null;
-            
-            try {
-                // Generate all AI content in parallel for efficiency
-                const [innovation, features, description, learningPath, technicalDetails] = await Promise.all([
-                    generateInnovationAngle(
-                        selectedProject.title,
-                        domain,
-                        selectedProject.features,
-                        selectedProject.techStack
-                    ),
-                    generateAdditionalFeatures(
-                        selectedProject.title,
-                        selectedProject.features,
-                        domain
-                    ),
-                    generateProjectDescription(
-                        selectedProject.title,
-                        domain,
-                        selectedProject.features
-                    ),
-                    generateLearningPath(
-                        selectedProject.title,
-                        domain,
-                        selectedProject.features,
-                        selectedProject.techStack
-                    ),
-                    generateTechnicalDetails(
-                        selectedProject.title,
-                        domain,
-                        selectedProject.features,
-                        blueprint.recommended_tech_stack
-                    )
-                ]);
-                
-                innovationData = innovation;
-                additionalFeatures = features;
-                aiDescription = description;
-                learningPathData = learningPath;
-                technicalDetailsData = technicalDetails;
-            } catch (err) {
-                console.warn('⚠️ Failed to generate AI insights, using fallback:', err.message);
-            }
+        const historyEntry = {
+            userId: uid,
+            domain,
+            skillLevel,
+            teamSize: 'Solo',
+            purpose: 'Portfolio',
+            blueprint,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            isProject: true,
+            projectId: selectedProject.id
+        };
+        await db.collection('generationHistory').add(historyEntry);
 
-            // Update blueprint with AI-generated insights
-            blueprint.what_is_new = innovationData.innovation_angle;
-            blueprint.existing_solutions = innovationData.competitors;
-            blueprint.core_features.should_have = additionalFeatures.should_have || [];
-            blueprint.core_features.future_scope = additionalFeatures.future_scope || [];
-            
-            // Use AI description if available
-            if (aiDescription) {
-                blueprint.problem_statement = aiDescription;
-            }
-            
-            // Use AI learning path if available
-            if (learningPathData) {
-                blueprint.educational_resources = {
-                    learning_path: learningPathData.learning_path,
-                    key_concepts: learningPathData.key_concepts,
-                    recommended_resources: learningPathData.recommended_resources || []
-                };
-            }
-            
-            // Add technical implementation details
-            if (technicalDetailsData) {
-                blueprint.technical_details = {
-                    api_structure: technicalDetailsData.api_structure || [],
-                    database_schema: technicalDetailsData.database_schema || [],
-                    security_considerations: technicalDetailsData.security_considerations || [],
-                    testing_strategy: technicalDetailsData.testing_strategy || [],
-                    common_pitfalls: technicalDetailsData.common_pitfalls || [],
-                    folder_structure: technicalDetailsData.folder_structure || ''
-                };
-            }
-
-            const historyEntry = {
-                userId: uid,
-                domain,
-                skillLevel,
-                teamSize: 'Solo',
-                purpose: 'Portfolio',
-                blueprint,
-                createdAt: admin.firestore.FieldValue.serverTimestamp(),
-                isProject: true,
-                projectId: selectedProject.id
-            };
-            const historyRef = await db.collection('generationHistory').add(historyEntry);
-            historyId = historyRef.id;
-        } else {
-            // For duplicate generations, also generate AI insights
-            try {
-                const [innovationData, additionalFeatures, description, learningPath, technicalDetails] = await Promise.all([
-                    generateInnovationAngle(
-                        selectedProject.title,
-                        domain,
-                        selectedProject.features,
-                        selectedProject.techStack
-                    ),
-                    generateAdditionalFeatures(
-                        selectedProject.title,
-                        selectedProject.features,
-                        domain
-                    ),
-                    generateProjectDescription(
-                        selectedProject.title,
-                        domain,
-                        selectedProject.features
-                    ),
-                    generateLearningPath(
-                        selectedProject.title,
-                        domain,
-                        selectedProject.features,
-                        selectedProject.techStack
-                    ),
-                    generateTechnicalDetails(
-                        selectedProject.title,
-                        domain,
-                        selectedProject.features,
-                        blueprint.recommended_tech_stack
-                    )
-                ]);
-                
-                blueprint.what_is_new = innovationData.innovation_angle;
-                blueprint.existing_solutions = innovationData.competitors;
-                blueprint.core_features.should_have = additionalFeatures.should_have || [];
-                blueprint.core_features.future_scope = additionalFeatures.future_scope || [];
-                
-                if (description) {
-                    blueprint.problem_statement = description;
-                }
-                
-                if (learningPath) {
-                    blueprint.educational_resources = {
-                        learning_path: learningPath.learning_path,
-                        key_concepts: learningPath.key_concepts,
-                        recommended_resources: learningPath.recommended_resources || []
-                    };
-                }
-                
-                if (technicalDetails) {
-                    blueprint.technical_details = {
-                        api_structure: technicalDetails.api_structure || [],
-                        database_schema: technicalDetails.database_schema || [],
-                        security_considerations: technicalDetails.security_considerations || [],
-                        testing_strategy: technicalDetails.testing_strategy || [],
-                        common_pitfalls: technicalDetails.common_pitfalls || [],
-                        folder_structure: technicalDetails.folder_structure || ''
-                    };
-                }
-            } catch (err) {
-                console.warn('⚠️ Failed to generate AI insights for duplicate:', err.message);
-            }
-        }
-
-        res.json({ projects: [selectedProject], blueprint, historyId, isDuplicateGeneration });
+        res.json({ projects: [selectedProject], blueprint });
 
     } catch (error) {
         console.error('Search Projects Error:', error);

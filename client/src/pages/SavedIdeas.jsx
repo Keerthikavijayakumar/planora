@@ -59,7 +59,7 @@ const SavedIdeas = () => {
         <div className="page-saved" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '900px', margin: '0 auto' }}>
             <div className="animate-fadeInUp">
                 <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>Saved Blueprints</h1>
-                <p style={{ color: '#999', fontSize: '15px', marginBottom: '36px' }}>
+                <p style={{ color: '#666', fontSize: '15px', marginBottom: '36px' }}>
                     {ideas.length} blueprint{ideas.length !== 1 ? 's' : ''} in your library
                 </p>
 
@@ -69,7 +69,7 @@ const SavedIdeas = () => {
                         textAlign: 'center',
                     }}>
                         <div style={{
-                            width: '64px', height: '64px', borderRadius: '16px',
+                            width: '64px', height: '64px', borderRadius: '6px',
                             background: 'rgba(212,114,122,0.06)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             margin: '0 auto 20px',
@@ -77,7 +77,7 @@ const SavedIdeas = () => {
                             <Layers size={28} style={{ color: 'var(--color-accent)' }} />
                         </div>
                         <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>No blueprints yet</h3>
-                        <p style={{ color: '#999', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to get started.</p>
+                        <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to get started.</p>
                         <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                             Generate Idea <ArrowRight size={16} />
                         </Link>
@@ -132,7 +132,7 @@ const SavedIdeas = () => {
                                             <button
                                                 onClick={(e) => handleDelete(e, idea.id)}
                                                 style={{
-                                                    background: 'none', border: 'none', color: '#ccc', cursor: 'pointer',
+                                                    background: 'none', border: 'none', color: '#999', cursor: 'pointer',
                                                     padding: '10px', borderRadius: '10px', transition: 'all 0.2s ease',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 }}
@@ -147,7 +147,7 @@ const SavedIdeas = () => {
                                     {/* Problem statement preview */}
                                     {bp?.problem_statement && (
                                         <p style={{
-                                            fontSize: '13px', color: '#888', lineHeight: 1.5, marginBottom: '14px',
+                                            fontSize: '13px', color: '#555', lineHeight: 1.5, marginBottom: '14px',
                                             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
                                         }}>
                                             {bp.problem_statement}
@@ -162,7 +162,7 @@ const SavedIdeas = () => {
                                                     bp.recommended_tech_stack[key] && (
                                                         <span key={key} style={{
                                                             padding: '3px 10px', borderRadius: '6px', fontSize: '11px',
-                                                            background: 'rgba(0,0,0,0.03)', color: '#999', fontWeight: 500,
+                                                            background: 'rgba(0,0,0,0.03)', color: '#666', fontWeight: 500,
                                                         }}>
                                                             {bp.recommended_tech_stack[key]}
                                                         </span>

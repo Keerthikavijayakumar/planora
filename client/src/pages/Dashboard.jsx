@@ -92,7 +92,7 @@ const Dashboard = () => {
                 <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
                     Dashboard
                 </h1>
-                <p style={{ color: '#999', fontSize: '15px' }}>
+                <p style={{ color: '#666', fontSize: '15px' }}>
                     Welcome back, {currentUser?.email?.split('@')[0] || 'builder'}
                 </p>
             </div>
@@ -104,11 +104,11 @@ const Dashboard = () => {
                 {/* Usage Card */}
                 <div className="glass-card" style={{ padding: '28px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <span style={{ fontSize: '13px', color: '#999', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Weekly Usage</span>
+                        <span style={{ fontSize: '13px', color: '#666', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Weekly Usage</span>
                         <Clock size={18} style={{ color: 'var(--color-accent)' }} />
                     </div>
                     <div style={{ fontSize: '36px', fontWeight: 800, color: '#1a1a1a', marginBottom: '12px', fontFamily: "'Playfair Display', serif" }}>
-                        {usage}<span style={{ fontSize: '18px', color: '#ccc' }}>/{maxUsage}</span>
+                        {usage}<span style={{ fontSize: '18px', color: '#999' }}>/{maxUsage}</span>
                     </div>
                     <div style={{ height: '6px', borderRadius: '3px', background: 'rgba(0,0,0,0.04)', overflow: 'hidden' }}>
                         <div style={{
@@ -119,7 +119,7 @@ const Dashboard = () => {
                             transition: 'width 0.5s ease',
                         }} />
                     </div>
-                    <p style={{ fontSize: '12px', color: '#bbb', marginTop: '8px' }}>
+                    <p style={{ fontSize: '12px', color: '#888', marginTop: '8px' }}>
                         {maxUsage - usage} ideas remaining this week
                     </p>
                 </div>
@@ -127,13 +127,13 @@ const Dashboard = () => {
                 {/* Account Card */}
                 <div className="glass-card" style={{ padding: '28px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <span style={{ fontSize: '13px', color: '#999', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Account</span>
+                        <span style={{ fontSize: '13px', color: '#666', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Account</span>
                         <Crown size={18} style={{ color: '#8B5C8A' }} />
                     </div>
                     <div style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>
                         {stats?.role === 'premium' ? 'Premium' : 'Free Plan'}
                     </div>
-                    <p style={{ fontSize: '13px', color: '#999' }}>
+                    <p style={{ fontSize: '13px', color: '#666' }}>
                         {stats?.role === 'premium' ? 'Unlimited blueprints' : '5 blueprints per week'}
                     </p>
                 </div>
@@ -141,13 +141,13 @@ const Dashboard = () => {
                 {/* Total Generated Card */}
                 <div className="glass-card" style={{ padding: '28px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <span style={{ fontSize: '13px', color: '#999', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Generated</span>
+                        <span style={{ fontSize: '13px', color: '#666', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Generated</span>
                         <History size={18} style={{ color: '#8B5C8A' }} />
                     </div>
                     <div style={{ fontSize: '36px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px', fontFamily: "'Playfair Display', serif" }}>
                         {Math.max(usage, allBlueprints.length)}
                     </div>
-                    <p style={{ fontSize: '13px', color: '#999' }}>blueprints generated this week</p>
+                    <p style={{ fontSize: '13px', color: '#666' }}>blueprints generated this week</p>
                 </div>
             </div>
 
@@ -176,7 +176,7 @@ const Dashboard = () => {
                     </div>
                     <div>
                         <div style={{ color: '#1a1a1a', fontWeight: 700, fontSize: '16px' }}>Generate New Idea</div>
-                        <div style={{ color: '#999', fontSize: '13px' }}>Create a structured project blueprint with AI</div>
+                        <div style={{ color: '#666', fontSize: '13px' }}>Create a structured project blueprint with AI</div>
                     </div>
                 </div>
                 <ArrowRight size={20} style={{ color: 'var(--color-accent)' }} />
@@ -207,7 +207,7 @@ const Dashboard = () => {
                             <History size={24} style={{ color: '#8B5C8A' }} />
                         </div>
                         <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>No blueprints generated yet</h3>
-                        <p style={{ color: '#999', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to see your history here.</p>
+                        <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to see your history here.</p>
                         <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                             Generate Idea <ArrowRight size={16} />
                         </Link>
@@ -255,7 +255,7 @@ const Dashboard = () => {
                                             </span>
                                         )}
                                         {item.sortTime > 0 && (
-                                            <span style={{ fontSize: '11px', color: '#bbb', marginLeft: 'auto' }}>
+                                            <span style={{ fontSize: '11px', color: '#888', marginLeft: 'auto' }}>
                                                 {formatDate(item.createdAt)}
                                             </span>
                                         )}

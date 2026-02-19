@@ -113,57 +113,45 @@ Instructions:
         parts: [{ text: userMessage }]
     });
 
-    // Retry logic for rate limits
-    for (let attempt = 0; attempt < 2; attempt++) {
-        try {
-            console.log(`💬 Chat about blueprint (attempt ${attempt + 1}/2)...`);
-            const result = await model.generateContent({ contents });
-            const response = result.response.text();
-            console.log('✅ Chat response generated');
-            return response;
-        } catch (error) {
-            console.error(`❌ Chat error (attempt ${attempt + 1}):`, error.message?.substring(0, 200));
-            
-            const isRateLimit = error.status === 429 ||
-                error.message?.includes('429') ||
-                error.message?.includes('RESOURCE_EXHAUSTED');
-
-            if (isRateLimit && attempt === 0) {
-                console.log('⏳ Rate limited. Waiting 10s before retry...');
-                await sleep(10000);
-                continue;
-            }
-
-            if (isRateLimit) {
-                throw new Error('API rate limit reached. Please wait 1-2 minutes and try again.');
-            }
-            
-            throw new Error(error.message || 'Failed to get chat response');
+    try {
+        console.log('💬 Chat about blueprint...');
+        const result = await model.generateContent({ contents });
+        const response = result.response.text();
+        console.log('✅ Chat response generated');
+        return response;
+    } catch (error) {
+        console.error('❌ Chat error:', error.message?.substring(0, 200));
+        const isRateLimit = error.status === 429 ||
+            error.message?.includes('429') ||
+            error.message?.includes('RESOURCE_EXHAUSTED');
+        if (isRateLimit) {
+            throw new Error('API rate limit reached. Please wait a moment and try again.');
         }
+        throw new Error(error.message || 'Failed to get chat response');
     }
 };
 
-const generateInnovationAngle = async (projectTitle, domain, features, techStack) => {
-    const prompt = `Analyze this project and provide a detailed innovation angle and competitive analysis:
+const analyzeInnovation = async (projectTitle, domain, features) => {
+    const prompt = `You are a tech industry analyst. Analyze the following project idea and provide a competitive landscape analysis.
 
-PROJECT: ${projectTitle}
+PROJECT: "${projectTitle}"
 DOMAIN: ${domain}
-FEATURES: ${Array.isArray(features) ? features.join(', ') : features}
-TECH STACK: ${techStack ? JSON.stringify(techStack) : 'Standard web stack'}
+KEY FEATURES: ${(features || []).join(', ') || 'General features'}
 
-Provide:
-1. INNOVATION ANGLE: What makes this project unique? What creative twist or special approach can differentiate it from typical implementations? Focus on specific features, UX improvements, or technical innovations. Be specific and actionable (2-3 sentences).
-
-2. COMPETITORS: Identify 2-3 existing similar solutions or tools in the market. Explain what they do and how this project can be positioned differently. Be specific with examples (3-4 sentences).
-
-Format as JSON:
+Respond in this exact JSON format:
 {
-  "innovation_angle": "Specific innovation description here",
-  "competitors": "Competitor analysis here"
-}`;
+  "what_is_new": "A 2-3 sentence explanation of what makes this project unique and innovative compared to existing solutions. Be specific about the innovation angle.",
+  "existing_solutions": "Name 2-3 real, well-known competing products or projects in this space. For each, briefly mention what they do and how this project differs. Format: 'ProductName - brief description. ProductName2 - brief description.'"
+}
+
+Rules:
+- Reference REAL existing products/tools (e.g., GitHub, Vercel, Firebase, Notion, Figma, etc.)
+- Be specific and insightful, not generic
+- Focus on what genuinely differentiates this project
+- Keep each field to 2-3 sentences max`;
 
     try {
-        console.log('💡 Generating innovation angle...');
+        console.log('🔍 Analyzing innovation angle...');
         const result = await model.generateContent({
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
             generationConfig: {
@@ -171,48 +159,52 @@ Format as JSON:
             },
         });
 
-        const response = result.response;
-        const text = response.text();
-
+        const text = result.response.text();
         try {
             const parsed = JSON.parse(text);
-            console.log('✅ Innovation angle generated');
+            console.log('✅ Innovation analysis complete');
             return parsed;
         } catch (e) {
             const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Innovation angle generated (cleaned JSON)');
-            return parsed;
+            return JSON.parse(cleaned);
         }
     } catch (error) {
-        console.error('❌ Innovation angle generation failed:', error.message?.substring(0, 200));
-        // Return fallback instead of throwing to not break the main flow
+        console.error('❌ Innovation analysis failed:', error.message?.substring(0, 200));
+        // Return fallback — don't block the main flow
         return {
-            innovation_angle: "Focus on user experience and modern design patterns to create an intuitive, efficient solution that emphasizes ease of use and practical implementation.",
-            competitors: "While similar projects exist in this domain, this implementation follows a structured development path with clear milestones and best practices, making it ideal for learning and portfolio building."
+            what_is_new: `A ${domain} project focused on ${projectTitle.toLowerCase()} with a unique approach to solving common challenges in this space.`,
+            existing_solutions: 'Various open-source and commercial solutions exist in this domain.'
         };
     }
 };
 
-const generateAdditionalFeatures = async (projectTitle, mustHaveFeatures, domain) => {
-    const prompt = `Based on this project, generate additional feature ideas:
+const explainTechStack = async (techStack, projectTitle, domain) => {
+    const techList = (techStack || []).join(', ') || 'React, Node.js';
+    const prompt = `You are a friendly coding mentor explaining technologies to a complete beginner who has never coded before.
 
-PROJECT: ${projectTitle}
+PROJECT: "${projectTitle}"
 DOMAIN: ${domain}
-CORE FEATURES: ${Array.isArray(mustHaveFeatures) ? mustHaveFeatures.join(', ') : mustHaveFeatures}
+TECH STACK: ${techList}
 
-Generate:
-1. SHOULD HAVE: 3-4 features that would enhance the project but aren't critical for MVP. These should add value and improve user experience.
-2. FUTURE SCOPE: 3-4 advanced features for future versions. These should be innovative, scalable additions that take the project to the next level.
-
-Format as JSON:
+For each technology in the tech stack, provide a simple, jargon-free explanation. Respond in this exact JSON format:
 {
-  "should_have": ["Feature 1", "Feature 2", "Feature 3"],
-  "future_scope": ["Advanced feature 1", "Advanced feature 2", "Advanced feature 3"]
-}`;
+  "explanations": [
+    {
+      "name": "TechnologyName",
+      "what": "A 1-2 sentence explanation of what this technology is, like you're explaining to a friend who has never coded.",
+      "why": "A 1 sentence explanation of why this specific technology is used in this project."
+    }
+  ]
+}
+
+Rules:
+- Use simple, everyday language — no jargon
+- Use analogies where helpful (e.g. "Think of it like a recipe book for your app")
+- Each explanation should be 1-2 sentences max
+- Cover ALL technologies in the tech stack`;
 
     try {
-        console.log('🎯 Generating additional features...');
+        console.log('📚 Generating tech stack explanations for fresher...');
         const result = await model.generateContent({
             contents: [{ role: 'user', parts: [{ text: prompt }] }],
             generationConfig: {
@@ -220,221 +212,26 @@ Format as JSON:
             },
         });
 
-        const response = result.response;
-        const text = response.text();
-
+        const text = result.response.text();
         try {
             const parsed = JSON.parse(text);
-            console.log('✅ Additional features generated');
-            return parsed;
+            console.log('✅ Tech explanations generated');
+            return parsed.explanations || [];
         } catch (e) {
             const cleaned = text.replace(/```json|```/g, '').trim();
             const parsed = JSON.parse(cleaned);
-            console.log('✅ Additional features generated (cleaned JSON)');
-            return parsed;
+            return parsed.explanations || [];
         }
     } catch (error) {
-        console.error('❌ Additional features generation failed:', error.message?.substring(0, 200));
-        // Return fallback
-        return {
-            should_have: ["Enhanced user interface", "Performance optimization", "Additional customization options"],
-            future_scope: ["Mobile app version", "Advanced analytics", "Third-party integrations", "AI-powered features"]
-        };
+        console.error('❌ Tech explanation failed:', error.message?.substring(0, 200));
+        // Return basic fallback explanations
+        return (techStack || []).map(tech => ({
+            name: tech,
+            what: `${tech} is a popular tool used in ${domain} development.`,
+            why: `It's used in this project to help build key features.`
+        }));
     }
 };
 
-const generateProjectDescription = async (projectTitle, domain, features) => {
-    const prompt = `Create a compelling project description for this idea:
-
-PROJECT: ${projectTitle}
-DOMAIN: ${domain}
-CORE FEATURES: ${Array.isArray(features) ? features.join(', ') : features}
-
-Write a concise, engaging description (2-3 sentences) that:
-- Explains what the project does and who it's for
-- Highlights the main problem it solves
-- Makes it sound professional and portfolio-worthy
-- Avoids generic phrases
-
-Format as JSON:
-{
-  "description": "The compelling project description here"
-}`;
-
-    try {
-        console.log('📝 Generating project description...');
-        const result = await model.generateContent({
-            contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: {
-                responseMimeType: "application/json",
-            },
-        });
-
-        const response = result.response;
-        const text = response.text();
-
-        try {
-            const parsed = JSON.parse(text);
-            console.log('✅ Project description generated');
-            return parsed.description;
-        } catch (e) {
-            const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Project description generated (cleaned JSON)');
-            return parsed.description;
-        }
-    } catch (error) {
-        console.error('❌ Description generation failed:', error.message?.substring(0, 200));
-        // Return fallback
-        return `A ${domain} project designed for developers to build practical skills while creating a portfolio-worthy application.`;
-    }
-};
-
-const generateLearningPath = async (projectTitle, domain, features, techStack) => {
-    const prompt = `Create a comprehensive learning path for this project:
-
-PROJECT: ${projectTitle}
-DOMAIN: ${domain}
-FEATURES: ${Array.isArray(features) ? features.join(', ') : features}
-TECH STACK: ${techStack ? JSON.stringify(techStack) : 'Standard stack'}
-
-Generate a detailed, actionable learning path that includes:
-1. LEARNING_PATH: A clear, step-by-step guide (3-4 sentences) explaining the learning journey from beginner concepts to advanced implementation. Be specific about what to learn and in what order.
-
-2. KEY_CONCEPTS: List 5-6 essential technical concepts, frameworks, or skills that are critical for this project. Be specific and relevant to the actual tech stack.
-
-3. RECOMMENDED_RESOURCES: Suggest 3-4 specific learning resources (online courses, documentation sites, or tutorial platforms) that would help. Be practical and current.
-
-Format as JSON:
-{
-  "learning_path": "Detailed learning journey description",
-  "key_concepts": ["Concept 1", "Concept 2", "Concept 3", "Concept 4", "Concept 5"],
-  "recommended_resources": ["Resource 1", "Resource 2", "Resource 3"]
-}`;
-
-    try {
-        console.log('🎓 Generating comprehensive learning path...');
-        const result = await model.generateContent({
-            contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: {
-                responseMimeType: "application/json",
-            },
-        });
-
-        const response = result.response;
-        const text = response.text();
-
-        try {
-            const parsed = JSON.parse(text);
-            console.log('✅ Learning path generated');
-            return parsed;
-        } catch (e) {
-            const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Learning path generated (cleaned JSON)');
-            return parsed;
-        }
-    } catch (error) {
-        console.error('❌ Learning path generation failed:', error.message?.substring(0, 200));
-        // Return fallback
-        return {
-            learning_path: `Start by mastering the fundamentals of ${domain}, then build small projects to practice core concepts. Gradually increase complexity by implementing the features listed, and finish by deploying your application.`,
-            key_concepts: ["Core Fundamentals", "API Development", "Database Design", "Authentication", "Deployment Practices"],
-            recommended_resources: ["Official Documentation", "YouTube Tutorials", "Interactive Coding Platforms"]
-        };
-    }
-};
-
-const generateTechnicalDetails = async (projectTitle, domain, features, techStack) => {
-    const prompt = `Generate comprehensive technical implementation details for this project:
-
-PROJECT: ${projectTitle}
-DOMAIN: ${domain}
-FEATURES: ${Array.isArray(features) ? features.join(', ') : features}
-TECH STACK: ${techStack ? JSON.stringify(techStack) : 'Standard stack'}
-
-Provide detailed technical guidance covering:
-
-1. API_STRUCTURE: Describe 4-5 key API endpoints this project needs. Format as array of objects with method, endpoint, and purpose.
-Example: [{"method": "POST", "endpoint": "/api/users/register", "purpose": "Create new user account"}]
-
-2. DATABASE_SCHEMA: Describe 3-4 main database entities/collections with their key fields. Format as array of objects.
-Example: [{"entity": "User", "fields": ["id", "email", "password_hash", "created_at"]}]
-
-3. SECURITY_CONSIDERATIONS: List 4-5 critical security measures needed (authentication, validation, encryption, etc.). Be specific to this project.
-
-4. TESTING_STRATEGY: Provide 3-4 testing recommendations (unit tests, integration tests, E2E tests) with specific examples.
-
-5. COMMON_PITFALLS: List 3-4 common mistakes or challenges developers face when building this type of project.
-
-6. FOLDER_STRUCTURE: Suggest a clean project folder structure as a string representation.
-
-Format as JSON:
-{
-  "api_structure": [{"method": "GET/POST/PUT/DELETE", "endpoint": "/path", "purpose": "description"}],
-  "database_schema": [{"entity": "EntityName", "fields": ["field1", "field2", "field3"]}],
-  "security_considerations": ["Security measure 1", "Security measure 2", "Security measure 3", "Security measure 4"],
-  "testing_strategy": ["Test approach 1", "Test approach 2", "Test approach 3"],
-  "common_pitfalls": ["Pitfall 1", "Pitfall 2", "Pitfall 3"],
-  "folder_structure": "Folder structure description"
-}`;
-
-    try {
-        console.log('🔧 Generating technical implementation details...');
-        const result = await model.generateContent({
-            contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            generationConfig: {
-                responseMimeType: "application/json",
-            },
-        });
-
-        const response = result.response;
-        const text = response.text();
-
-        try {
-            const parsed = JSON.parse(text);
-            console.log('✅ Technical details generated');
-            return parsed;
-        } catch (e) {
-            const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Technical details generated (cleaned JSON)');
-            return parsed;
-        }
-    } catch (error) {
-        console.error('❌ Technical details generation failed:', error.message?.substring(0, 200));
-        // Return fallback
-        return {
-            api_structure: [
-                { method: "GET", endpoint: "/api/data", purpose: "Fetch data" },
-                { method: "POST", endpoint: "/api/data", purpose: "Create new entry" },
-                { method: "PUT", endpoint: "/api/data/:id", purpose: "Update entry" },
-                { method: "DELETE", endpoint: "/api/data/:id", purpose: "Delete entry" }
-            ],
-            database_schema: [
-                { entity: "User", fields: ["id", "email", "created_at"] },
-                { entity: "Data", fields: ["id", "user_id", "content", "created_at"] }
-            ],
-            security_considerations: [
-                "Implement JWT-based authentication",
-                "Validate all user inputs",
-                "Use HTTPS for all communications",
-                "Hash passwords with bcrypt"
-            ],
-            testing_strategy: [
-                "Unit test all API endpoints",
-                "Integration test database operations",
-                "E2E test critical user flows"
-            ],
-            common_pitfalls: [
-                "Not handling edge cases in validation",
-                "Ignoring error handling",
-                "Poor database query optimization"
-            ],
-            folder_structure: "Organize by features: /src/components, /src/services, /src/utils, /src/styles"
-        };
-    }
-};
-
-module.exports = { generateIdea, chatAboutBlueprint, generateInnovationAngle, generateAdditionalFeatures, generateProjectDescription, generateLearningPath, generateTechnicalDetails };
+module.exports = { generateIdea, chatAboutBlueprint, analyzeInnovation, explainTechStack };
 

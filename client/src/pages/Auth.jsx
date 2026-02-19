@@ -90,7 +90,7 @@ const Auth = () => {
                     <h1 className="heading-serif" style={{ fontSize: '24px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
                         {isLogin ? 'Welcome back' : 'Create account'}
                     </h1>
-                    <p style={{ fontSize: '14px', color: '#999' }}>
+                    <p style={{ fontSize: '14px', color: '#666' }}>
                         {isLogin ? 'Sign in to continue building' : 'Start generating project blueprints'}
                     </p>
                 </div>
@@ -149,14 +149,14 @@ const Auth = () => {
                     marginBottom: '24px',
                 }}>
                     <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.08)' }} />
-                    <span style={{ fontSize: '12px', color: '#bbb', textTransform: 'uppercase', letterSpacing: '0.05em' }}>or</span>
+                    <span style={{ fontSize: '12px', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em' }}>or</span>
                     <div style={{ flex: 1, height: '1px', background: 'rgba(0,0,0,0.08)' }} />
                 </div>
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div style={{ position: 'relative' }}>
-                        <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#bbb' }} />
+                        <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
                         <input
                             type="email"
                             placeholder="Email address"
@@ -169,7 +169,7 @@ const Auth = () => {
                     </div>
 
                     <div style={{ position: 'relative' }}>
-                        <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#bbb' }} />
+                        <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
                         <input
                             type={showPassword ? 'text' : 'password'}
                             placeholder="Password"
@@ -182,7 +182,7 @@ const Auth = () => {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#bbb', cursor: 'pointer' }}
+                            style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}
                         >
                             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
@@ -194,7 +194,7 @@ const Auth = () => {
                 </form>
 
                 {/* Toggle */}
-                <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: '#999' }}>
+                <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: '#666' }}>
                     {isLogin ? "Don't have an account? " : "Already have an account? "}
                     <button
                         onClick={() => { setIsLogin(!isLogin); setError(''); }}

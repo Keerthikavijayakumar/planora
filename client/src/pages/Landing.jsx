@@ -59,7 +59,7 @@ const Landing = () => {
                         Architect your next big idea with AI-driven precision.
                     </p>
 
-                    <p className="animate-fadeInUp" style={{ fontSize: '16px', color: '#888', maxWidth: '580px', margin: '0 auto 48px', lineHeight: 1.6 }}>
+                    <p className="animate-fadeInUp" style={{ fontSize: '16px', color: '#555', maxWidth: '580px', margin: '0 auto 48px', lineHeight: 1.6 }}>
                         Generate comprehensive project blueprints tailored to your domain and skill level.
                         Stop guessing, start building.
                     </p>
@@ -125,10 +125,10 @@ const Landing = () => {
                                     ].map((col, i) => (
                                         <div key={i} style={{
                                             background: 'rgba(255,255,255,0.5)', border: '1px solid rgba(0,0,0,0.06)',
-                                            borderRadius: '16px', padding: '24px', opacity: 0,
+                                            borderRadius: '6px', padding: '24px', opacity: 0,
                                             animation: `fadeInUp 0.5s ease forwards ${col.delay}`
                                         }}>
-                                            <div style={{ fontSize: '14px', color: '#999', marginBottom: '16px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                            <div style={{ fontSize: '14px', color: '#666', marginBottom: '16px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                                 {col.title}
                                             </div>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -163,20 +163,20 @@ const Landing = () => {
                         Stop wasting time on setup. <br />
                         <span style={{ color: 'var(--color-accent-dark)' }}>Start coding the important stuff.</span>
                     </h2>
-                    <p style={{ fontSize: '18px', color: '#777', lineHeight: 1.8, marginBottom: '60px' }}>
+                    <p style={{ fontSize: '18px', color: '#666', lineHeight: 1.8, marginBottom: '60px' }}>
                         Planora isn't just a generic idea generator. It's a <strong style={{ color: '#1a1a1a' }}>technical co-founder</strong> that understands engineering.
                         Whether you're building a hackathon submission, a portfolio piece, or a startup MVP,
                         Planora gives you the exact architectural roadmap you need to succeed.
                     </p>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', textAlign: 'left' }}>
-                        <div style={{ padding: '32px', background: 'rgba(255,255,255,0.6)', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.06)', backdropFilter: 'blur(10px)' }}>
+                        <div style={{ padding: '32px', background: 'rgba(255,255,255,0.6)', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.06)', backdropFilter: 'blur(10px)' }}>
                             <h3 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>For Students & Learners</h3>
-                            <p style={{ color: '#777', lineHeight: 1.6 }}>Bridge the gap between tutorials and real-world projects. Get step-by-step roadmaps tailored to your current skill level.</p>
+                            <p style={{ color: '#666', lineHeight: 1.6 }}>Bridge the gap between tutorials and real-world projects. Get step-by-step roadmaps tailored to your current skill level.</p>
                         </div>
-                        <div style={{ padding: '32px', background: 'rgba(255,255,255,0.6)', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.06)', backdropFilter: 'blur(10px)' }}>
+                        <div style={{ padding: '32px', background: 'rgba(255,255,255,0.6)', borderRadius: '6px', border: '1px solid rgba(0,0,0,0.06)', backdropFilter: 'blur(10px)' }}>
                             <h3 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>For Hackathon Teams</h3>
-                            <p style={{ color: '#777', lineHeight: 1.6 }}>Skip the brainstorming paralysis. Generate a winning idea, tech stack, and feature list in seconds so you can start coding immediately.</p>
+                            <p style={{ color: '#666', lineHeight: 1.6 }}>Skip the brainstorming paralysis. Generate a winning idea, tech stack, and feature list in seconds so you can start coding immediately.</p>
                         </div>
                     </div>
                 </div>
@@ -194,7 +194,7 @@ const Landing = () => {
                             >
                                 <div style={{ color: 'var(--color-accent)', marginBottom: '20px' }}>{f.icon}</div>
                                 <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>{f.title}</h3>
-                                <p style={{ fontSize: '14px', color: '#888', lineHeight: 1.6 }}>{f.desc}</p>
+                                <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.6 }}>{f.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -202,9 +202,9 @@ const Landing = () => {
 
                 {/* Footer Text */}
                 <div style={{ textAlign: 'center', padding: '40px 24px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                    <p style={{ fontSize: '14px', color: '#999', fontWeight: 500 }}>
+                    <p style={{ fontSize: '14px', color: '#666', fontWeight: 500 }}>
                         Join thousands of architects building the future. <br />
-                        <span style={{ color: '#bbb', fontSize: '12px', marginTop: '8px', display: 'inline-block' }}>© 2026 Planora. All rights reserved.</span>
+                        <span style={{ color: '#888', fontSize: '12px', marginTop: '8px', display: 'inline-block' }}>© 2026 Planora. All rights reserved.</span>
                     </p>
                 </div>
 

@@ -37,20 +37,30 @@ const seedProjects = async () => {
             throw new Error('projects.json must contain an array of project objects.');
         }
 
-        console.log(`Found ${projectsData.length} projects to seed...`);
+        const collectionRef = db.collection('project');
+
+        // Delete existing projects first
+        console.log('🗑️  Deleting existing projects...');
+        const existingDocs = await collectionRef.get();
+        if (!existingDocs.empty) {
+            const deleteBatch = db.batch();
+            existingDocs.forEach(doc => {
+                deleteBatch.delete(doc.ref);
+            });
+            await deleteBatch.commit();
+            console.log(`   Deleted ${existingDocs.size} old projects.`);
+        }
+
+        console.log(`📦 Seeding ${projectsData.length} new projects...`);
 
         const batch = db.batch();
-        const collectionRef = db.collection('project'); // Using singular 'project' based on previous context
-
         let count = 0;
         for (const project of projectsData) {
-            const docRef = collectionRef.doc(); // Auto-generate ID
-
+            const docRef = collectionRef.doc();
             const docData = {
                 ...project,
                 createdAt: admin.firestore.FieldValue.serverTimestamp()
             };
-
             batch.set(docRef, docData);
             count++;
         }
@@ -62,7 +72,6 @@ const seedProjects = async () => {
     } catch (error) {
         console.error('❌ Error seeding projects:', error);
     } finally {
-        // Exit process
         process.exit();
     }
 };
