@@ -113,21 +113,33 @@ Instructions:
         parts: [{ text: userMessage }]
     });
 
-    try {
-        console.log('💬 Chat about blueprint...');
-        const result = await model.generateContent({ contents });
-        const response = result.response.text();
-        console.log('✅ Chat response generated');
-        return response;
-    } catch (error) {
-        console.error('❌ Chat error:', error.message?.substring(0, 200));
-        const isRateLimit = error.status === 429 ||
-            error.message?.includes('429') ||
-            error.message?.includes('RESOURCE_EXHAUSTED');
-        if (isRateLimit) {
-            throw new Error('API rate limit reached. Please wait a moment and try again.');
+    // Retry logic for rate limits
+    for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+            console.log(`💬 Chat about blueprint (attempt ${attempt + 1}/2)...`);
+            const result = await model.generateContent({ contents });
+            const response = result.response.text();
+            console.log('✅ Chat response generated');
+            return response;
+        } catch (error) {
+            console.error(`❌ Chat error (attempt ${attempt + 1}):`, error.message?.substring(0, 200));
+            
+            const isRateLimit = error.status === 429 ||
+                error.message?.includes('429') ||
+                error.message?.includes('RESOURCE_EXHAUSTED');
+
+            if (isRateLimit && attempt === 0) {
+                console.log('⏳ Rate limited. Waiting 10s before retry...');
+                await sleep(10000);
+                continue;
+            }
+
+            if (isRateLimit) {
+                throw new Error('API rate limit reached. Please wait 1-2 minutes and try again.');
+            }
+            
+            throw new Error(error.message || 'Failed to get chat response');
         }
-        throw new Error(error.message || 'Failed to get chat response');
     }
 };
 
