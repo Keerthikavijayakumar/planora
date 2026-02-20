@@ -96,21 +96,21 @@ const HistoryView = () => {
         let html = text;
 
         html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
-            return `<div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;margin:10px 0;overflow-x:auto;font-family:'Fira Code',monospace;font-size:13px;line-height:1.5;color:#e2e8f0"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;').trim()}</code></div>`;
+            return `<div style="background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.06);border-radius:10px;padding:14px 16px;margin:10px 0;overflow-x:auto;font-family:'Fira Code',monospace;font-size:13px;line-height:1.5;color:#333"><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;').trim()}</code></div>`;
         });
-        html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(139,92,246,0.15);color:#c4b5fd;padding:2px 6px;border-radius:4px;font-size:13px;font-family:monospace">$1</code>');
-        html = html.replace(/^### (.+)$/gm, '<h4 style="font-size:15px;font-weight:700;color:#F59E0B;margin:16px 0 8px">$1</h4>');
-        html = html.replace(/^## (.+)$/gm, '<h3 style="font-size:16px;font-weight:700;color:#fff;margin:18px 0 8px">$1</h3>');
-        html = html.replace(/^# (.+)$/gm, '<h2 style="font-size:18px;font-weight:800;color:#fff;margin:20px 0 10px">$1</h2>');
-        html = html.replace(/\*\*(.+?)\*\*/g, '<strong style="color:#fff;font-weight:600">$1</strong>');
-        html = html.replace(/\*(.+?)\*/g, '<em style="color:#bbb">$1</em>');
-        html = html.replace(/^\d+\.\s+(.+)$/gm, '<li style="margin:4px 0;padding-left:4px;color:#ccc">$1</li>');
-        html = html.replace(/^[\-\*]\s+(.+)$/gm, '<li style="margin:4px 0;padding-left:4px;color:#ccc;list-style-type:disc">$1</li>');
+        html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(212,114,122,0.08);color:#a0505a;padding:2px 6px;border-radius:4px;font-size:13px;font-family:monospace">$1</code>');
+        html = html.replace(/^### (.+)$/gm, '<h4 style="font-size:15px;font-weight:700;color:var(--color-accent-dark);margin:16px 0 8px;letter-spacing:-0.01em">$1</h4>');
+        html = html.replace(/^## (.+)$/gm, '<h3 style="font-size:16px;font-weight:700;color:#1a1a1a;margin:18px 0 8px;letter-spacing:-0.01em">$1</h3>');
+        html = html.replace(/^# (.+)$/gm, '<h2 style="font-size:18px;font-weight:800;color:#1a1a1a;margin:20px 0 10px;letter-spacing:-0.01em">$1</h2>');
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong style="color:#1a1a1a;font-weight:600">$1</strong>');
+        html = html.replace(/\*(.+?)\*/g, '<em style="color:#666">$1</em>');
+        html = html.replace(/^\d+\.\s+(.+)$/gm, '<li style="margin:4px 0;padding-left:4px;color:#555">$1</li>');
+        html = html.replace(/^[\-\*]\s+(.+)$/gm, '<li style="margin:4px 0;padding-left:4px;color:#555;list-style-type:disc">$1</li>');
         html = html.replace(/((<li[^>]*>.*?<\/li>\s*)+)/g, '<ul style="padding-left:20px;margin:8px 0">$1</ul>');
-        html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:16px 0">');
-        html = html.replace(/\n\n/g, '</p><p style="margin:8px 0;color:#ccc">');
+        html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid rgba(0,0,0,0.06);margin:16px 0">');
+        html = html.replace(/\n\n/g, '</p><p style="margin:8px 0;color:#555">');
         html = html.replace(/\n/g, '<br>');
-        html = `<p style="margin:0;color:#ccc">${html}</p>`;
+        html = `<p style="margin:0;color:#555">${html}</p>`;
         html = html.replace(/<p[^>]*><\/p>/g, '');
         return html;
     };
@@ -133,7 +133,7 @@ const HistoryView = () => {
         return (
             <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
                 <div className="glass-card" style={{ padding: '64px 32px' }}>
-                    <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#fff', marginBottom: '12px' }}>Not found</h2>
+                    <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>Not found</h2>
                     <p style={{ color: '#888', marginBottom: '24px' }}>{error}</p>
                     <Link to="/dashboard" className="btn-primary" style={{ textDecoration: 'none' }}>Back to Dashboard</Link>
                 </div>
@@ -146,10 +146,10 @@ const HistoryView = () => {
 
     return (
         <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '1100px', margin: '0 auto' }}
-            className="animate-fadeInUp"
+            className="animate-fadeInUp page-history"
         >
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', flexWrap: 'wrap', gap: '16px' }}>
+            <div className="result-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', flexWrap: 'wrap', gap: '16px' }}>
                 <div>
                     <Link to="/dashboard" style={{
                         color: '#666', textDecoration: 'none', fontSize: '13px',
@@ -163,7 +163,7 @@ const HistoryView = () => {
                             background: 'rgba(139,92,246,0.15)', color: '#8B5CF6', textTransform: 'uppercase',
                         }}>History</span>
                     </div>
-                    <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>
+                    <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
                         {blueprint.title}
                     </h1>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '12px' }}>
@@ -194,12 +194,12 @@ const HistoryView = () => {
                 </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px' }}>
+            <div className="blueprint-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px' }}>
                 {/* Left Column */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     {/* Features */}
                     <div className="glass-card" style={{ padding: '32px' }}>
-                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '24px' }}>Core Features</h3>
+                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Core Features</h3>
                         {blueprint.core_features?.must_have && (
                             <div style={{ marginBottom: '20px' }}>
                                 <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#22C55E', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -207,17 +207,17 @@ const HistoryView = () => {
                                 </h4>
                                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {blueprint.core_features.must_have.map((f, i) => (
-                                        <li key={i} style={{ fontSize: '14px', color: '#ccc', padding: '10px 14px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)' }}>{f}</li>
+                                        <li key={i} style={{ fontSize: '14px', color: '#555', padding: '10px 14px', borderRadius: '10px', background: 'rgba(0,0,0,0.02)' }}>{f}</li>
                                     ))}
                                 </ul>
                             </div>
                         )}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        <div className="feature-split" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                             {blueprint.core_features?.should_have && (
                                 <div>
                                     <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#3B82F6', marginBottom: '10px' }}>Should Have</h4>
                                     {blueprint.core_features.should_have.map((f, i) => (
-                                        <p key={i} style={{ fontSize: '13px', color: '#888', marginBottom: '6px' }}>• {f}</p>
+                                        <p key={i} style={{ fontSize: '13px', color: '#777', marginBottom: '6px' }}>• {f}</p>
                                     ))}
                                 </div>
                             )}
@@ -225,7 +225,7 @@ const HistoryView = () => {
                                 <div>
                                     <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#8B5CF6', marginBottom: '10px' }}>Future Scope</h4>
                                     {blueprint.core_features.future_scope.map((f, i) => (
-                                        <p key={i} style={{ fontSize: '13px', color: '#888', marginBottom: '6px' }}>• {f}</p>
+                                        <p key={i} style={{ fontSize: '13px', color: '#777', marginBottom: '6px' }}>• {f}</p>
                                     ))}
                                 </div>
                             )}
@@ -235,8 +235,8 @@ const HistoryView = () => {
                     {/* Roadmap */}
                     {blueprint.roadmap_4_weeks && (
                         <div className="glass-card" style={{ padding: '32px' }}>
-                            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '24px' }}>Execution Roadmap</h3>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', borderLeft: '2px solid rgba(255,255,255,0.06)', marginLeft: '12px', paddingLeft: '28px' }}>
+                            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Execution Roadmap</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', borderLeft: '2px solid rgba(0,0,0,0.06)', marginLeft: '12px', paddingLeft: '28px' }}>
                                 {Object.entries(blueprint.roadmap_4_weeks).map(([week, task], i) => (
                                     <div key={week} style={{ position: 'relative' }}>
                                         <div style={{
@@ -246,10 +246,10 @@ const HistoryView = () => {
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             fontSize: '11px', fontWeight: 800, color: '#fff',
                                         }}>{i + 1}</div>
-                                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#fff', marginBottom: '4px', textTransform: 'capitalize' }}>
+                                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', marginBottom: '4px', textTransform: 'capitalize' }}>
                                             {week.replace('week', 'Week ')}
                                         </h4>
-                                        <p style={{ fontSize: '14px', color: '#888', lineHeight: 1.6 }}>{task}</p>
+                                        <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.6 }}>{task}</p>
                                     </div>
                                 ))}
                             </div>
@@ -273,10 +273,10 @@ const HistoryView = () => {
                         ].map((s, i) => (
                             <div key={i} style={{ marginBottom: i < 2 ? '16px' : 0 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
-                                    <span style={{ color: '#ccc' }}>{s.label}</span>
-                                    <span style={{ color: '#fff', fontWeight: 700 }}>{s.score}/10</span>
+                                    <span style={{ color: '#666' }}>{s.label}</span>
+                                    <span style={{ color: '#1a1a1a', fontWeight: 700 }}>{s.score}/10</span>
                                 </div>
-                                <div style={{ height: '6px', borderRadius: '3px', background: 'rgba(255,255,255,0.06)' }}>
+                                <div style={{ height: '6px', borderRadius: '3px', background: 'rgba(0,0,0,0.06)' }}>
                                     <div style={{
                                         height: '100%', borderRadius: '3px', width: `${(s.score || 0) * 10}%`,
                                         background: s.color, transition: 'width 0.5s ease',
@@ -289,13 +289,13 @@ const HistoryView = () => {
                     {/* Tech Stack */}
                     {blueprint.recommended_tech_stack && (
                         <div className="glass-card" style={{ padding: '28px' }}>
-                            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#fff', marginBottom: '16px' }}>Recommended Stack</h3>
+                            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', marginBottom: '16px' }}>Recommended Stack</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {['frontend', 'backend', 'database', 'deployment'].map(key => (
                                     blueprint.recommended_tech_stack[key] && (
-                                        <div key={key} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <div key={key} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
                                             <span style={{ fontSize: '13px', color: '#888', textTransform: 'capitalize' }}>{key}</span>
-                                            <span style={{ fontSize: '13px', color: '#fff', fontWeight: 600 }}>{blueprint.recommended_tech_stack[key]}</span>
+                                            <span style={{ fontSize: '13px', color: '#1a1a1a', fontWeight: 600 }}>{blueprint.recommended_tech_stack[key]}</span>
                                         </div>
                                     )
                                 ))}
@@ -310,7 +310,7 @@ const HistoryView = () => {
                             background: 'rgba(139,92,246,0.04)', border: '1px solid rgba(139,92,246,0.1)',
                         }}>
                             <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#8B5CF6', marginBottom: '10px' }}>Innovation Angle</h3>
-                            <p style={{ fontSize: '14px', color: '#ccc', lineHeight: 1.7 }}>{blueprint.what_is_new}</p>
+                            <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.7 }}>{blueprint.what_is_new}</p>
                         </div>
                     )}
 
@@ -333,8 +333,8 @@ const HistoryView = () => {
                         <Sparkles size={18} color="#fff" />
                     </div>
                     <div>
-                        <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>Ask about this Blueprint</h3>
-                        <p style={{ fontSize: '12px', color: '#666' }}>Get implementation help, code snippets, or advice</p>
+                        <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#1a1a1a' }}>Ask about this Blueprint</h3>
+                        <p style={{ fontSize: '12px', color: '#999' }}>Get implementation help, code snippets, or advice</p>
                     </div>
                 </div>
 
@@ -344,7 +344,7 @@ const HistoryView = () => {
                         maxHeight: '500px', overflowY: 'auto', marginBottom: '16px',
                         display: 'flex', flexDirection: 'column', gap: '16px',
                         padding: '20px', borderRadius: '12px',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'rgba(0,0,0,0.02)',
                     }}>
                         {chatMessages.map((msg, i) => (
                             <div key={i} style={{
@@ -369,9 +369,9 @@ const HistoryView = () => {
                                     borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '4px 16px 16px 16px',
                                     background: msg.role === 'user'
                                         ? 'linear-gradient(135deg, #F59E0B, #EF4444)'
-                                        : 'rgba(255,255,255,0.04)',
-                                    border: msg.role === 'user' ? 'none' : '1px solid rgba(255,255,255,0.06)',
-                                    color: msg.role === 'user' ? '#000' : '#ddd',
+                                        : 'rgba(255,255,255,0.7)',
+                                    border: msg.role === 'user' ? 'none' : '1px solid rgba(0,0,0,0.06)',
+                                    color: msg.role === 'user' ? '#000' : '#333',
                                     fontSize: '14px',
                                     lineHeight: 1.7,
                                     fontWeight: msg.role === 'user' ? 600 : 400,
@@ -393,14 +393,14 @@ const HistoryView = () => {
                                 </div>
                                 <div style={{
                                     padding: '12px 20px', borderRadius: '4px 16px 16px 16px',
-                                    background: 'rgba(255,255,255,0.04)',
-                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    background: 'rgba(255,255,255,0.7)',
+                                    border: '1px solid rgba(0,0,0,0.06)',
                                     display: 'flex', gap: '6px', alignItems: 'center',
                                 }}>
                                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8B5CF6', animation: 'pulse 1s infinite' }} />
                                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8B5CF6', animation: 'pulse 1s infinite 0.2s' }} />
                                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8B5CF6', animation: 'pulse 1s infinite 0.4s' }} />
-                                    <span style={{ color: '#888', fontSize: '13px', marginLeft: '6px' }}>Thinking...</span>
+                                    <span style={{ color: '#999', fontSize: '13px', marginLeft: '6px' }}>Thinking...</span>
                                 </div>
                             </div>
                         )}
@@ -408,7 +408,7 @@ const HistoryView = () => {
                 )}
 
                 {/* Chat Input */}
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div className="chat-input-row" style={{ display: 'flex', gap: '10px' }}>
                     <input
                         type="text"
                         value={chatInput}

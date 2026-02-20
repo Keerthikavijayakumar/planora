@@ -32,6 +32,67 @@ const GenerateIdea = () => {
     const domains = ["AI/ML", "Web Development", "Mobile Development", "Cybersecurity", "Data Science", "Cloud Computing", "Blockchain", "DevOps"];
     const levels = ["Fresher", "Beginner", "Intermediate", "Advanced"];
 
+    const normalizeDomain = (value) => (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    const resolveDomainDefaults = (domain) => {
+        const key = normalizeDomain(domain);
+
+        if (['aiml', 'aimachinelearning', 'artificialintelligence', 'machinelearning'].includes(key)) {
+            return { frontend: 'Streamlit', backend: 'Python', database: 'PostgreSQL', deployment: 'Docker' };
+        }
+        if (['webdevelopment', 'webdev', 'web'].includes(key)) {
+            return { frontend: 'React', backend: 'Node.js', database: 'MongoDB', deployment: 'Vercel' };
+        }
+        if (['mobiledevelopment', 'mobiledev', 'mobileapplication', 'mobileapp', 'appdevelopment'].includes(key)) {
+            return { frontend: 'Flutter', backend: 'Node.js', database: 'Firebase', deployment: 'Play Store / App Store' };
+        }
+        if (['cybersecurity'].includes(key)) {
+            return { frontend: 'React', backend: 'Python', database: 'Elasticsearch', deployment: 'Docker' };
+        }
+        if (['datascience', 'dataanalytics'].includes(key)) {
+            return { frontend: 'Streamlit', backend: 'Python', database: 'PostgreSQL', deployment: 'AWS' };
+        }
+        if (['cloudcomputing', 'cloud'].includes(key)) {
+            return { frontend: 'React', backend: 'Node.js', database: 'DynamoDB', deployment: 'AWS' };
+        }
+        if (['blockchain'].includes(key)) {
+            return { frontend: 'React', backend: 'Node.js', database: 'IPFS', deployment: 'Ethereum Testnet' };
+        }
+        if (['devops'].includes(key)) {
+            return { frontend: 'React', backend: 'Node.js', database: 'PostgreSQL', deployment: 'Kubernetes' };
+        }
+
+        return { frontend: 'React', backend: 'Node.js', database: 'Firestore', deployment: 'Vercel' };
+    };
+
+    const pickTech = (techStack, keywords, fallback) => {
+        const found = (techStack || []).find((tech) => {
+            const normalized = (tech || '').toLowerCase();
+            return keywords.some((word) => normalized.includes(word));
+        });
+        return found || fallback;
+    };
+
+    const inferRecommendedStack = (project, domain) => {
+        const techStack = Array.isArray(project?.techStack) ? project.techStack : [];
+        const defaults = resolveDomainDefaults(domain || project?.domain);
+
+        const frontend = pickTech(techStack, ['react', 'vue', 'angular', 'svelte', 'next', 'nuxt', 'flutter', 'react native', 'swift', 'kotlin', 'html', 'css', 'javascript', 'canvas', 'streamlit'], defaults.frontend);
+        const backend = pickTech(techStack, ['node', 'express', 'nestjs', 'flask', 'django', 'fastapi', 'spring', 'laravel', 'asp.net', 'dotnet', 'go', 'gin', 'ruby', 'rails', 'php', 'python'], defaults.backend);
+        const database = pickTech(techStack, ['mongodb', 'postgres', 'mysql', 'firestore', 'firebase', 'dynamodb', 'supabase', 'sqlite', 'redis', 'elasticsearch', 'ipfs'], defaults.database);
+        const deployment = pickTech(techStack, ['vercel', 'aws', 'azure', 'gcp', 'docker', 'kubernetes', 'heroku', 'netlify', 'render', 'cloud run', 'lambda'], defaults.deployment);
+
+        return {
+            frontend,
+            backend,
+            database,
+            deployment,
+            reasoning: techStack.length
+                ? `Derived from project stack: ${techStack.join(', ')}.`
+                : 'Derived from domain best practices.'
+        };
+    };
+
     const handleGenerate = async () => {
         setLoading(true);
         setError('');
@@ -44,38 +105,39 @@ const GenerateIdea = () => {
             if (res.data.projects && res.data.projects.length > 0) {
                 const project = res.data.projects[0];
 
-                const mappedBlueprint = {
-                    title: project.title || project.name || 'Project Idea',
-                    problem_statement: project.problemStatement || project.description || `A ${formData.skillLevel} level project in ${formData.domain}.`,
-                    core_features: {
-                        must_have: project.features || [],
-                        should_have: [],
-                        future_scope: []
-                    },
-                    roadmap_4_weeks: project.implementationSteps ?
-                        project.implementationSteps.reduce((acc, step, index) => {
-                            acc[`week${index + 1}`] = step;
-                            return acc;
-                        }, {}) : {},
-                    market_potential_score: parseInt(project.difficultyScore) || 5,
-                    difficulty_score: parseInt(project.difficultyScore) || 5,
-                    resume_impact_score: 8,
-                    recommended_tech_stack: {
-                        frontend: "React",
-                        backend: "Node.js",
-                        database: "Firestore",
-                        deployment: "Vercel",
-                        reasoning: "Standard stack for this project type."
-                    },
-                    what_is_new: "Focus on implementation details from the provided steps.",
-                    existing_solutions: "Similar projects exist but this follows a structured path.",
-                    educational_resources: {
-                        learning_path: `Start with ${project.features?.[0] || 'basics'}.`,
-                        key_concepts: ["Core Concepts", "Implementation", "Testing"]
-                    }
-                };
-
-                setBlueprint(mappedBlueprint);
+                // Use AI-generated blueprint from backend if available
+                if (res.data.blueprint) {
+                    setBlueprint(res.data.blueprint);
+                    setBlueprintId(res.data.historyId);
+                } else {
+                    // Fallback to client-side mapping if backend doesn't provide blueprint
+                    const mappedBlueprint = {
+                        title: project.title || project.name || 'Project Idea',
+                        problem_statement: project.problemStatement || project.description || `A ${formData.skillLevel} level project in ${formData.domain}.`,
+                        core_features: {
+                            must_have: project.features || [],
+                            should_have: [],
+                            future_scope: []
+                        },
+                        roadmap_4_weeks: project.implementationSteps ?
+                            project.implementationSteps.reduce((acc, step, index) => {
+                                acc[`week${index + 1}`] = step;
+                                return acc;
+                            }, {}) : {},
+                        market_potential_score: parseInt(project.difficultyScore) || 5,
+                        difficulty_score: parseInt(project.difficultyScore) || 5,
+                        resume_impact_score: 8,
+                        recommended_tech_stack: inferRecommendedStack(project, formData.domain),
+                        what_is_new: "Focus on implementation details from the provided steps.",
+                        existing_solutions: "Similar projects exist but this follows a structured path.",
+                        educational_resources: {
+                            learning_path: `Start with ${project.features?.[0] || 'basics'}.`,
+                            key_concepts: ["Core Concepts", "Implementation", "Testing"]
+                        }
+                    };
+                    setBlueprint(mappedBlueprint);
+                }
+                
                 setStep(2);
             } else {
                 setError('No projects available for these criteria in the database.');
@@ -186,7 +248,7 @@ const GenerateIdea = () => {
     // ===== LIMIT REACHED VIEW =====
     if (limitReached) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+            <div className="page-generate-limit" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
                 <div className="glass-card animate-fadeInUp" style={{ padding: '48px 40px', textAlign: 'center', maxWidth: '480px', width: '100%' }}>
                     <div style={{
                         width: '72px', height: '72px', borderRadius: '20px',
@@ -212,7 +274,7 @@ const GenerateIdea = () => {
                             <Clock size={16} /> Come back in {daysLeft} day{daysLeft !== 1 ? 's' : ''} for 5 more!
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                    <div className="stack-actions" style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                         <Link to="/dashboard" className="btn-secondary" style={{ textDecoration: 'none', padding: '10px 20px', fontSize: '13px' }}>
                             Dashboard
                         </Link>
@@ -228,7 +290,7 @@ const GenerateIdea = () => {
     // ===== FORM VIEW =====
     if (step === 1 && !loading) {
         return (
-            <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '620px', margin: '0 auto' }}>
+            <div className="page-generate" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '620px', margin: '0 auto' }}>
                 <div className="animate-fadeInUp">
                     <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>New Blueprint</h1>
                     <p style={{ color: '#999', fontSize: '15px', marginBottom: '36px' }}>Define your constraints, let AI architect the rest.</p>
@@ -247,7 +309,7 @@ const GenerateIdea = () => {
                             <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#555', marginBottom: '14px' }}>
                                 Choose Domain
                             </label>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+                            <div className="domain-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
                                 {domains.map(d => (
                                     <button
                                         key={d}
@@ -276,7 +338,7 @@ const GenerateIdea = () => {
                             <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#555', marginBottom: '14px' }}>
                                 Skill Level
                             </label>
-                            <div style={{ display: 'flex', gap: '8px', background: 'rgba(0,0,0,0.02)', padding: '4px', borderRadius: '12px' }}>
+                            <div className="skill-grid" style={{ display: 'flex', gap: '8px', background: 'rgba(0,0,0,0.02)', padding: '4px', borderRadius: '12px' }}>
                                 {levels.map(l => (
                                     <button
                                         key={l}
@@ -302,7 +364,7 @@ const GenerateIdea = () => {
                         </div>
 
                         {/* Team & Purpose */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
+                        <div className="dual-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
                             <div>
                                 <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#555', marginBottom: '10px' }}>Team Size</label>
                                 <select
@@ -366,10 +428,10 @@ const GenerateIdea = () => {
     // ===== BLUEPRINT RESULT VIEW =====
     return (
         <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '1100px', margin: '0 auto' }}
-            className="animate-fadeInUp"
+            className="animate-fadeInUp page-generate-result"
         >
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', flexWrap: 'wrap', gap: '16px' }}>
+            <div className="result-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', flexWrap: 'wrap', gap: '16px' }}>
                 <div>
                     <button onClick={() => setStep(1)} style={{
                         background: 'none', border: 'none', color: '#999', cursor: 'pointer',
@@ -378,12 +440,14 @@ const GenerateIdea = () => {
                     }}>
                         <ArrowLeft size={14} /> Back to parameters
                     </button>
-                    <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
-                        {blueprint.title}
-                    </h1>
-                    <p style={{ fontSize: '16px', color: '#888', maxWidth: '600px', lineHeight: 1.6 }}>{blueprint.problem_statement}</p>
+                    <div>
+                        <h1 className="heading-serif" style={{ fontSize: '36px', fontWeight: 800, color: '#1a1a1a', marginBottom: '12px' }}>
+                            {blueprint.title}
+                        </h1>
+                        <p style={{ fontSize: '17px', color: '#666', maxWidth: '700px', lineHeight: 1.7, fontWeight: 400 }}>{blueprint.problem_statement}</p>
+                    </div>
                 </div>
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div className="result-actions" style={{ display: 'flex', gap: '10px' }}>
                     <button onClick={handleGenerate} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 20px', fontSize: '13px' }}>
                         <RefreshCw size={15} /> Regenerate
                     </button>
@@ -393,84 +457,69 @@ const GenerateIdea = () => {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px' }}>
-                {/* Left Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    {/* Features */}
-                    <div className="glass-card" style={{ padding: '32px' }}>
-                        <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Core Features</h3>
-                        <div style={{ marginBottom: '20px' }}>
-                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#16a34a', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <Check size={14} /> Must Have
-                            </h4>
+            {/* Reorganized Single Column Layout */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                {/* Core Features */}
+                <div className="glass-card" style={{ padding: '32px' }}>
+                    <h3 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Core Features</h3>
+                    <div style={{ marginBottom: '24px' }}>
+                        <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#16a34a', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <Check size={16} /> Must Have
+                        </h4>
+                        <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {blueprint.core_features?.must_have?.map((f, i) => (
+                                <li key={i} style={{ fontSize: '15px', color: '#555', padding: '12px 16px', borderRadius: '10px', background: 'rgba(0,0,0,0.02)', lineHeight: 1.5 }}>
+                                    {f}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="feature-split" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div>
+                            <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#3B82F6', marginBottom: '12px' }}>Should Have</h4>
                             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                {blueprint.core_features?.must_have?.map((f, i) => (
-                                    <li key={i} style={{ fontSize: '14px', color: '#555', padding: '10px 14px', borderRadius: '10px', background: 'rgba(0,0,0,0.02)' }}>
+                                {blueprint.core_features?.should_have?.map((f, i) => (
+                                    <li key={i} style={{ fontSize: '14px', color: '#666', marginBottom: '0', paddingLeft: '16px', position: 'relative', lineHeight: 1.6 }}>
+                                        <span style={{ position: 'absolute', left: 0, color: '#3B82F6' }}>•</span>
                                         {f}
                                     </li>
                                 ))}
                             </ul>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                            <div>
-                                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#3B82F6', marginBottom: '10px' }}>Should Have</h4>
-                                {blueprint.core_features?.should_have?.map((f, i) => (
-                                    <p key={i} style={{ fontSize: '13px', color: '#888', marginBottom: '6px' }}>• {f}</p>
-                                ))}
-                            </div>
-                            <div>
-                                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#8B5C8A', marginBottom: '10px' }}>Future Scope</h4>
+                        <div>
+                            <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#8B5C8A', marginBottom: '12px' }}>Future Scope</h4>
+                            <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 {blueprint.core_features?.future_scope?.map((f, i) => (
-                                    <p key={i} style={{ fontSize: '13px', color: '#888', marginBottom: '6px' }}>• {f}</p>
+                                    <li key={i} style={{ fontSize: '14px', color: '#666', marginBottom: '0', paddingLeft: '16px', position: 'relative', lineHeight: 1.6 }}>
+                                        <span style={{ position: 'absolute', left: 0, color: '#8B5C8A' }}>•</span>
+                                        {f}
+                                    </li>
                                 ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Roadmap */}
-                    <div className="glass-card" style={{ padding: '32px' }}>
-                        <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>Execution Roadmap</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', borderLeft: '2px solid rgba(0,0,0,0.06)', marginLeft: '12px', paddingLeft: '28px' }}>
-                            {blueprint.roadmap_4_weeks && Object.entries(blueprint.roadmap_4_weeks).map(([week, task], i) => (
-                                <div key={week} style={{ position: 'relative' }}>
-                                    <div style={{
-                                        position: 'absolute', left: '-39px', top: '2px',
-                                        width: '24px', height: '24px', borderRadius: '50%',
-                                        background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        fontSize: '11px', fontWeight: 800, color: '#fff',
-                                    }}>{i + 1}</div>
-                                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', marginBottom: '4px', textTransform: 'capitalize' }}>
-                                        {week.replace('week', 'Week ')}
-                                    </h4>
-                                    <p style={{ fontSize: '14px', color: '#888', lineHeight: 1.6 }}>{task}</p>
-                                </div>
-                            ))}
+                            </ul>
                         </div>
                     </div>
                 </div>
 
-                {/* Right Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    {/* Scores */}
-                    <div style={{
+                {/* Two Column Grid for Stats and Tech Stack */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                    {/* Market Potential & Tech Stack Combined */}
+                    <div className="glass-card" style={{
                         padding: '28px',
-                        borderRadius: '16px',
-                        background: 'rgba(212,114,122,0.04)',
-                        border: '1px solid rgba(212,114,122,0.1)',
+                        background: 'linear-gradient(135deg, rgba(212,114,122,0.08) 0%, rgba(212,114,122,0.04) 100%)',
+                        border: '1px solid rgba(212,114,122,0.2)',
                     }}>
-                        <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-accent-dark)', marginBottom: '20px' }}>Market Potential</h3>
+                        <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--color-accent-dark)', marginBottom: '20px' }}>Project Metrics</h3>
                         {[
-                            { label: 'Demand', score: blueprint.market_potential_score, color: 'var(--color-accent)' },
-                            { label: 'Difficulty', score: blueprint.difficulty_score, color: '#EF4444' },
+                            { label: 'Market Demand', score: blueprint.market_potential_score, color: 'var(--color-accent)' },
+                            { label: 'Difficulty Level', score: blueprint.difficulty_score, color: '#EF4444' },
                             { label: 'Resume Impact', score: blueprint.resume_impact_score, color: '#16a34a' },
                         ].map((s, i) => (
                             <div key={i} style={{ marginBottom: i < 2 ? '16px' : 0 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '6px' }}>
-                                    <span style={{ color: '#666' }}>{s.label}</span>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '8px' }}>
+                                    <span style={{ color: '#555', fontWeight: 600 }}>{s.label}</span>
                                     <span style={{ color: '#1a1a1a', fontWeight: 700 }}>{s.score}/10</span>
                                 </div>
-                                <div style={{ height: '6px', borderRadius: '3px', background: 'rgba(0,0,0,0.04)' }}>
+                                <div style={{ height: '8px', borderRadius: '4px', background: 'rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.05)' }}>
                                     <div style={{
                                         height: '100%', borderRadius: '3px', width: `${(s.score || 0) * 10}%`,
                                         background: s.color, transition: 'width 0.5s ease',
@@ -482,50 +531,281 @@ const GenerateIdea = () => {
 
                     {/* Tech Stack */}
                     <div className="glass-card" style={{ padding: '28px' }}>
-                        <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: '#1a1a1a', marginBottom: '16px' }}>Recommended Stack</h3>
+                        <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '18px' }}>Recommended Tech Stack</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             {blueprint.recommended_tech_stack && ['frontend', 'backend', 'database', 'deployment'].map(key => (
                                 <div key={key} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
-                                    <span style={{ fontSize: '13px', color: '#999', textTransform: 'capitalize' }}>{key}</span>
-                                    <span style={{ fontSize: '13px', color: '#1a1a1a', fontWeight: 600 }}>{blueprint.recommended_tech_stack[key]}</span>
+                                    <span style={{ fontSize: '14px', color: '#888', textTransform: 'capitalize', fontWeight: 500 }}>{key}</span>
+                                    <span style={{ fontSize: '14px', color: '#1a1a1a', fontWeight: 700 }}>{blueprint.recommended_tech_stack[key]}</span>
                                 </div>
                             ))}
                         </div>
                         {blueprint.recommended_tech_stack?.reasoning && (
-                            <p style={{ fontSize: '12px', color: '#bbb', marginTop: '12px', fontStyle: 'italic' }}>
+                            <p style={{ fontSize: '12px', color: '#999', marginTop: '12px', fontStyle: 'italic', lineHeight: 1.5 }}>
                                 "{blueprint.recommended_tech_stack.reasoning}"
                             </p>
                         )}
                     </div>
+                </div>
 
-                    {/* Differentiation */}
-                    <div style={{
-                        padding: '28px', borderRadius: '16px',
-                        background: 'rgba(212,114,122,0.03)', border: '1px solid rgba(212,114,122,0.08)',
+                {/* Roadmap */}
+                <div className="glass-card" style={{ padding: '32px' }}>
+                    <h3 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '24px' }}>4-Week Execution Roadmap</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', borderLeft: '2px solid rgba(0,0,0,0.06)', marginLeft: '12px', paddingLeft: '28px' }}>
+                        {blueprint.roadmap_4_weeks && Object.entries(blueprint.roadmap_4_weeks).map(([week, task], i) => (
+                            <div key={week} style={{ position: 'relative' }}>
+                                <div style={{
+                                    position: 'absolute', left: '-39px', top: '2px',
+                                    width: '24px', height: '24px', borderRadius: '50%',
+                                    background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    fontSize: '11px', fontWeight: 800, color: '#fff',
+                                }}>{i + 1}</div>
+                                <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#1a1a1a', marginBottom: '6px', textTransform: 'capitalize' }}>
+                                    {week.replace('week', 'Week ')}
+                                </h4>
+                                <p style={{ fontSize: '15px', color: '#666', lineHeight: 1.6 }}>{task}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Two Column for Innovation and Learning */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                    {/* Innovation Angle */}
+                    <div className="glass-card" style={{
+                        padding: '28px',
+                        background: 'linear-gradient(135deg, rgba(212,114,122,0.08) 0%, rgba(212,114,122,0.04) 100%)',
+                        border: '1px solid rgba(212,114,122,0.2)',
                     }}>
-                        <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: 'var(--color-accent-dark)', marginBottom: '10px' }}>Innovation Angle</h3>
-                        <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.7, marginBottom: '16px' }}>{blueprint.what_is_new}</p>
-                        <h4 style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-accent-dark)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Competitors</h4>
-                        <p style={{ fontSize: '13px', color: '#888', lineHeight: 1.6 }}>{blueprint.existing_solutions}</p>
+                        <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: 'var(--color-accent-dark)', marginBottom: '12px' }}>Innovation Angle</h3>
+                        <p style={{ fontSize: '15px', color: '#444', lineHeight: 1.7, marginBottom: '18px', fontWeight: 400 }}>{blueprint.what_is_new}</p>
+                        <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-accent-dark)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>COMPETITORS</h4>
+                        <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.6 }}>{blueprint.existing_solutions}</p>
                     </div>
 
-                    {/* Education */}
+                    {/* Learning Path */}
                     {blueprint.educational_resources && (
-                        <div style={{
-                            padding: '28px', borderRadius: '16px',
-                            background: 'rgba(59,130,246,0.03)', border: '1px solid rgba(59,130,246,0.08)',
+                        <div className="glass-card" style={{
+                            padding: '28px',
+                            background: 'linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.04) 100%)',
+                            border: '1px solid rgba(59,130,246,0.2)',
                         }}>
-                            <h3 className="heading-serif" style={{ fontSize: '15px', fontWeight: 700, color: '#3B82F6', marginBottom: '10px' }}>🎓 Learning Path</h3>
-                            <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.7, marginBottom: '16px' }}>{blueprint.educational_resources.learning_path}</p>
-                            <h4 style={{ fontSize: '11px', fontWeight: 700, color: '#3B82F6', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Key Concepts</h4>
-                            <ul style={{ listStyle: 'disc', paddingLeft: '20px' }}>
+                            <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#3B82F6', marginBottom: '12px' }}>🎓 Learning Path</h3>
+                            <p style={{ fontSize: '15px', color: '#444', lineHeight: 1.7, marginBottom: '18px', fontWeight: 400 }}>{blueprint.educational_resources.learning_path}</p>
+                            <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#3B82F6', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>KEY CONCEPTS</h4>
+                            <ul style={{ listStyle: 'none', padding: 0, marginBottom: blueprint.educational_resources.recommended_resources?.length ? '16px' : 0 }}>
                                 {blueprint.educational_resources.key_concepts?.map((c, i) => (
-                                    <li key={i} style={{ fontSize: '13px', color: '#888', marginBottom: '4px' }}>{c}</li>
+                                    <li key={i} style={{ fontSize: '14px', color: '#555', marginBottom: '6px', lineHeight: 1.5, paddingLeft: '16px', position: 'relative' }}>
+                                        <span style={{ position: 'absolute', left: 0, color: '#3B82F6' }}>•</span>
+                                        {c}
+                                    </li>
                                 ))}
                             </ul>
+                            {blueprint.educational_resources.recommended_resources?.length > 0 && (
+                                <>
+                                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#3B82F6', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '10px' }}>RESOURCES</h4>
+                                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                                        {blueprint.educational_resources.recommended_resources.map((r, i) => (
+                                            <li key={i} style={{ fontSize: '14px', color: '#555', marginBottom: '6px', lineHeight: 1.5, paddingLeft: '16px', position: 'relative' }}>
+                                                <span style={{ position: 'absolute', left: 0, color: '#3B82F6' }}>📚</span>
+                                                {r}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
                         </div>
                     )}
                 </div>
+
+                {/* Technical Implementation Details */}
+                {blueprint.technical_details && (
+                    <>
+                        {/* API Structure & Database Schema */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '24px' }}>
+                            {/* API Structure */}
+                            {blueprint.technical_details.api_structure?.length > 0 && (
+                                <div className="glass-card" style={{
+                                    padding: '28px',
+                                    background: 'linear-gradient(135deg, rgba(139,92,138,0.08) 0%, rgba(139,92,138,0.04) 100%)',
+                                    border: '1px solid rgba(139,92,138,0.2)',
+                                }}>
+                                    <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#8B5C8A', marginBottom: '18px' }}>🔌 API Structure</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        {blueprint.technical_details.api_structure.map((api, i) => (
+                                            <div key={i} style={{
+                                                padding: '14px 16px',
+                                                borderRadius: '10px',
+                                                background: 'rgba(255,255,255,0.7)',
+                                                border: '1px solid rgba(139,92,138,0.1)',
+                                            }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                                                    <span style={{
+                                                        display: 'inline-block',
+                                                        padding: '4px 10px',
+                                                        borderRadius: '6px',
+                                                        fontSize: '11px',
+                                                        fontWeight: 700,
+                                                        background: api.method === 'GET' ? '#10b981' : api.method === 'POST' ? '#3b82f6' : api.method === 'PUT' ? '#f59e0b' : '#ef4444',
+                                                        color: '#fff',
+                                                    }}>{api.method}</span>
+                                                    <code style={{ fontSize: '13px', color: '#666', fontFamily: 'monospace' }}>{api.endpoint}</code>
+                                                </div>
+                                                <p style={{ fontSize: '13px', color: '#555', lineHeight: 1.5, margin: 0 }}>{api.purpose}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Database Schema */}
+                            {blueprint.technical_details.database_schema?.length > 0 && (
+                                <div className="glass-card" style={{
+                                    padding: '28px',
+                                    background: 'linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(16,185,129,0.04) 100%)',
+                                    border: '1px solid rgba(16,185,129,0.2)',
+                                }}>
+                                    <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#10b981', marginBottom: '18px' }}>🗄️ Database Schema</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                                        {blueprint.technical_details.database_schema.map((schema, i) => (
+                                            <div key={i} style={{
+                                                padding: '14px 16px',
+                                                borderRadius: '10px',
+                                                background: 'rgba(255,255,255,0.7)',
+                                                border: '1px solid rgba(16,185,129,0.1)',
+                                            }}>
+                                                <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#10b981', marginBottom: '8px' }}>{schema.entity}</h4>
+                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                                    {schema.fields?.map((field, j) => (
+                                                        <span key={j} style={{
+                                                            padding: '4px 10px',
+                                                            borderRadius: '6px',
+                                                            fontSize: '12px',
+                                                            background: 'rgba(16,185,129,0.1)',
+                                                            color: '#047857',
+                                                            fontFamily: 'monospace',
+                                                        }}>{field}</span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Security & Testing */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '24px' }}>
+                            {/* Security Considerations */}
+                            {blueprint.technical_details.security_considerations?.length > 0 && (
+                                <div className="glass-card" style={{
+                                    padding: '28px',
+                                    background: 'linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.04) 100%)',
+                                    border: '1px solid rgba(239,68,68,0.2)',
+                                }}>
+                                    <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#ef4444', marginBottom: '18px' }}>🔒 Security Considerations</h3>
+                                    <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        {blueprint.technical_details.security_considerations.map((sec, i) => (
+                                            <li key={i} style={{
+                                                fontSize: '14px',
+                                                color: '#555',
+                                                lineHeight: 1.6,
+                                                paddingLeft: '24px',
+                                                position: 'relative',
+                                                padding: '10px 10px 10px 28px',
+                                                borderRadius: '8px',
+                                                background: 'rgba(239,68,68,0.03)',
+                                            }}>
+                                                <span style={{ position: 'absolute', left: '10px', top: '10px', color: '#ef4444', fontSize: '16px' }}>🛡️</span>
+                                                {sec}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {/* Testing Strategy */}
+                            {blueprint.technical_details.testing_strategy?.length > 0 && (
+                                <div className="glass-card" style={{
+                                    padding: '28px',
+                                    background: 'linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.04) 100%)',
+                                    border: '1px solid rgba(245,158,11,0.2)',
+                                }}>
+                                    <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#f59e0b', marginBottom: '18px' }}>🧪 Testing Strategy</h3>
+                                    <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        {blueprint.technical_details.testing_strategy.map((test, i) => (
+                                            <li key={i} style={{
+                                                fontSize: '14px',
+                                                color: '#555',
+                                                lineHeight: 1.6,
+                                                paddingLeft: '24px',
+                                                position: 'relative',
+                                                padding: '10px 10px 10px 28px',
+                                                borderRadius: '8px',
+                                                background: 'rgba(245,158,11,0.03)',
+                                            }}>
+                                                <span style={{ position: 'absolute', left: '10px', top: '10px', color: '#f59e0b' }}>✓</span>
+                                                {test}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Folder Structure & Common Pitfalls */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '24px' }}>
+                            {/* Folder Structure */}
+                            {blueprint.technical_details.folder_structure && (
+                                <div className="glass-card" style={{ padding: '28px' }}>
+                                    <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#6366f1', marginBottom: '18px' }}>📁 Project Structure</h3>
+                                    <pre style={{
+                                        fontSize: '13px',
+                                        color: '#444',
+                                        lineHeight: 1.8,
+                                        fontFamily: 'monospace',
+                                        background: 'rgba(99,102,241,0.05)',
+                                        padding: '16px',
+                                        borderRadius: '10px',
+                                        border: '1px solid rgba(99,102,241,0.1)',
+                                        overflow: 'auto',
+                                        whiteSpace: 'pre-wrap',
+                                        margin: 0,
+                                    }}>{blueprint.technical_details.folder_structure}</pre>
+                                </div>
+                            )}
+
+                            {/* Common Pitfalls */}
+                            {blueprint.technical_details.common_pitfalls?.length > 0 && (
+                                <div className="glass-card" style={{
+                                    padding: '28px',
+                                    background: 'linear-gradient(135deg, rgba(236,72,153,0.08) 0%, rgba(236,72,153,0.04) 100%)',
+                                    border: '1px solid rgba(236,72,153,0.2)',
+                                }}>
+                                    <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#ec4899', marginBottom: '18px' }}>⚠️ Common Pitfalls</h3>
+                                    <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        {blueprint.technical_details.common_pitfalls.map((pitfall, i) => (
+                                            <li key={i} style={{
+                                                fontSize: '14px',
+                                                color: '#555',
+                                                lineHeight: 1.6,
+                                                paddingLeft: '24px',
+                                                position: 'relative',
+                                                padding: '10px 10px 10px 28px',
+                                                borderRadius: '8px',
+                                                background: 'rgba(236,72,153,0.03)',
+                                            }}>
+                                                <span style={{ position: 'absolute', left: '10px', top: '10px', color: '#ec4899' }}>⚡</span>
+                                                {pitfall}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
 
 
@@ -617,7 +897,7 @@ const GenerateIdea = () => {
                 )}
 
                 {/* Chat Input */}
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div className="chat-input-row" style={{ display: 'flex', gap: '10px' }}>
                     <input
                         type="text"
                         value={chatInput}

@@ -56,7 +56,7 @@ const SavedIdeas = () => {
     }
 
     return (
-        <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '900px', margin: '0 auto' }}>
+        <div className="page-saved" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '900px', margin: '0 auto' }}>
             <div className="animate-fadeInUp">
                 <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>Saved Blueprints</h1>
                 <p style={{ color: '#999', fontSize: '15px', marginBottom: '36px' }}>
@@ -89,7 +89,7 @@ const SavedIdeas = () => {
                             return (
                                 <div
                                     key={idea.id}
-                                    className="glass-card"
+                                    className="glass-card saved-card"
                                     onClick={() => navigate(`/blueprint/${idea.id}`)}
                                     style={{
                                         padding: '24px 28px',
@@ -100,7 +100,7 @@ const SavedIdeas = () => {
                                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.04)'; }}
                                 >
                                     {/* Top row: title + actions */}
-                                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                    <div className="saved-top" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
                                         <div style={{ flex: 1 }}>
                                             <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>
                                                 {bp?.title || 'Untitled Blueprint'}
@@ -155,7 +155,7 @@ const SavedIdeas = () => {
                                     )}
 
                                     {/* Quick stats preview */}
-                                    <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+                                    <div className="saved-bottom" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
                                         {bp?.recommended_tech_stack && (
                                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                                                 {['frontend', 'backend', 'database'].map(key => (

@@ -413,5 +413,718 @@
     "learningCurve": "Moderate",
     "marketPotential": 8,
     "resumeImpact": 9
+  },
+  {
+    "title": "AI Code Complexity Analyzer",
+    "domain": "AIML",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "Flask", "Scikit-learn", "AST Parsing"],
+    "solution": "Build a system that analyzes source code and predicts complexity and maintainability scores.",
+    "features": ["Code parsing", "Complexity scoring", "Visualization dashboard", "Multi-language support"],
+    "implementationSteps": [
+      "Parse source code using AST",
+      "Extract complexity metrics",
+      "Train regression model",
+      "Build dashboard interface"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "AI Study Material Summarizer",
+    "domain": "AIML",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["Python", "Transformers", "Streamlit"],
+    "solution": "Create an AI tool that summarizes long study materials into concise notes.",
+    "features": ["Text summarization", "Keyword extraction", "PDF upload", "Download summary"],
+    "implementationSteps": [
+      "Integrate pre-trained NLP model",
+      "Process input text",
+      "Generate summary",
+      "Build simple UI"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 3,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Campus Placement Management System",
+    "domain": "Web Dev",
+    "level": "Intermediate",
+    "teamType": "Team of 4",
+    "techStack": ["React", "Node.js", "MongoDB", "JWT"],
+    "solution": "Develop a portal for managing campus placements including company postings and student applications.",
+    "features": ["Student profiles", "Company job postings", "Application tracking", "Admin analytics dashboard"],
+    "implementationSteps": [
+      "Design database schema",
+      "Develop REST APIs",
+      "Implement authentication",
+      "Build frontend dashboard"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 6,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Real-Time Chat Application",
+    "domain": "Web Dev",
+    "level": "Beginner",
+    "teamType": "Team of 2",
+    "techStack": ["React", "Node.js", "Socket.io"],
+    "solution": "Build a real-time messaging application with private and group chats.",
+    "features": ["User authentication", "Private messaging", "Group chat", "Online status indicator"],
+    "implementationSteps": [
+      "Set up backend server",
+      "Integrate WebSockets",
+      "Create chat UI",
+      "Deploy application"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 3,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Smart Grocery Recommendation App",
+    "domain": "Mobile Application",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Flutter", "Firebase", "REST API"],
+    "solution": "Develop a mobile app that recommends grocery items based on purchase history and preferences.",
+    "features": ["User profile", "Purchase history tracking", "AI recommendations", "Push notifications"],
+    "implementationSteps": [
+      "Design mobile interface",
+      "Integrate Firebase backend",
+      "Build recommendation logic",
+      "Test and deploy"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Secure API Gateway System",
+    "domain": "Cybersecurity",
+    "level": "Intermediate",
+    "teamType": "Team of 4",
+    "techStack": ["Node.js", "Express", "JWT", "Rate Limiting"],
+    "solution": "Build a secure API gateway that handles authentication, rate limiting, and logging.",
+    "features": ["JWT validation", "Rate limiting", "IP blocking", "Request logging dashboard"],
+    "implementationSteps": [
+      "Design middleware architecture",
+      "Implement authentication logic",
+      "Add rate limiting",
+      "Build monitoring dashboard"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Stock Market Trend Analyzer",
+    "domain": "Data Science",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "Pandas", "Matplotlib", "Scikit-learn"],
+    "solution": "Analyze historical stock data to predict future trends using machine learning models.",
+    "features": ["Data visualization", "Trend prediction", "Performance metrics", "Dashboard view"],
+    "implementationSteps": [
+      "Collect stock dataset",
+      "Preprocess data",
+      "Train prediction model",
+      "Build visualization dashboard"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Serverless Event Processing System",
+    "domain": "Cloud Computing",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["AWS Lambda", "API Gateway", "DynamoDB"],
+    "solution": "Create a serverless backend that processes real-time events and stores logs in the cloud.",
+    "features": ["Event trigger system", "Cloud logging", "API endpoints", "Scalable architecture"],
+    "implementationSteps": [
+      "Configure AWS Lambda",
+      "Set up API Gateway",
+      "Connect DynamoDB",
+      "Deploy serverless functions"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Decentralized NFT Marketplace",
+    "domain": "Blockchain",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["Solidity", "Ethereum", "React", "IPFS"],
+    "solution": "Build a decentralized marketplace where users can mint, buy, and sell NFTs.",
+    "features": ["NFT minting", "Wallet integration", "Marketplace listing", "Smart contract transactions"],
+    "implementationSteps": [
+      "Write NFT smart contract",
+      "Deploy to testnet",
+      "Build frontend UI",
+      "Integrate wallet authentication"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 7,
+    "learningCurve": "Hard",
+    "marketPotential": 10,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "Infrastructure Monitoring Dashboard",
+    "domain": "DevOps",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Docker", "Prometheus", "Grafana", "Kubernetes"],
+    "solution": "Build a monitoring system that tracks container health and infrastructure metrics.",
+    "features": ["Real-time metrics", "Alert notifications", "Container monitoring", "Dashboard visualization"],
+    "implementationSteps": [
+      "Deploy Prometheus",
+      "Configure Grafana dashboards",
+      "Integrate Kubernetes cluster",
+      "Set up alerts"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "AI Interview Performance Analyzer",
+    "domain": "AIML",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["Python", "OpenCV", "TensorFlow", "Flask"],
+    "solution": "Build an AI system that analyzes facial expressions and voice tone during mock interviews to provide performance feedback.",
+    "features": ["Facial emotion detection", "Speech sentiment analysis", "Performance scoring", "Feedback report generation"],
+    "implementationSteps": [
+      "Collect interview video samples",
+      "Train emotion detection model",
+      "Analyze speech sentiment",
+      "Generate performance report dashboard"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 8,
+    "learningCurve": "Hard",
+    "marketPotential": 9,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "Online Examination System",
+    "domain": "Web Dev",
+    "level": "Intermediate",
+    "teamType": "Team of 3",
+    "techStack": ["React", "Node.js", "MongoDB", "JWT"],
+    "solution": "Develop a secure web-based examination platform with auto-evaluation features.",
+    "features": ["Timed exams", "MCQ auto-grading", "User authentication", "Result analytics dashboard"],
+    "implementationSteps": [
+      "Design database schema",
+      "Implement authentication",
+      "Create exam engine",
+      "Build analytics dashboard"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Personal Finance Management Web App",
+    "domain": "Web Dev",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["React", "Firebase"],
+    "solution": "Create a web application to manage personal income, expenses, and savings goals.",
+    "features": ["Expense tracking", "Savings goals", "Category filters", "Graphical reports"],
+    "implementationSteps": [
+      "Design UI components",
+      "Integrate Firebase backend",
+      "Implement CRUD operations",
+      "Add reporting charts"
+    ],
+    "difficultyScore": 5,
+    "estimatedWeeks": 3,
+    "learningCurve": "Easy",
+    "marketPotential": 7,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Smart Health Monitoring App",
+    "domain": "Mobile Application",
+    "level": "Intermediate",
+    "teamType": "Team of 3",
+    "techStack": ["Flutter", "Firebase", "Health APIs"],
+    "solution": "Develop a mobile app that tracks health metrics and provides health recommendations.",
+    "features": ["Heart rate monitoring", "BMI calculation", "Daily activity tracking", "Health alerts"],
+    "implementationSteps": [
+      "Design mobile UI",
+      "Integrate device health APIs",
+      "Implement data storage",
+      "Develop recommendation logic"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Blockchain-Based Certificate Verification",
+    "domain": "Blockchain",
+    "level": "Beginner",
+    "teamType": "Team of 2",
+    "techStack": ["Solidity", "Ethereum", "React"],
+    "solution": "Create a decentralized system to verify academic certificates using blockchain.",
+    "features": ["Certificate upload", "Blockchain verification", "QR-based validation", "Admin portal"],
+    "implementationSteps": [
+      "Write smart contract",
+      "Deploy to Ethereum testnet",
+      "Build frontend UI",
+      "Integrate QR validation"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Cloud Cost Optimization Dashboard",
+    "domain": "Cloud Computing",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["AWS", "Python", "Boto3", "React"],
+    "solution": "Build a dashboard that analyzes cloud usage and recommends cost optimization strategies.",
+    "features": ["Usage analytics", "Cost prediction", "Optimization suggestions", "Visualization charts"],
+    "implementationSteps": [
+      "Integrate AWS APIs",
+      "Fetch billing data",
+      "Build analytics engine",
+      "Create dashboard UI"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Automated Threat Detection System",
+    "domain": "Cybersecurity",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["Python", "Machine Learning", "Elastic Stack"],
+    "solution": "Develop an AI-powered system that detects and alerts on suspicious system activities.",
+    "features": ["Log analysis", "Anomaly detection", "Real-time alerts", "Dashboard monitoring"],
+    "implementationSteps": [
+      "Collect log data",
+      "Train anomaly detection model",
+      "Integrate Elastic Stack",
+      "Deploy alert system"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 7,
+    "learningCurve": "Hard",
+    "marketPotential": 9,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "Customer Churn Prediction Model",
+    "domain": "Data Science",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "Pandas", "Scikit-learn", "Seaborn"],
+    "solution": "Build a predictive model to identify customers likely to churn.",
+    "features": ["Data preprocessing", "Classification model", "Feature importance analysis", "Dashboard view"],
+    "implementationSteps": [
+      "Clean dataset",
+      "Train classification model",
+      "Evaluate accuracy",
+      "Build visualization dashboard"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "AI-Based Plagiarism Checker",
+    "domain": "AIML",
+    "level": "Intermediate",
+    "teamType": "Team of 3",
+    "techStack": ["Python", "NLP", "Flask", "Cosine Similarity"],
+    "solution": "Develop an AI-powered system that detects plagiarism in documents using semantic similarity.",
+    "features": ["Document upload", "Text similarity detection", "Plagiarism score", "Report generation"],
+    "implementationSteps": [
+      "Implement text preprocessing",
+      "Apply similarity algorithms",
+      "Build scoring logic",
+      "Develop frontend interface"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Multi-Cloud Deployment Automation Tool",
+    "domain": "DevOps",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["Terraform", "Docker", "AWS", "Azure"],
+    "solution": "Create a tool that automates application deployment across multiple cloud platforms.",
+    "features": ["Infrastructure as Code", "Multi-cloud support", "Deployment automation", "Monitoring integration"],
+    "implementationSteps": [
+      "Write Terraform scripts",
+      "Containerize application",
+      "Configure CI/CD pipeline",
+      "Test multi-cloud deployment"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 8,
+    "learningCurve": "Hard",
+    "marketPotential": 10,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "AI-Based Career Path Recommender",
+    "domain": "AIML",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "Scikit-learn", "Flask", "Pandas"],
+    "solution": "Build a recommendation engine that suggests career paths based on user skills and interests.",
+    "features": ["Skill assessment quiz", "Career prediction model", "Roadmap suggestions", "Dashboard view"],
+    "implementationSteps": [
+      "Design skills dataset",
+      "Train recommendation model",
+      "Build backend API",
+      "Develop frontend dashboard"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Handwritten Notes Digitizer",
+    "domain": "AIML",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["Python", "OpenCV", "Tesseract OCR"],
+    "solution": "Create a tool that converts handwritten notes into editable digital text.",
+    "features": ["Image upload", "OCR processing", "Text export", "PDF generation"],
+    "implementationSteps": [
+      "Integrate OCR engine",
+      "Process images",
+      "Extract text",
+      "Build simple UI"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 3,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "Crowdfunding Web Platform",
+    "domain": "Web Dev",
+    "level": "Intermediate",
+    "teamType": "Team of 3",
+    "techStack": ["React", "Node.js", "MongoDB", "Stripe API"],
+    "solution": "Build a platform where users can raise funds for projects and causes.",
+    "features": ["Campaign creation", "Secure payments", "Progress tracking", "Admin dashboard"],
+    "implementationSteps": [
+      "Design database schema",
+      "Integrate payment gateway",
+      "Develop campaign dashboard",
+      "Deploy application"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 6,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Collaborative Whiteboard App",
+    "domain": "Web Dev",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["React", "Node.js", "Socket.io", "Canvas API"],
+    "solution": "Create a real-time collaborative drawing and brainstorming platform.",
+    "features": ["Live drawing sync", "Multiple users", "Chat integration", "Room sharing"],
+    "implementationSteps": [
+      "Set up WebSocket server",
+      "Implement drawing canvas",
+      "Sync real-time updates",
+      "Deploy app"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 7,
+    "learningCurve": "Hard",
+    "marketPotential": 9,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "Smart Parking Finder App",
+    "domain": "Mobile Application",
+    "level": "Intermediate",
+    "teamType": "Team of 3",
+    "techStack": ["Flutter", "Google Maps API", "Firebase"],
+    "solution": "Develop an app that helps users find nearby parking spaces in real time.",
+    "features": ["Live map tracking", "Parking availability status", "Booking system", "Notifications"],
+    "implementationSteps": [
+      "Integrate maps API",
+      "Design booking logic",
+      "Connect backend database",
+      "Test real-time updates"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "AI Chatbot for College FAQs",
+    "domain": "AIML",
+    "level": "Beginner",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "NLTK", "Flask"],
+    "solution": "Build an AI chatbot that answers frequently asked college-related questions.",
+    "features": ["Intent recognition", "FAQ training dataset", "Chat interface", "Admin update panel"],
+    "implementationSteps": [
+      "Prepare FAQ dataset",
+      "Train NLP model",
+      "Develop chat UI",
+      "Deploy backend"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 3,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "AI-Powered Expense Forecasting",
+    "domain": "Data Science",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Python", "Pandas", "Prophet", "Matplotlib"],
+    "solution": "Predict future expenses based on historical transaction data.",
+    "features": ["Time-series forecasting", "Expense visualization", "Category insights", "Dashboard"],
+    "implementationSteps": [
+      "Collect transaction data",
+      "Apply forecasting model",
+      "Visualize predictions",
+      "Deploy dashboard"
+    ],
+    "difficultyScore": 7,
+    "estimatedWeeks": 4,
+    "learningCurve": "Moderate",
+    "marketPotential": 8,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "Secure Password Manager",
+    "domain": "Cybersecurity",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["React", "Node.js", "AES Encryption"],
+    "solution": "Build a secure password storage and management application.",
+    "features": ["Encrypted password vault", "Master authentication", "Auto-fill support", "Backup export"],
+    "implementationSteps": [
+      "Implement encryption logic",
+      "Design secure database",
+      "Build frontend UI",
+      "Test security features"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "AI-Based Traffic Prediction System",
+    "domain": "AIML",
+    "level": "Hard",
+    "teamType": "Team of 4",
+    "techStack": ["Python", "TensorFlow", "OpenCV", "Flask"],
+    "solution": "Analyze traffic camera data to predict congestion levels.",
+    "features": ["Video processing", "Traffic density detection", "Prediction model", "Analytics dashboard"],
+    "implementationSteps": [
+      "Collect traffic data",
+      "Train detection model",
+      "Build analytics dashboard",
+      "Deploy system"
+    ],
+    "difficultyScore": 9,
+    "estimatedWeeks": 8,
+    "learningCurve": "Hard",
+    "marketPotential": 10,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "IoT-Based Smart Home Dashboard",
+    "domain": "Cloud Computing",
+    "level": "Intermediate",
+    "teamType": "Team of 3",
+    "techStack": ["AWS IoT", "Node.js", "React"],
+    "solution": "Build a cloud-based dashboard to monitor and control smart home devices.",
+    "features": ["Device control", "Real-time data", "Cloud storage", "Analytics charts"],
+    "implementationSteps": [
+      "Configure IoT devices",
+      "Connect to AWS IoT",
+      "Build dashboard UI",
+      "Deploy cloud backend"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 6,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "AI-Based Resume Keyword Optimizer",
+    "domain": "AIML",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["Python", "NLP", "Flask"],
+    "solution": "Optimize resumes by suggesting missing keywords based on job descriptions.",
+    "features": ["Keyword extraction", "Resume upload", "Optimization suggestions", "Score comparison"],
+    "implementationSteps": [
+      "Implement keyword extraction",
+      "Build scoring logic",
+      "Develop UI",
+      "Deploy application"
+    ],
+    "difficultyScore": 6,
+    "estimatedWeeks": 3,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
+  },
+
+  {
+    "title": "AI-Powered Meeting Summarizer",
+    "domain": "AIML",
+    "level": "Intermediate",
+    "teamType": "Team of 3",
+    "techStack": ["Python", "Speech-to-Text API", "Transformers"],
+    "solution": "Automatically transcribe and summarize meeting recordings.",
+    "features": ["Audio upload", "Speech transcription", "Summary generation", "Export notes"],
+    "implementationSteps": [
+      "Integrate speech API",
+      "Process transcripts",
+      "Generate summary",
+      "Build dashboard"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 6,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 10
+  },
+
+  {
+    "title": "Freelancer Time Tracking App",
+    "domain": "Mobile Application",
+    "level": "Beginner",
+    "teamType": "Solo",
+    "techStack": ["Flutter", "Firebase"],
+    "solution": "Track work hours and generate invoices for freelancers.",
+    "features": ["Timer tracking", "Project categorization", "Invoice export", "Reports"],
+    "implementationSteps": [
+      "Design UI",
+      "Implement timer logic",
+      "Connect Firebase",
+      "Generate PDF invoices"
+    ],
+    "difficultyScore": 5,
+    "estimatedWeeks": 3,
+    "learningCurve": "Easy",
+    "marketPotential": 8,
+    "resumeImpact": 8
+  },
+
+  {
+    "title": "DevOps Log Aggregation Tool",
+    "domain": "DevOps",
+    "level": "Intermediate",
+    "teamType": "Team of 2",
+    "techStack": ["Docker", "ELK Stack", "Node.js"],
+    "solution": "Aggregate and visualize logs from multiple microservices.",
+    "features": ["Centralized logging", "Search filters", "Real-time monitoring", "Alert system"],
+    "implementationSteps": [
+      "Configure ELK stack",
+      "Containerize services",
+      "Integrate log streams",
+      "Deploy monitoring dashboard"
+    ],
+    "difficultyScore": 8,
+    "estimatedWeeks": 5,
+    "learningCurve": "Moderate",
+    "marketPotential": 9,
+    "resumeImpact": 9
   }
 ]

@@ -13,7 +13,7 @@ const Landing = () => {
     ];
 
     return (
-        <div style={{ minHeight: '100vh', overflow: 'hidden', position: 'relative' }}>
+        <div className="page-landing" style={{ minHeight: '100vh', overflow: 'hidden', position: 'relative' }}>
 
             {/* Ambient Background Glows */}
             <div style={{
@@ -65,13 +65,13 @@ const Landing = () => {
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="animate-fadeInUp" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '80px' }}>
+                    <div className="animate-fadeInUp hero-cta" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '80px' }}>
                         {currentUser ? (
                             <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', padding: '14px 40px', fontSize: '16px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                                 Start for free <ArrowRight size={18} />
                             </Link>
                         ) : (
-                            <div style={{ position: 'relative', display: 'flex', gap: '8px', padding: '4px', background: 'rgba(255,255,255,0.7)', borderRadius: '100px', border: '1px solid rgba(0,0,0,0.08)', backdropFilter: 'blur(10px)' }}>
+                            <div className="hero-email-cta" style={{ position: 'relative', display: 'flex', gap: '8px', padding: '4px', background: 'rgba(255,255,255,0.7)', borderRadius: '100px', border: '1px solid rgba(0,0,0,0.08)', backdropFilter: 'blur(10px)' }}>
                                 <input
                                     type="email"
                                     placeholder="Enter your email"
@@ -87,7 +87,7 @@ const Landing = () => {
 
                     {/* 3D Blueprint Generation Mock */}
                     <div className="perspective-2000 animate-fadeInUp" style={{ marginBottom: '120px' }}>
-                        <div style={{
+                        <div className="landing-mock" style={{
                             background: 'rgba(255, 255, 255, 0.65)',
                             backdropFilter: 'blur(16px)',
                             border: '1px solid rgba(212,114,122,0.15)',
@@ -117,7 +117,7 @@ const Landing = () => {
                                 </div>
 
                                 {/* Branches */}
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '40px', width: '100%' }}>
+                                <div className="mock-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '40px', width: '100%' }}>
                                     {[
                                         { title: 'Frontend Strategy', items: ['React + Vite', 'Tailwind', 'Framer Motion'], delay: '0.5s' },
                                         { title: 'Backend Logic', items: ['Node.js', 'Express', 'PostgreSQL'], delay: '1s' },

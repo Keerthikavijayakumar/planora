@@ -84,7 +84,7 @@ const Dashboard = () => {
     allBlueprints.sort((a, b) => b.sortTime - a.sortTime);
 
     return (
-        <div style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '1100px', margin: '0 auto' }}>
+        <div className="page-dashboard" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '1100px', margin: '0 auto' }}>
             {/* Header */}
             <div className="animate-fadeInUp" style={{ marginBottom: '40px' }}>
                 <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
@@ -150,7 +150,7 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Action */}
-            <Link to="/generate" className="glass-card" style={{
+            <Link to="/generate" className="glass-card quick-action-card" style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
@@ -182,7 +182,7 @@ const Dashboard = () => {
 
             {/* Blueprint History */}
             <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <div className="section-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <History size={20} style={{ color: '#8B5C8A' }} />
                         <h2 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a' }}>Blueprint History</h2>
@@ -215,7 +215,7 @@ const Dashboard = () => {
                         {allBlueprints.map((item) => (
                             <div
                                 key={item.id}
-                                className="glass-card"
+                                className="glass-card history-card"
                                 onClick={() => navigate(item.type === 'history' ? `/history/${item.id}` : `/blueprint/${item.id}`)}
                                 style={{
                                     padding: '18px 24px',
