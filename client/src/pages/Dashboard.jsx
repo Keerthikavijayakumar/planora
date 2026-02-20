@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, TrendingUp, Clock, Crown, ArrowRight, History } from 'lucide-react';
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const Dashboard = () => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
@@ -19,9 +21,9 @@ const Dashboard = () => {
                 const token = await currentUser.getIdToken();
                 const headers = { Authorization: `Bearer ${token}` };
                 const [statsRes, ideasRes, historyRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/user/stats', { headers }),
-                    axios.get('http://localhost:5000/api/generate/saved', { headers }),
-                    axios.get('http://localhost:5000/api/generate/history', { headers }).catch(() => ({ data: { history: [] } })),
+                    axios.get(`${apiBaseUrl}/api/user/stats`, { headers }),
+                    axios.get(`${apiBaseUrl}/api/generate/saved`, { headers }),
+                    axios.get(`${apiBaseUrl}/api/generate/history`, { headers }).catch(() => ({ data: { history: [] } })),
                 ]);
                 setStats(statsRes.data);
                 setIdeas(ideasRes.data.ideas || []);

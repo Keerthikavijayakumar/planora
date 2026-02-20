@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { Save, RefreshCw, ChevronRight, Check, ArrowLeft, Sparkles, Clock, AlertTriangle } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const GenerateIdea = () => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
@@ -98,7 +100,7 @@ const GenerateIdea = () => {
         setError('');
         try {
             const token = await currentUser.getIdToken();
-            const res = await axios.post('http://localhost:5000/api/projects/search', formData, {
+            const res = await axios.post(`${apiBaseUrl}/api/projects/search`, formData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -160,7 +162,7 @@ const GenerateIdea = () => {
         setSaving(true);
         try {
             const token = await currentUser.getIdToken();
-            await axios.post('http://localhost:5000/api/generate/save', {
+            await axios.post(`${apiBaseUrl}/api/generate/save`, {
                 blueprint,
                 domain: formData.domain,
                 skillLevel: formData.skillLevel,
@@ -184,7 +186,7 @@ const GenerateIdea = () => {
         setChatSending(true);
         try {
             const token = await currentUser.getIdToken();
-            const res = await axios.post('http://localhost:5000/api/generate/chat', {
+            const res = await axios.post(`${apiBaseUrl}/api/generate/chat`, {
                 blueprint,
                 chatHistory: chatMessages,
                 message: userMsg,

@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { ArrowLeft, Trash2, Check, Clock, Download, Sparkles } from 'lucide-react';
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const BlueprintView = () => {
     const { id } = useParams();
     const { currentUser } = useAuth();
@@ -20,7 +22,7 @@ const BlueprintView = () => {
             if (!currentUser) return;
             try {
                 const token = await currentUser.getIdToken();
-                const res = await axios.get(`http://localhost:5000/api/generate/saved/${id}`, {
+                const res = await axios.get(`${apiBaseUrl}/api/generate/saved/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setIdea(res.data);
@@ -36,7 +38,7 @@ const BlueprintView = () => {
     const handleDelete = async () => {
         try {
             const token = await currentUser.getIdToken();
-            await axios.delete(`http://localhost:5000/api/generate/saved/${id}`, {
+            await axios.delete(`${apiBaseUrl}/api/generate/saved/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             navigate('/saved');
@@ -53,7 +55,7 @@ const BlueprintView = () => {
         setChatSending(true);
         try {
             const token = await currentUser.getIdToken();
-            const res = await axios.post('http://localhost:5000/api/generate/chat', {
+            const res = await axios.post(`${apiBaseUrl}/api/generate/chat`, {
                 blueprint: idea.blueprint,
                 chatHistory: chatMessages,
                 message: userMsg,

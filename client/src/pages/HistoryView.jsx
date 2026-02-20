@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { ArrowLeft, Save, Check, Clock, Sparkles } from 'lucide-react';
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const HistoryView = () => {
     const { id } = useParams();
     const { currentUser } = useAuth();
@@ -22,14 +24,14 @@ const HistoryView = () => {
             if (!currentUser) return;
             try {
                 const token = await currentUser.getIdToken();
-                const res = await axios.get(`http://localhost:5000/api/generate/history/${id}`, {
+                const res = await axios.get(`${apiBaseUrl}/api/generate/history/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setItem(res.data);
 
                 // Load saved chat messages
                 try {
-                    const chatRes = await axios.get(`http://localhost:5000/api/generate/chat/${id}`, {
+                    const chatRes = await axios.get(`${apiBaseUrl}/api/generate/chat/${id}`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     if (chatRes.data.messages?.length > 0) {
@@ -52,7 +54,7 @@ const HistoryView = () => {
         setSaving(true);
         try {
             const token = await currentUser.getIdToken();
-            await axios.post('http://localhost:5000/api/generate/save', {
+            await axios.post(`${apiBaseUrl}/api/generate/save`, {
                 blueprint: item.blueprint,
                 domain: item.domain,
                 skillLevel: item.skillLevel,
@@ -75,7 +77,7 @@ const HistoryView = () => {
         setChatSending(true);
         try {
             const token = await currentUser.getIdToken();
-            const res = await axios.post('http://localhost:5000/api/generate/chat', {
+            const res = await axios.post(`${apiBaseUrl}/api/generate/chat`, {
                 blueprint: item.blueprint,
                 chatHistory: chatMessages,
                 message: userMsg,
