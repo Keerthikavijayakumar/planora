@@ -83,6 +83,10 @@ const Navbar = () => {
                                 onMouseEnter={e => e.target.style.color = '#1a1a1a'}
                                 onMouseLeave={e => e.target.style.color = '#888'}
                             >Saved</Link>
+                            <Link to="/premium" style={{ color: '#D4A017', textDecoration: 'none', fontSize: '14px', fontWeight: 600, padding: '8px 16px', borderRadius: '8px', transition: 'all 0.2s', background: 'rgba(255,215,0,0.08)', border: '1px solid rgba(255,215,0,0.2)' }}
+                                onMouseEnter={e => { e.target.style.background = 'rgba(255,215,0,0.15)'; e.target.style.borderColor = 'rgba(255,215,0,0.3)'; }}
+                                onMouseLeave={e => { e.target.style.background = 'rgba(255,215,0,0.08)'; e.target.style.borderColor = 'rgba(255,215,0,0.2)'; }}
+                            >👑 Premium</Link>
 
                             {/* User Profile */}
                             <div style={{
@@ -174,6 +178,7 @@ const Navbar = () => {
                             <Link to="/dashboard" onClick={() => setMobileOpen(false)} style={{ color: '#555', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Dashboard</Link>
                             <Link to="/generate" onClick={() => setMobileOpen(false)} style={{ color: 'var(--color-accent)', textDecoration: 'none', padding: '12px 0', fontSize: '15px', fontWeight: 600 }}>+ New Idea</Link>
                             <Link to="/saved" onClick={() => setMobileOpen(false)} style={{ color: '#555', textDecoration: 'none', padding: '12px 0', fontSize: '15px' }}>Saved Ideas</Link>
+                            <Link to="/premium" onClick={() => setMobileOpen(false)} style={{ color: '#D4A017', textDecoration: 'none', padding: '12px 0', fontSize: '15px', fontWeight: 600 }}>👑 Premium</Link>
                             <button onClick={() => { handleLogout(); setMobileOpen(false); }} style={{ color: '#999', background: 'none', border: 'none', padding: '12px 0', fontSize: '15px', cursor: 'pointer', textAlign: 'left' }}>Logout</button>
                         </>
                     ) : (

@@ -10,6 +10,7 @@ import GenerateIdea from './pages/GenerateIdea';
 import SavedIdeas from './pages/SavedIdeas';
 import BlueprintView from './pages/BlueprintView';
 import HistoryView from './pages/HistoryView';
+import Premium from './pages/Premium';
 import Navbar from './components/Navbar';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/premium" element={<Premium />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />

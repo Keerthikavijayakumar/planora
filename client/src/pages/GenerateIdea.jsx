@@ -249,7 +249,7 @@ const GenerateIdea = () => {
     if (limitReached) {
         return (
             <div className="page-generate-limit" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-                <div className="glass-card animate-fadeInUp" style={{ padding: '48px 40px', textAlign: 'center', maxWidth: '480px', width: '100%' }}>
+                <div className="glass-card animate-fadeInUp" style={{ padding: '48px 40px', textAlign: 'center', maxWidth: '520px', width: '100%' }}>
                     <div style={{
                         width: '72px', height: '72px', borderRadius: '20px',
                         background: 'rgba(239,68,68,0.06)',
@@ -274,11 +274,45 @@ const GenerateIdea = () => {
                             <Clock size={16} /> Come back in {daysLeft} day{daysLeft !== 1 ? 's' : ''} for 5 more!
                         </div>
                     </div>
+                    
+                    {/* Premium Upgrade Section */}
+                    <div style={{
+                        padding: '24px',
+                        borderRadius: '14px',
+                        background: 'linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,193,7,0.08))',
+                        border: '1px solid rgba(255,215,0,0.25)',
+                        marginBottom: '24px'
+                    }}>
+                        <div style={{ fontSize: '20px', marginBottom: '8px' }}>👑</div>
+                        <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>
+                            Want Unlimited Access?
+                        </h3>
+                        <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', lineHeight: 1.5 }}>
+                            Upgrade to Premium and generate unlimited blueprints with advanced AI insights
+                        </p>
+                        <Link 
+                            to="/premium" 
+                            className="btn-primary" 
+                            style={{ 
+                                textDecoration: 'none', 
+                                padding: '12px 24px', 
+                                fontSize: '14px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                background: 'linear-gradient(135deg, #D4A017, #FFD700)',
+                                boxShadow: '0 4px 12px rgba(212,160,23,0.25)'
+                            }}
+                        >
+                            <Sparkles size={16} /> Upgrade to Premium
+                        </Link>
+                    </div>
+                    
                     <div className="stack-actions" style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                         <Link to="/dashboard" className="btn-secondary" style={{ textDecoration: 'none', padding: '10px 20px', fontSize: '13px' }}>
                             Dashboard
                         </Link>
-                        <Link to="/saved" className="btn-primary" style={{ textDecoration: 'none', padding: '10px 20px', fontSize: '13px' }}>
+                        <Link to="/saved" className="btn-secondary" style={{ textDecoration: 'none', padding: '10px 20px', fontSize: '13px' }}>
                             View Saved
                         </Link>
                     </div>
