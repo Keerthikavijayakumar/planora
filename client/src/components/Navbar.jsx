@@ -67,8 +67,9 @@ const Navbar = () => {
                 </Link>
 
                 {/* Desktop Links */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                <div
                     className="hidden md:flex"
+                    style={{ alignItems: 'center', gap: '8px' }}
                 >
                     {currentUser ? (
                         <>
@@ -148,11 +149,9 @@ const Navbar = () => {
                     borderTop: '1px solid rgba(0,0,0,0.06)',
                     background: 'rgba(255, 255, 255, 0.95)',
                     backdropFilter: 'blur(20px)',
-                    display: 'flex',
-                    flexDirection: 'column',
                     gap: '4px',
                 }}
-                    className="md:hidden"
+                    className="flex flex-col md:hidden"
                 >
                     {currentUser ? (
                         <>
