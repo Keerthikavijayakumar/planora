@@ -1,23 +1,22 @@
 @import "tailwindcss";
 
-/* ====== Google Fonts (also loaded via HTML link for performance) ====== */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+/* ====== Google Fonts ====== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ====== CSS Custom Properties ====== */
 :root {
-    --color-accent: #D4727A;
-    --color-accent-dark: #BF5A62;
-    --color-accent-light: #F2C4C8;
-    --color-accent-bg: #FFF0F1;
-    --gradient-page: linear-gradient(160deg, #f8f8f8 0%, #fce4ec 50%, #f5f0f0 100%);
-    --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.6));
-    --glass-bg: rgba(255, 255, 255, 0.72);
-    --glass-border: rgba(0, 0, 0, 0.06);
-    --text-primary: #1a1a1a;
-    --text-secondary: #6b6b6b;
-    --text-muted: #999;
-    --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --color-accent: #000000;
+    --color-accent-dark: #000000;
+    --color-accent-light: #1f2937;
+    --color-accent-bg: #f9fafb;
+    --gradient-page: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff, #fdfdfd);
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #9ca3af;
+    --font-sans: 'Poppins', sans-serif;
 }
 
 /* ====== Base Reset ====== */
@@ -76,58 +75,36 @@ body {
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, var(--color-accent), #8B5C8A);
+    background: linear-gradient(135deg, #000, #444);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-.accent-glow {
-    box-shadow: 0 0 30px rgba(212, 114, 122, 0.08),
-        0 0 60px rgba(212, 114, 122, 0.03);
-}
-
 .heading-serif {
-    font-family: var(--font-serif);
-    letter-spacing: -0.02em;
-}
-
-.pink-underline {
-    position: relative;
-    display: inline-block;
-}
-
-.pink-underline::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 2px;
-    width: 100%;
-    height: 6px;
-    background: var(--color-accent-light);
-    border-radius: 3px;
-    z-index: -1;
-    opacity: 0.7;
+    font-family: var(--font-sans);
+    letter-spacing: -0.04em;
+    font-weight: 800;
 }
 
 .btn-primary {
-    background: #1a1a1a;
+    background: #000;
     color: #fff;
     font-weight: 600;
     padding: 14px 32px;
     border-radius: 100px;
     border: none;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     font-size: 15px;
     letter-spacing: 0.01em;
     font-family: var(--font-sans);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    background: #333;
+    transform: scale(1.02);
+    background: #111;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:active {
@@ -174,8 +151,7 @@ body {
 }
 
 .input-field:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(212, 114, 122, 0.12);
+    border-color: #000;
 }
 
 .input-field::placeholder {

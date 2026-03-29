@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planora-client
+  labels:
+    app: client
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+      - name: client
+        image: 232420921471.dkr.ecr.us-east-1.amazonaws.com/planora-client
+        ports:
+        - containerPort: 80
+        env:
+        - name: VITE_API_URL
+          value: "http://a599ee7b0b528483fb0b032ab69c855d-169742227.us-east-1.elb.amazonaws.com"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: planora-client-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: client
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

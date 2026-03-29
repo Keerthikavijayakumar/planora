@@ -10,19 +10,19 @@ import GenerateIdea from './pages/GenerateIdea';
 import SavedIdeas from './pages/SavedIdeas';
 import BlueprintView from './pages/BlueprintView';
 import HistoryView from './pages/HistoryView';
-import Premium from './pages/Premium';
+import ModernPlans from './pages/ModernPlans';
 import Navbar from './components/Navbar';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <div style={{ minHeight: '100vh', background: 'var(--gradient-page)', backgroundAttachment: 'fixed', color: 'var(--text-primary)', fontFamily: "'Inter', sans-serif" }} className="selection:bg-primary-100 selection:text-primary-800">
+        <div className="min-h-screen">
           <Navbar />
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/premium" element={<Premium />} />
+            <Route path="/premium" element={<ModernPlans />} />
 
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />

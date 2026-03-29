@@ -1,0 +1,25 @@
+name: Planora CI
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install deps
+        run: |
+          cd server
+          npm install
+
+      - name: Build Docker Image
+        run: docker build -t gowthamcd/planora-backend ./server
+
+      - name: Push Image
+        run: |
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+          docker push gowthamcd/planora-backend

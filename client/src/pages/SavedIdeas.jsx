@@ -1,21 +1,25 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Trash2, Layers, ArrowRight, Eye, ChevronRight } from 'lucide-react';
+import { Trash2, Layers, ArrowRight, ChevronRight, Search } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 const SavedIdeas = () => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
     const [ideas, setIdeas] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchIdeas = async () => {
             if (!currentUser) return;
             try {
                 const token = await currentUser.getIdToken();
-                const res = await axios.get('http://localhost:5000/api/generate/saved', {
+                const res = await axios.get(`${apiBaseUrl}/api/generate/saved`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setIdeas(res.data.ideas || []);
@@ -32,7 +36,7 @@ const SavedIdeas = () => {
         e.stopPropagation();
         try {
             const token = await currentUser.getIdToken();
-            await axios.delete(`http://localhost:5000/api/generate/saved/${id}`, {
+            await axios.delete(`${apiBaseUrl}/api/generate/saved/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setIdeas(ideas.filter(i => i.id !== id));
@@ -41,142 +45,107 @@ const SavedIdeas = () => {
         }
     };
 
+    const filteredIdeas = ideas.filter(idea => 
+        idea.blueprint?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        idea.domain?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '64px' }}>
-                <div style={{
-                    width: '48px', height: '48px',
-                    border: '3px solid rgba(0,0,0,0.06)',
-                    borderTop: '3px solid var(--color-accent)',
-                    borderRadius: '50%',
-                    animation: 'spin-slow 1s linear infinite',
-                }} />
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
+                <div style={{ width: '40px', height: '40px', border: '3px solid #f3f4f6', borderTop: '4px solid #000', borderRadius: '50%', animation: 'spin-slow 1s linear infinite' }} />
             </div>
         );
     }
 
     return (
-        <div className="page-saved" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '900px', margin: '0 auto' }}>
-            <div className="animate-fadeInUp">
-                <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>Saved Blueprints</h1>
-                <p style={{ color: '#999', fontSize: '15px', marginBottom: '36px' }}>
-                    {ideas.length} blueprint{ideas.length !== 1 ? 's' : ''} in your library
-                </p>
+        <div style={{ minHeight: '100vh', backgroundColor: '#ffffff', fontFamily: "'Poppins', sans-serif", padding: '120px 5% 60px' }}>
+            <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '48px', flexWrap: 'wrap', gap: '24px' }}>
+                    <div>
+                        <h1 style={{ fontSize: '40px', fontWeight: 800, color: '#111827', marginBottom: '8px', letterSpacing: '-0.04em' }}>Library</h1>
+                        <p style={{ color: '#6b7280', fontSize: '16px' }}>{ideas.length} blueprints architected by Planora AI</p>
+                    </div>
+                    <div style={{ position: 'relative', width: '300px' }}>
+                        <Search size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+                        <input 
+                            type="text" 
+                            placeholder="Search blueprints..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ width: '100%', padding: '12px 16px 12px 48px', borderRadius: '14px', border: '1px solid #e5e7eb', outline: 'none', background: '#f9fafb', fontSize: '14px' }}
+                        />
+                    </div>
+                </div>
 
                 {ideas.length === 0 ? (
-                    <div className="glass-card" style={{
-                        padding: '64px 32px',
-                        textAlign: 'center',
-                    }}>
-                        <div style={{
-                            width: '64px', height: '64px', borderRadius: '16px',
-                            background: 'rgba(212,114,122,0.06)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            margin: '0 auto 20px',
-                        }}>
-                            <Layers size={28} style={{ color: 'var(--color-accent)' }} />
-                        </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>No blueprints yet</h3>
-                        <p style={{ color: '#999', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to get started.</p>
-                        <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            Generate Idea <ArrowRight size={16} />
-                        </Link>
-                    </div>
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', padding: '100px 40px', background: '#f9fafb', borderRadius: '32px', border: '1px solid #f3f4f6' }}>
+                        <Layers size={48} color="#9ca3af" style={{ marginBottom: '24px' }} />
+                        <h3 style={{ fontSize: '20px', fontWeight: 800, marginBottom: '12px' }}>Your library is empty</h3>
+                        <p style={{ color: '#6b7280', marginBottom: '32px' }}>Generate your first technical blueprint to see it here.</p>
+                        <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', padding: '14px 28px' }}>Create Blueprint <ArrowRight size={18} style={{ marginLeft: '8px' }} /></Link>
+                    </motion.div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        {ideas.map((idea) => {
-                            const bp = idea.blueprint;
-                            return (
-                                <div
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+                        <AnimatePresence>
+                            {filteredIdeas.map((idea, idx) => (
+                                <motion.div
                                     key={idea.id}
-                                    className="glass-card saved-card"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ delay: idx * 0.05 }}
                                     onClick={() => navigate(`/blueprint/${idea.id}`)}
                                     style={{
-                                        padding: '24px 28px',
-                                        transition: 'all 0.2s ease',
+                                        background: '#fff',
+                                        border: '1px solid #f3f4f6',
+                                        borderRadius: '24px',
+                                        padding: '24px',
                                         cursor: 'pointer',
+                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                        position: 'relative',
+                                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
                                     }}
-                                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(212,114,122,0.2)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.06)'; }}
-                                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.04)'; }}
+                                    onMouseEnter={e => {
+                                        e.currentTarget.style.transform = 'translateY(-4px)';
+                                        e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1)';
+                                        e.currentTarget.style.borderColor = '#000';
+                                    }}
+                                    onMouseLeave={e => {
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                        e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.05)';
+                                        e.currentTarget.style.borderColor = '#f3f4f6';
+                                    }}
                                 >
-                                    {/* Top row: title + actions */}
-                                    <div className="saved-top" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                        <div style={{ flex: 1 }}>
-                                            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>
-                                                {bp?.title || 'Untitled Blueprint'}
-                                            </h3>
-                                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                                                <span style={{
-                                                    padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                    background: 'rgba(212,114,122,0.08)', color: 'var(--color-accent-dark)',
-                                                }}>
-                                                    {idea.domain}
-                                                </span>
-                                                <span style={{
-                                                    padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                    background: 'rgba(139,92,138,0.06)', color: '#8B5C8A',
-                                                }}>
-                                                    {idea.skillLevel}
-                                                </span>
-                                                {bp?.market_potential_score && (
-                                                    <span style={{
-                                                        padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                        background: 'rgba(34,197,94,0.06)', color: '#16a34a',
-                                                    }}>
-                                                        Score: {bp.market_potential_score}/10
-                                                    </span>
-                                                )}
-                                            </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                                        <div style={{ background: '#f3f4f6', padding: '8px', borderRadius: '12px' }}>
+                                            <Layers size={20} />
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <button
-                                                onClick={(e) => handleDelete(e, idea.id)}
-                                                style={{
-                                                    background: 'none', border: 'none', color: '#ccc', cursor: 'pointer',
-                                                    padding: '10px', borderRadius: '10px', transition: 'all 0.2s ease',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                }}
-                                                onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.06)'; }}
-                                                onMouseLeave={e => { e.currentTarget.style.color = '#ccc'; e.currentTarget.style.background = 'none'; }}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                        <button 
+                                            onClick={(e) => handleDelete(e, idea.id)}
+                                            style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', padding: '4px' }}
+                                            onMouseEnter={e => e.currentTarget.style.color = '#ef4444'}
+                                            onMouseLeave={e => e.currentTarget.style.color = '#9ca3af'}
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                    <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '8px', height: '54px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                                        {idea.blueprint?.title || 'Untitled Project'}
+                                    </h3>
+                                    <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+                                        <span style={{ fontSize: '11px', fontWeight: 800, background: '#000', color: '#fff', padding: '4px 12px', borderRadius: '100px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{idea.domain}</span>
+                                        <span style={{ fontSize: '11px', fontWeight: 800, background: '#f3f4f6', color: '#111827', padding: '4px 12px', borderRadius: '100px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{idea.skillLevel}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #f3f4f6', paddingTop: '16px', marginTop: 'auto' }}>
+                                        <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: 600 }}>{new Date(idea.createdAt).toLocaleDateString()}</span>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, fontSize: '12px', color: '#000', letterSpacing: '0.05em' }}>
+                                            OPEN <ChevronRight size={16} />
                                         </div>
                                     </div>
-
-                                    {/* Problem statement preview */}
-                                    {bp?.problem_statement && (
-                                        <p style={{
-                                            fontSize: '13px', color: '#888', lineHeight: 1.5, marginBottom: '14px',
-                                            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
-                                        }}>
-                                            {bp.problem_statement}
-                                        </p>
-                                    )}
-
-                                    {/* Quick stats preview */}
-                                    <div className="saved-bottom" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-                                        {bp?.recommended_tech_stack && (
-                                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                                {['frontend', 'backend', 'database'].map(key => (
-                                                    bp.recommended_tech_stack[key] && (
-                                                        <span key={key} style={{
-                                                            padding: '3px 10px', borderRadius: '6px', fontSize: '11px',
-                                                            background: 'rgba(0,0,0,0.03)', color: '#999', fontWeight: 500,
-                                                        }}>
-                                                            {bp.recommended_tech_stack[key]}
-                                                        </span>
-                                                    )
-                                                ))}
-                                            </div>
-                                        )}
-                                        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-accent)', fontSize: '12px', fontWeight: 600 }}>
-                                            View Full Plan <ChevronRight size={14} />
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
                     </div>
                 )}
             </div>

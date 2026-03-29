@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, TrendingUp, Clock, Crown, ArrowRight, History } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Sparkles, TrendingUp, Clock, Crown, ArrowRight, History, Heart, Share2 } from 'lucide-react';
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
@@ -39,11 +40,11 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '64px' }}>
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
                 <div style={{
-                    width: '48px', height: '48px',
-                    border: '3px solid rgba(0,0,0,0.06)',
-                    borderTop: '3px solid var(--color-accent)',
+                    width: '40px', height: '40px',
+                    border: '3px solid #f3f4f6',
+                    borderTop: '3px solid #000',
                     borderRadius: '50%',
                     animation: 'spin-slow 1s linear infinite',
                 }} />
@@ -57,215 +58,172 @@ const Dashboard = () => {
 
     const formatDate = (ts) => {
         if (!ts?._seconds) return '';
-        return new Date(ts._seconds * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        return new Date(ts._seconds * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     };
 
-    const allBlueprints = [];
-
-    history.forEach(item => {
-        allBlueprints.push({
-            ...item,
-            type: 'history',
-            sortTime: item.createdAt?._seconds || 0,
-        });
-    });
-
-    ideas.forEach(item => {
-        const alreadyInHistory = history.some(h =>
-            h.blueprint?.title === item.blueprint?.title && h.domain === item.domain
-        );
-        if (!alreadyInHistory) {
-            allBlueprints.push({
-                ...item,
-                type: 'saved',
-                sortTime: item.createdAt?._seconds || 0,
-            });
-        }
-    });
-
-    allBlueprints.sort((a, b) => b.sortTime - a.sortTime);
+    const allBlueprints = [...history.map(h => ({ ...h, type: 'history' })), ...ideas.filter(i => !history.some(h => h.blueprint?.title === i.blueprint?.title)).map(i => ({ ...i, type: 'saved' }))].sort((a, b) => (b.createdAt?._seconds || 0) - (a.createdAt?._seconds || 0));
 
     return (
-        <div className="page-dashboard" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '1100px', margin: '0 auto' }}>
-            {/* Header */}
-            <div className="animate-fadeInUp" style={{ marginBottom: '40px' }}>
-                <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>
-                    Dashboard
-                </h1>
-                <p style={{ color: '#999', fontSize: '15px' }}>
-                    Welcome back, {currentUser?.email?.split('@')[0] || 'builder'}
-                </p>
-            </div>
+        <div className="modern-dashboard" style={{ 
+            fontFamily: "'Poppins', sans-serif",
+            backgroundColor: '#ffffff',
+            minHeight: '100vh',
+            padding: '120px 5% 60px',
+            color: '#111827'
+        }}>
+            <style dangerouslySetInnerHTML={{ __html: `
+                .stat-card {
+                    padding: 32px;
+                    border-radius: 24px;
+                    background: #f9fafb;
+                    border: 1px solid #f3f4f6;
+                    transition: all 0.3s ease;
+                }
+                .quick-action-bar {
+                    background: #000;
+                    color: #fff;
+                    padding: 32px 40px;
+                    border-radius: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 60px;
+                    cursor: pointer;
+                    transition: transform 0.3s ease;
+                    text-decoration: none;
+                }
+                .quick-action-bar:hover {
+                    transform: scale(1.01);
+                }
+                .history-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 24px;
+                    border-bottom: 1px solid #f3f4f6;
+                    transition: background 0.2s ease;
+                    cursor: pointer;
+                    text-decoration: none;
+                    color: inherit;
+                }
+                .history-item:hover {
+                    background: #fdfdfd;
+                }
+                .badge-neutral {
+                    padding: 4px 12px;
+                    background: #f3f4f6;
+                    border-radius: 100px;
+                    font-size: 11px;
+                    font-weight: 800;
+                    color: #111827;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+                .badge-success {
+                    padding: 4px 12px;
+                    background: #d1fae5;
+                    border-radius: 100px;
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #065f46;
+                    text-transform: uppercase;
+                }
+                .progress-container {
+                    height: 8px;
+                    background: #e5e7eb;
+                    border-radius: 100px;
+                    overflow: hidden;
+                    margin: 16px 0;
+                }
+            ` }} />
 
-            {/* Stats Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '48px' }}
-                className="animate-fadeInUp"
-            >
-                {/* Usage Card */}
-                <div className="glass-card" style={{ padding: '28px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <span style={{ fontSize: '13px', color: '#999', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Weekly Usage</span>
-                        <Clock size={18} style={{ color: 'var(--color-accent)' }} />
-                    </div>
-                    <div style={{ fontSize: '36px', fontWeight: 800, color: '#1a1a1a', marginBottom: '12px', fontFamily: "'Playfair Display', serif" }}>
-                        {usage}<span style={{ fontSize: '18px', color: '#ccc' }}>/{maxUsage}</span>
-                    </div>
-                    <div style={{ height: '6px', borderRadius: '3px', background: 'rgba(0,0,0,0.04)', overflow: 'hidden' }}>
-                        <div style={{
-                            height: '100%',
-                            borderRadius: '3px',
-                            width: `${usagePercent}%`,
-                            background: usagePercent >= 80 ? 'linear-gradient(90deg, #EF4444, var(--color-accent))' : 'linear-gradient(90deg, var(--color-accent), #22C55E)',
-                            transition: 'width 0.5s ease',
-                        }} />
-                    </div>
-                    <p style={{ fontSize: '12px', color: '#bbb', marginTop: '8px' }}>
-                        {maxUsage - usage} ideas remaining this week
-                    </p>
-                </div>
+            <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    style={{ marginBottom: '48px' }}
+                >
+                    <h1 style={{ fontSize: '36px', fontWeight: 800, marginBottom: '8px', letterSpacing: '-0.04em' }}>Dashboard</h1>
+                    <p style={{ color: '#6b7280', fontSize: '16px' }}>Managing projects for {currentUser?.email}</p>
+                </motion.div>
 
-                {/* Account Card */}
-                <div className="glass-card" style={{ padding: '28px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <span style={{ fontSize: '13px', color: '#999', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Account</span>
-                        <Crown size={18} style={{ color: '#8B5C8A' }} />
-                    </div>
-                    <div style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>
-                        {stats?.role === 'premium' ? 'Premium' : 'Free Plan'}
-                    </div>
-                    <p style={{ fontSize: '13px', color: '#999' }}>
-                        {stats?.role === 'premium' ? 'Unlimited blueprints' : '5 blueprints per week'}
-                    </p>
-                </div>
-
-                {/* Total Generated Card */}
-                <div className="glass-card" style={{ padding: '28px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <span style={{ fontSize: '13px', color: '#999', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Generated</span>
-                        <History size={18} style={{ color: '#8B5C8A' }} />
-                    </div>
-                    <div style={{ fontSize: '36px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px', fontFamily: "'Playfair Display', serif" }}>
-                        {Math.max(usage, allBlueprints.length)}
-                    </div>
-                    <p style={{ fontSize: '13px', color: '#999' }}>blueprints generated this week</p>
-                </div>
-            </div>
-
-            {/* Quick Action */}
-            <Link to="/generate" className="glass-card quick-action-card" style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '24px 32px',
-                textDecoration: 'none',
-                marginBottom: '48px',
-                transition: 'all 0.3s ease',
-                borderColor: 'rgba(212,114,122,0.15)',
-                boxShadow: '0 4px 24px rgba(212,114,122,0.06)',
-            }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-            >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <div style={{
-                        width: '44px', height: '44px', borderRadius: '12px',
-                        background: 'linear-gradient(135deg, #D4727A, #E8A0A6)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                        <Sparkles size={20} color="#fff" />
-                    </div>
-                    <div>
-                        <div style={{ color: '#1a1a1a', fontWeight: 700, fontSize: '16px' }}>Generate New Idea</div>
-                        <div style={{ color: '#999', fontSize: '13px' }}>Create a structured project blueprint with AI</div>
-                    </div>
-                </div>
-                <ArrowRight size={20} style={{ color: 'var(--color-accent)' }} />
-            </Link>
-
-            {/* Blueprint History */}
-            <div>
-                <div className="section-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <History size={20} style={{ color: '#8B5C8A' }} />
-                        <h2 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a' }}>Blueprint History</h2>
-                    </div>
-                    {ideas.length > 0 && (
-                        <Link to="/saved" style={{ color: 'var(--color-accent)', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>
-                            View Saved →
-                        </Link>
-                    )}
-                </div>
-
-                {allBlueprints.length === 0 ? (
-                    <div className="glass-card" style={{ padding: '48px 32px', textAlign: 'center' }}>
-                        <div style={{
-                            width: '56px', height: '56px', borderRadius: '14px',
-                            background: 'rgba(139,92,138,0.06)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            margin: '0 auto 16px',
-                        }}>
-                            <History size={24} style={{ color: '#8B5C8A' }} />
+                {/* Main Stats */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '48px' }}>
+                    <motion.div className="stat-card" whileHover={{ y: -5 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 700, color: '#9ca3af', letterSpacing: '0.05em' }}>WEEKLY USAGE</span>
+                            <Clock size={18} color="#9ca3af" />
                         </div>
-                        <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>No blueprints generated yet</h3>
-                        <p style={{ color: '#999', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to see your history here.</p>
-                        <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            Generate Idea <ArrowRight size={16} />
-                        </Link>
+                        <div style={{ fontSize: '48px', fontWeight: 800 }}>{usage}<span style={{ color: '#e5e7eb', fontSize: '24px' }}>/{maxUsage}</span></div>
+                        <div className="progress-container">
+                            <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${usagePercent}%` }}
+                                style={{ height: '100%', backgroundColor: '#000' }} 
+                            />
+                        </div>
+                        <p style={{ fontSize: '13px', color: '#6b7280' }}>Reset in 3 days</p>
+                    </motion.div>
+
+                    <motion.div className="stat-card" whileHover={{ y: -5 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: 700, color: '#9ca3af', letterSpacing: '0.05em' }}>CREDITS</span>
+                            <Crown size={18} color="#9ca3af" />
+                        </div>
+                        <div style={{ fontSize: '32px', fontWeight: 800 }}>{stats?.role === 'premium' ? 'Premium' : 'Free Tier'}</div>
+                        <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '12px' }}>{stats?.role === 'premium' ? 'Unlimited access enabled' : 'UPGRADE TO REMOVE LIMITS'}</p>
+                    </motion.div>
+                </div>
+
+                {/* Quick Action */}
+                <Link to="/generate" className="quick-action-bar">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                        <div style={{ width: '48px', height: '48px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Sparkles size={24} />
+                        </div>
+                        <div>
+                            <div style={{ fontSize: '18px', fontWeight: 700 }}>New Project Blueprint</div>
+                            <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>Generate technical architecture in seconds</div>
+                        </div>
                     </div>
-                ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {allBlueprints.map((item) => (
-                            <div
-                                key={item.id}
-                                className="glass-card history-card"
-                                onClick={() => navigate(item.type === 'history' ? `/history/${item.id}` : `/blueprint/${item.id}`)}
-                                style={{
-                                    padding: '18px 24px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease',
-                                }}
-                                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(212,114,122,0.2)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                            >
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                                        <h3 style={{ fontSize: '15px', fontWeight: 600, color: '#1a1a1a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                            {item.blueprint?.title || 'Untitled Blueprint'}
-                                        </h3>
-                                        {item.type === 'saved' && (
-                                            <span style={{
-                                                padding: '1px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 700,
-                                                background: 'rgba(34,197,94,0.08)', color: '#16a34a', textTransform: 'uppercase',
-                                            }}>Saved</span>
-                                        )}
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
-                                        <span style={{ padding: '2px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, background: 'rgba(212,114,122,0.08)', color: 'var(--color-accent-dark)' }}>
-                                            {item.domain}
-                                        </span>
-                                        <span style={{ padding: '2px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, background: 'rgba(139,92,138,0.06)', color: '#8B5C8A' }}>
-                                            {item.skillLevel}
-                                        </span>
-                                        {item.blueprint?.market_potential_score && (
-                                            <span style={{ fontSize: '11px', color: '#16a34a', fontWeight: 600 }}>
-                                                Score: {item.blueprint.market_potential_score}/10
-                                            </span>
-                                        )}
-                                        {item.sortTime > 0 && (
-                                            <span style={{ fontSize: '11px', color: '#bbb', marginLeft: 'auto' }}>
-                                                {formatDate(item.createdAt)}
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                                <ArrowRight size={16} style={{ color: '#8B5C8A', marginLeft: '12px', flexShrink: 0 }} />
+                    <ArrowRight size={24} />
+                </Link>
+
+                {/* History Section */}
+                <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                        <h2 style={{ fontSize: '24px', fontWeight: 800 }}>Recent Blueprints</h2>
+                        <Link to="/saved" style={{ fontSize: '14px', fontWeight: 700, color: '#000', textDecoration: 'none' }}>View All</Link>
+                    </div>
+
+                    <div style={{ background: '#fff', borderRadius: '24px', border: '1px solid #f3f4f6', overflow: 'hidden' }}>
+                        {allBlueprints.length === 0 ? (
+                            <div style={{ padding: '80px 40px', textAlign: 'center' }}>
+                                <History size={48} color="#e5e7eb" style={{ marginBottom: '24px' }} />
+                                <p style={{ color: '#9ca3af', fontWeight: 500 }}>No project history yet.</p>
                             </div>
-                        ))}
+                        ) : (
+                            allBlueprints.slice(0, 5).map((item, i) => (
+                                <Link 
+                                    key={item.id} 
+                                    to={item.type === 'history' ? `/history/${item.id}` : `/blueprint/${item.id}`}
+                                    className="history-item"
+                                >
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
+                                            <span style={{ fontSize: '16px', fontWeight: 700 }}>{item.blueprint?.title || 'Untitled Project'}</span>
+                                            {item.type === 'saved' && <span className="badge-success">Saved</span>}
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                            <span className="badge-neutral">{item.domain}</span>
+                                            <span style={{ fontSize: '13px', color: '#9ca3af' }}>{formatDate(item.createdAt)}</span>
+                                        </div>
+                                    </div>
+                                    <div style={{ color: '#000' }}><ArrowRight size={20} /></div>
+                                </Link>
+                            ))
+                        )}
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );

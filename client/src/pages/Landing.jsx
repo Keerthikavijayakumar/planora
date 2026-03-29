@@ -1,6 +1,8 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { Sparkles, Layers, Brain, Target, Zap, ArrowRight, Star, ChevronRight } from 'lucide-react';
+import { Sparkles, Layers, Brain, Target, Zap, ArrowRight, Check, ChevronRight } from 'lucide-react';
 
 const Landing = () => {
     const { currentUser } = useAuth();
@@ -12,203 +14,224 @@ const Landing = () => {
         { icon: <Zap size={24} />, title: "Instant Blueprints", desc: "Complete project architecture in seconds — features, tech stack, roadmap, and differentiation." },
     ];
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.23, 1, 0.32, 1] } }
+    };
+
     return (
-        <div className="page-landing" style={{ minHeight: '100vh', overflow: 'hidden', position: 'relative' }}>
+        <div className="modern-landing-root" style={{ 
+            fontFamily: "'Poppins', sans-serif",
+            backgroundColor: '#ffffff',
+            color: '#111827',
+            minHeight: '100vh',
+            overflowX: 'hidden'
+        }}>
+            <style dangerouslySetInnerHTML={{ __html: `
+                .hero-section {
+                    padding: 160px 5% 100px;
+                    text-align: center;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                }
+                .hero-headline {
+                    font-size: clamp(48px, 8vw, 92px);
+                    font-weight: 800;
+                    line-height: 0.95;
+                    letter-spacing: -0.05em;
+                    color: #000;
+                    margin-bottom: 32px;
+                }
+                .hero-subtitle {
+                    font-size: clamp(18px, 2vw, 22px);
+                    color: #4b5563;
+                    max-width: 700px;
+                    margin: 0 auto 48px;
+                    line-height: 1.5;
+                }
+                .cta-group {
+                    display: flex;
+                    gap: 16px;
+                    justify-content: center;
+                    margin-bottom: 80px;
+                }
+                .feature-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    gap: 24px;
+                    padding: 80px 5%;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                }
+                .feature-card {
+                    padding: 40px;
+                    border-radius: 24px;
+                    background: #f9fafb;
+                    border: 1px solid #f3f4f6;
+                    transition: all 0.3s ease;
+                }
+                .feature-card:hover {
+                    background: #fff;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+                    transform: translateY(-5px);
+                }
+                .mock-preview {
+                    background: #000;
+                    border-radius: 32px;
+                    padding: 40px;
+                    margin: 0 5%;
+                    color: #fff;
+                    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+                    max-width: 1100px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+                .status-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 6px 16px;
+                    background: #f3f4f6;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 100px;
+                    font-size: 12px;
+                    font-weight: 700;
+                    margin-bottom: 32px;
+                    color: #000;
+                    letter-spacing: 0.02em;
+                }
+                .nav-dot {
+                    width: 8px;
+                    height: 8px;
+                    background: #10b981;
+                    border-radius: 50%;
+                }
+            ` }} />
 
-            {/* Ambient Background Glows */}
-            <div style={{
-                position: 'absolute', top: '-20%', left: '50%', transform: 'translateX(-50%)',
-                width: '120vw', height: '120vw',
-                background: 'radial-gradient(circle, rgba(212,114,122,0.06) 0%, transparent 60%)',
-                pointerEvents: 'none', zIndex: 0
-            }} />
-            <div style={{
-                position: 'absolute', top: '10%', right: '-10%',
-                width: '800px', height: '800px',
-                background: 'radial-gradient(circle, rgba(212,114,122,0.03) 0%, transparent 70%)',
-                pointerEvents: 'none', zIndex: 0
-            }} />
-
-            {/* Content Container */}
-            <div style={{ position: 'relative', zIndex: 1, paddingTop: '120px', paddingBottom: '60px' }}>
-
-                {/* Hero Section */}
-                <div style={{ textAlign: 'center', maxWidth: '1000px', margin: '0 auto', padding: '0 24px' }}>
-
-                    {/* Badge */}
-                    <div className="animate-fadeInUp" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '100px', background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(0,0,0,0.06)', marginBottom: '32px', backdropFilter: 'blur(10px)' }}>
-                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-accent)', boxShadow: '0 0 10px rgba(212,114,122,0.4)' }}></span>
-                        <span style={{ fontSize: '13px', color: '#666', fontWeight: 500 }}>v1.0 is now live</span>
+            {/* Hero Section */}
+            <section className="hero-section">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+                >
+                    <div className="status-badge">
+                        <div className="nav-dot"></div>
+                        v1.0 is now live — start building today
                     </div>
 
-                    {/* Headline */}
-                    <h1 className="animate-fadeInUp heading-serif" style={{
-                        fontSize: 'clamp(42px, 7vw, 84px)', fontWeight: 800,
-                        lineHeight: 1.1, letterSpacing: '-0.03em', marginBottom: '24px',
-                        color: '#1a1a1a',
-                    }}>
-                        AI is the new standard <br />
-                        <span className="pink-underline" style={{
-                            color: 'var(--color-accent-dark)',
-                        }}>
-                            for project architecture
-                        </span>
+                    <h1 className="hero-headline">
+                        Architect your ideas<br /> 
+                        at the speed of AI.
                     </h1>
-
-                    <p className="animate-fadeInUp" style={{ fontSize: '20px', color: '#1a1a1a', fontWeight: 600, maxWidth: '600px', margin: '0 auto 16px', letterSpacing: '-0.01em' }}>
-                        Architect your next big idea with AI-driven precision.
+                    
+                    <p className="hero-subtitle">
+                        The new standard for project architecture. Stop guessing and start building with precision engineering roadmaps tailored to you.
                     </p>
 
-                    <p className="animate-fadeInUp" style={{ fontSize: '16px', color: '#888', maxWidth: '580px', margin: '0 auto 48px', lineHeight: 1.6 }}>
-                        Generate comprehensive project blueprints tailored to your domain and skill level.
-                        Stop guessing, start building.
-                    </p>
-
-                    {/* CTA Buttons */}
-                    <div className="animate-fadeInUp hero-cta" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '80px' }}>
-                        {currentUser ? (
-                            <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', padding: '14px 40px', fontSize: '16px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                                Start for free <ArrowRight size={18} />
-                            </Link>
-                        ) : (
-                            <div className="hero-email-cta" style={{ position: 'relative', display: 'flex', gap: '8px', padding: '4px', background: 'rgba(255,255,255,0.7)', borderRadius: '100px', border: '1px solid rgba(0,0,0,0.08)', backdropFilter: 'blur(10px)' }}>
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    disabled
-                                    style={{ background: 'transparent', border: 'none', outline: 'none', color: '#1a1a1a', padding: '0 16px', fontSize: '14px', width: '220px' }}
-                                />
-                                <Link to="/auth" className="btn-primary" style={{ textDecoration: 'none', padding: '10px 24px', fontSize: '14px' }}>
-                                    Start for free
-                                </Link>
-                            </div>
-                        )}
+                    <div className="cta-group">
+                        <Link to={currentUser ? "/generate" : "/auth"} className="btn-primary" style={{ padding: '16px 48px', fontSize: '18px', textDecoration: 'none' }}>
+                            {currentUser ? 'Generate Now' : 'Start for free'} <ArrowRight size={20} style={{ marginLeft: '10px' }} />
+                        </Link>
                     </div>
+                </motion.div>
+            </section>
 
-                    {/* 3D Blueprint Generation Mock */}
-                    <div className="perspective-2000 animate-fadeInUp" style={{ marginBottom: '120px' }}>
-                        <div className="landing-mock" style={{
-                            background: 'rgba(255, 255, 255, 0.65)',
-                            backdropFilter: 'blur(16px)',
-                            border: '1px solid rgba(212,114,122,0.15)',
-                            borderRadius: '24px',
-                            boxShadow: '0 8px 60px rgba(0,0,0,0.04), 0 0 80px rgba(212,114,122,0.04)',
-                            maxWidth: '1000px', margin: '0 auto', overflow: 'hidden', height: '540px', position: 'relative'
+            {/* Visual Preview */}
+            <motion.div 
+                className="mock-preview"
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
+            >
+                <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#374151' }}></div>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#374151' }}></div>
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#374151' }}></div>
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '32px' }}>
+                    <div style={{ borderLeft: '2px solid #10b981', paddingLeft: '24px' }}>
+                        <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '8px', fontWeight: 600 }}>DOMAIN</div>
+                        <div style={{ fontSize: '20px', fontWeight: 700 }}>Fintech & Payments</div>
+                    </div>
+                    <div style={{ borderLeft: '2px solid #8b5cf6', paddingLeft: '24px' }}>
+                        <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '8px', fontWeight: 600 }}>ARCHITECTURE</div>
+                        <div style={{ fontSize: '20px', fontWeight: 700 }}>Micro-services</div>
+                    </div>
+                    <div style={{ borderLeft: '2px solid #f59e0b', paddingLeft: '24px' }}>
+                        <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '8px', fontWeight: 600 }}>SCORING</div>
+                        <div style={{ fontSize: '20px', fontWeight: 700 }}>9.8 Impact</div>
+                    </div>
+                </div>
+
+                <div style={{ marginTop: '60px', padding: '32px', background: '#111827', borderRadius: '20px', border: '1px solid #374151' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981', marginBottom: '16px' }}>
+                        <Sparkles size={18} />
+                        <span style={{ fontWeight: 700, fontSize: '14px' }}>AI RECOMMENDATION</span>
+                    </div>
+                    <code style={{ color: '#d1d5db', fontSize: '15px', lineHeight: 1.6 }}>
+                        {"{"}<br />
+                        &nbsp;&nbsp;"frontend": "Next.js 14 (App Router)",<br />
+                        &nbsp;&nbsp;"state_mgmt": "Zustand + React Query",<br />
+                        &nbsp;&nbsp;"security": "Plaid API + JWT Auth",<br />
+                        &nbsp;&nbsp;"deploy": "Vercel + Edge Functions"<br />
+                        {"}"}
+                    </code>
+                </div>
+            </motion.div>
+
+            {/* Features */}
+            <motion.section 
+                className="feature-grid"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+            >
+                {features.map((f, i) => (
+                    <motion.div key={i} className="feature-card" variants={itemVariants}>
+                        <div style={{ 
+                            width: '48px', 
+                            height: '48px', 
+                            background: '#000', 
+                            color: '#fff', 
+                            borderRadius: '12px', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center',
+                            marginBottom: '24px'
                         }}>
-                            {/* Grid Background */}
-                            <div style={{
-                                position: 'absolute', inset: 0,
-                                backgroundImage: 'linear-gradient(rgba(212,114,122,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(212,114,122,0.06) 1px, transparent 1px)',
-                                backgroundSize: '40px 40px',
-                                opacity: 0.5
-                            }} />
-
-                            {/* Generating Nodes Animation */}
-                            <div style={{ padding: '60px', display: 'flex', flexDirection: 'column', gap: '40px', alignItems: 'center', height: '100%' }}>
-
-                                {/* Core Node */}
-                                <div className="animate-pulse" style={{
-                                    padding: '16px 32px', borderRadius: '100px',
-                                    background: 'rgba(212,114,122,0.08)', border: '1px solid rgba(212,114,122,0.3)',
-                                    color: 'var(--color-accent-dark)', fontWeight: 700, fontSize: '18px',
-                                    display: 'flex', alignItems: 'center', gap: '10px'
-                                }}>
-                                    <Sparkles size={18} /> AI Architecting...
-                                </div>
-
-                                {/* Branches */}
-                                <div className="mock-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '40px', width: '100%' }}>
-                                    {[
-                                        { title: 'Frontend Strategy', items: ['React + Vite', 'Tailwind', 'Framer Motion'], delay: '0.5s' },
-                                        { title: 'Backend Logic', items: ['Node.js', 'Express', 'PostgreSQL'], delay: '1s' },
-                                        { title: 'Deployment', items: ['Vercel / AWS', 'CI/CD Pipeline', 'Docker'], delay: '1.5s' }
-                                    ].map((col, i) => (
-                                        <div key={i} style={{
-                                            background: 'rgba(255,255,255,0.5)', border: '1px solid rgba(0,0,0,0.06)',
-                                            borderRadius: '16px', padding: '24px', opacity: 0,
-                                            animation: `fadeInUp 0.5s ease forwards ${col.delay}`
-                                        }}>
-                                            <div style={{ fontSize: '14px', color: '#999', marginBottom: '16px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                                {col.title}
-                                            </div>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                                {col.items.map((item, j) => (
-                                                    <div key={j} style={{
-                                                        display: 'flex', alignItems: 'center', gap: '10px', fontSize: '15px', color: '#555',
-                                                        padding: '8px 12px', background: 'rgba(255,255,255,0.6)', borderRadius: '8px'
-                                                    }}>
-                                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-accent)' }} />
-                                                        {item}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* Flow Lines */}
-                                <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: -1 }}>
-                                    <path d="M500 110 L500 150 L180 150 L180 200" fill="none" stroke="rgba(212,114,122,0.15)" strokeWidth="2" strokeDasharray="5,5" />
-                                    <path d="M500 110 L500 200" fill="none" stroke="rgba(212,114,122,0.15)" strokeWidth="2" strokeDasharray="5,5" />
-                                    <path d="M500 110 L500 150 L820 150 L820 200" fill="none" stroke="rgba(212,114,122,0.15)" strokeWidth="2" strokeDasharray="5,5" />
-                                </svg>
-                            </div>
+                            {f.icon}
                         </div>
-                    </div>
+                        <h3 style={{ fontSize: '20px', fontWeight: 800, marginBottom: '12px', color: '#000' }}>{f.title}</h3>
+                        <p style={{ fontSize: '15px', color: '#4b5563', fontWeight: 500, lineHeight: 1.6 }}>{f.desc}</p>
+                    </motion.div>
+                ))}
+            </motion.section>
+
+            {/* Footer */}
+            <footer style={{ padding: '80px 5% 60px', borderTop: '1px solid #f3f4f6', textAlign: 'center' }}>
+                <div style={{ fontSize: '28px', fontWeight: 900, marginBottom: '32px', letterSpacing: '-0.05em' }}>Planora</div>
+                <div style={{ display: 'flex', gap: '32px', justifyContent: 'center', color: '#6b7280', fontSize: '14px', fontWeight: 500 }}>
+                    <span>Product</span>
+                    <span>Company</span>
+                    <span>Resources</span>
+                    <span>Legal</span>
                 </div>
-
-                {/* Expanded Content Section */}
-                <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px 120px', textAlign: 'center' }}>
-                    <h2 className="heading-serif" style={{ fontSize: '36px', fontWeight: 800, color: '#1a1a1a', marginBottom: '24px' }}>
-                        Stop wasting time on setup. <br />
-                        <span style={{ color: 'var(--color-accent-dark)' }}>Start coding the important stuff.</span>
-                    </h2>
-                    <p style={{ fontSize: '18px', color: '#777', lineHeight: 1.8, marginBottom: '60px' }}>
-                        Planora isn't just a generic idea generator. It's a <strong style={{ color: '#1a1a1a' }}>technical co-founder</strong> that understands engineering.
-                        Whether you're building a hackathon submission, a portfolio piece, or a startup MVP,
-                        Planora gives you the exact architectural roadmap you need to succeed.
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', textAlign: 'left' }}>
-                        <div style={{ padding: '32px', background: 'rgba(255,255,255,0.6)', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.06)', backdropFilter: 'blur(10px)' }}>
-                            <h3 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>For Students & Learners</h3>
-                            <p style={{ color: '#777', lineHeight: 1.6 }}>Bridge the gap between tutorials and real-world projects. Get step-by-step roadmaps tailored to your current skill level.</p>
-                        </div>
-                        <div style={{ padding: '32px', background: 'rgba(255,255,255,0.6)', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.06)', backdropFilter: 'blur(10px)' }}>
-                            <h3 className="heading-serif" style={{ fontSize: '20px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>For Hackathon Teams</h3>
-                            <p style={{ color: '#777', lineHeight: 1.6 }}>Skip the brainstorming paralysis. Generate a winning idea, tech stack, and feature list in seconds so you can start coding immediately.</p>
-                        </div>
-                    </div>
+                <div style={{ color: '#9ca3af', fontSize: '12px', marginTop: '40px' }}>
+                    © 2026 Planora. All rights reserved. Built with AI.
                 </div>
-
-                {/* Features Section */}
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px 100px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
-                        {features.map((f, i) => (
-                            <div key={i} className="glass-card" style={{
-                                padding: '32px',
-                                transition: 'all 0.3s ease'
-                            }}
-                                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.08)'; }}
-                                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.04)'; }}
-                            >
-                                <div style={{ color: 'var(--color-accent)', marginBottom: '20px' }}>{f.icon}</div>
-                                <h3 className="heading-serif" style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '12px' }}>{f.title}</h3>
-                                <p style={{ fontSize: '14px', color: '#888', lineHeight: 1.6 }}>{f.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Footer Text */}
-                <div style={{ textAlign: 'center', padding: '40px 24px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-                    <p style={{ fontSize: '14px', color: '#999', fontWeight: 500 }}>
-                        Join thousands of architects building the future. <br />
-                        <span style={{ color: '#bbb', fontSize: '12px', marginTop: '8px', display: 'inline-block' }}>© 2026 Planora. All rights reserved.</span>
-                    </p>
-                </div>
-
-            </div>
+            </footer>
         </div>
     );
 };
