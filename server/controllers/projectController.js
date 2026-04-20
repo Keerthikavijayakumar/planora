@@ -141,6 +141,7 @@ exports.searchProjects = async (req, res) => {
             const resetDate = new Date(userData.lastResetDate);
             resetDate.setDate(resetDate.getDate() + 7);
             const daysLeft = Math.max(1, Math.ceil((resetDate - new Date()) / (1000 * 60 * 60 * 24)));
+            console.log(`⚠️ User ${uid} reached weekly limit (${userData.weeklyUsageCount}/5). Reset in ${daysLeft} days.`);
             return res.status(403).json({
                 error: 'Weekly free limit reached! You can generate again in ' + daysLeft + ' day(s).',
                 limitReached: true,
@@ -417,7 +418,10 @@ exports.searchProjects = async (req, res) => {
         res.json({ projects: [selectedProject], blueprint, historyId, isDuplicateGeneration });
 
     } catch (error) {
-        console.error('Search Projects Error:', error);
-        res.status(500).json({ error: 'Failed to search projects' });
+        console.error('❌ Search Projects Error:', error);
+        res.status(500).json({ 
+            error: 'Failed to search projects', 
+            details: error.message 
+        });
     }
 };

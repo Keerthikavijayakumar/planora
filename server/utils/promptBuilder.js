@@ -66,11 +66,13 @@ const buildPrompt = (domain, skillLevel, teamSize, purpose) => {
     2. **Skill Customization**: ${skillInstructions}
     3. **Differentiation**: You MUST list existing solutions and HOW this idea is new/different.
     4. **Scoring**:
-       - Market Potential (0-10): Based on real-world demand.
-       - Difficulty (0-10): Based on technical complexity.
-       - Resume Impact (0-10): How much recruiters value this.
+       - Market Potential (0-10)
+       - Difficulty (0-10)
+       - Resume Impact (0-10)
 
-    OUTPUT FORMAT (Strict JSON, no markdown code blocks, just raw JSON):
+    CRITICAL: YOU MUST RESPOND WITH ONLY VALID JSON. NO CONVERSATIONAL TEXT. NO MARKDOWN BACKTICKS (No \`\`\`json blocks). JUST THE RAW JSON OBJECT.
+
+    OUTPUT STRUCTURE:
     {
       "title": "String",
       "problem_statement": "String",
@@ -94,13 +96,12 @@ const buildPrompt = (domain, skillLevel, teamSize, purpose) => {
         "week3": "String",
         "week4": "String"
       },
-      "existing_solutions": "String (List names)",
-      "what_is_new": "String (Differentiation)",
+      "existing_solutions": "String",
+      "what_is_new": "String",
       "market_potential_score": 0,
       "difficulty_score": 0,
       "resume_impact_score": 0,
-      "educational_resources": ${isFresher ? '{"learning_path": "String", "key_concepts": ["String"]}' : 'null'},
-      "monetization": "String"
+      "educational_resources": ${isFresher ? '{"learning_path": "String", "key_concepts": ["String"]}' : 'null'}
     }
   `;
 };

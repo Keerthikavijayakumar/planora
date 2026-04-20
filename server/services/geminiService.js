@@ -26,10 +26,17 @@ const generateIdea = async (domain, skillLevel, teamSize, purpose) => {
                 console.log('✅ Idea generated successfully');
                 return parsed;
             } catch (e) {
-                const cleaned = text.replace(/```json|```/g, '').trim();
-                const parsed = JSON.parse(cleaned);
-                console.log('✅ Idea generated (cleaned JSON)');
-                return parsed;
+                const match = text.match(/\{[\s\S]*\}/);
+                if (match) {
+                    try {
+                        const parsed = JSON.parse(match[0]);
+                        console.log('✅ Idea generated (extracted JSON)');
+                        return parsed;
+                    } catch (e2) {
+                        console.error('❌ Failed to parse extracted JSON:', e2.message);
+                    }
+                }
+                throw new Error('Failed to parse AI response as JSON');
             }
         } catch (error) {
             console.error(`❌ Attempt ${attempt + 1} failed:`, error.message?.substring(0, 200));
@@ -179,10 +186,17 @@ Format as JSON:
             console.log('✅ Innovation angle generated');
             return parsed;
         } catch (e) {
-            const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Innovation angle generated (cleaned JSON)');
-            return parsed;
+            const match = text.match(/\{[\s\S]*\}/);
+            if (match) {
+                try {
+                    const parsed = JSON.parse(match[0]);
+                    console.log('✅ Innovation angle generated (extracted JSON)');
+                    return parsed;
+                } catch (e2) {
+                    console.error('❌ Failed to parse extracted JSON:', e2.message);
+                }
+            }
+            throw new Error('Failed to parse AI response as JSON');
         }
     } catch (error) {
         console.error('❌ Innovation angle generation failed:', error.message?.substring(0, 200));
@@ -228,10 +242,17 @@ Format as JSON:
             console.log('✅ Additional features generated');
             return parsed;
         } catch (e) {
-            const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Additional features generated (cleaned JSON)');
-            return parsed;
+            const match = text.match(/\{[\s\S]*\}/);
+            if (match) {
+                try {
+                    const parsed = JSON.parse(match[0]);
+                    console.log('✅ Additional features generated (extracted JSON)');
+                    return parsed;
+                } catch (e2) {
+                    console.error('❌ Failed to parse extracted JSON:', e2.message);
+                }
+            }
+            throw new Error('Failed to parse AI response as JSON');
         }
     } catch (error) {
         console.error('❌ Additional features generation failed:', error.message?.substring(0, 200));
@@ -278,10 +299,17 @@ Format as JSON:
             console.log('✅ Project description generated');
             return parsed.description;
         } catch (e) {
-            const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Project description generated (cleaned JSON)');
-            return parsed.description;
+            const match = text.match(/\{[\s\S]*\}/);
+            if (match) {
+                try {
+                    const parsed = JSON.parse(match[0]);
+                    console.log('✅ Project description generated (extracted JSON)');
+                    return parsed.description;
+                } catch (e2) {
+                    console.error('❌ Failed to parse extracted JSON:', e2.message);
+                }
+            }
+            throw new Error('Failed to parse AI response as JSON');
         }
     } catch (error) {
         console.error('❌ Description generation failed:', error.message?.substring(0, 200));
@@ -329,10 +357,17 @@ Format as JSON:
             console.log('✅ Learning path generated');
             return parsed;
         } catch (e) {
-            const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Learning path generated (cleaned JSON)');
-            return parsed;
+            const match = text.match(/\{[\s\S]*\}/);
+            if (match) {
+                try {
+                    const parsed = JSON.parse(match[0]);
+                    console.log('✅ Learning path generated (extracted JSON)');
+                    return parsed;
+                } catch (e2) {
+                    console.error('❌ Failed to parse extracted JSON:', e2.message);
+                }
+            }
+            throw new Error('Failed to parse AI response as JSON');
         }
     } catch (error) {
         console.error('❌ Learning path generation failed:', error.message?.substring(0, 200));
@@ -391,16 +426,24 @@ Format as JSON:
         const response = result.response;
         const text = response.text();
 
-        try {
-            const parsed = JSON.parse(text);
-            console.log('✅ Technical details generated');
-            return parsed;
-        } catch (e) {
-            const cleaned = text.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(cleaned);
-            console.log('✅ Technical details generated (cleaned JSON)');
-            return parsed;
-        }
+            try {
+                const parsed = JSON.parse(text);
+                console.log('✅ Idea generated successfully');
+                return parsed;
+            } catch (e) {
+                // Robust extraction: find the first { and last }
+                const match = text.match(/\{[\s\S]*\}/);
+                if (match) {
+                    try {
+                        const parsed = JSON.parse(match[0]);
+                        console.log('✅ Idea generated (extracted JSON)');
+                        return parsed;
+                    } catch (e2) {
+                        console.error('❌ Failed to parse extracted JSON:', e2.message);
+                    }
+                }
+                throw new Error('Failed to parse AI response as JSON');
+            }
     } catch (error) {
         console.error('❌ Technical details generation failed:', error.message?.substring(0, 200));
         // Return fallback

@@ -45,7 +45,7 @@ const Premium = () => {
     ];
 
     return (
-        <div className="page-premium" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px' }}>
+        <div className="page-premium" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', position: 'relative' }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 {/* Header Section */}
                 <div style={{ textAlign: 'center', marginBottom: '60px' }} className="animate-fadeInUp">

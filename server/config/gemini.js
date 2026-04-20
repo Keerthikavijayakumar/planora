@@ -21,12 +21,18 @@ const model = {
             messages.push({ role, content: text });
         }
         
-        const response = await groq.chat.completions.create({
+        const options = {
             model: 'llama-3.1-8b-instant', // Stable and fast model
             messages,
             temperature: 0.7,
             max_tokens: 2000,
-        });
+        };
+
+        if (generationConfig?.responseMimeType === 'application/json') {
+            options.response_format = { type: 'json_object' };
+        }
+
+        const response = await groq.chat.completions.create(options);
         
         return {
             response: {

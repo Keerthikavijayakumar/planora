@@ -17,6 +17,23 @@ Planora is a SaaS platform that generates structured, domain-specific software p
 - **Auth**: Firebase Authentication
 - **AI**: Google Gemini API
 
+## 🌸 Sakura Theme Redesign
+
+Planora features a full UI/UX overhaul called the **Sakura Theme**. This provides a premium, high-tech, and vibrant visual identity using elegant typography, glassmorphism, and dynamic animations.
+
+### Highlights:
+- **Horizontal Scroll Hijack**: Smooth, immersive feature exploration on the landing page.
+- **Glassmorphism**: Advanced glass-styled cards with tinted gradients.
+- **Floating Particles**: Interactive sakura petals drifting across the hero and authentication pages.
+- **Premium Documentation**: See the [Sakura Theme Design Guide](./Sakura_Theme_Guide.md) for full details on colors, typography, and component patterns.
+
+### Latest Updates:
+- [x] **Secure Auth Redesign**: The login and signup pages now fully match the Sakura theme with glassmorphism and petal animations.
+- [x] **Bug Fixes**: Resolved `motion` ReferenceError on the landing page.
+- [x] **Consistency**: Enforced theme-wide typography and color variables.
+
+---
+
 ## 📦 Prerequisites
 - Node.js installed (v16+)
 - A Firebase Project
@@ -50,8 +67,6 @@ PORT=5000
 GEMINI_API_KEY=your_gemini_api_key
 FIREBASE_PROJECT_ID=your_project_id
 FIREBASE_CLIENT_EMAIL=your_client_email
-# Note: Put the private key in quotes and handle newlines if copying directly, 
-# or use the JSON file path if you prefer (code supports env var string)
 FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n..."
 ```
 
@@ -72,7 +87,6 @@ VITE_FIREBASE_APP_ID=your_app_id
 cd server
 npm install
 npm run dev
-# Server runs on http://localhost:5000
 ```
 
 **Frontend**:
@@ -80,13 +94,10 @@ npm run dev
 cd client
 npm install
 npm run dev
-# Client runs on http://localhost:5173
 ```
 
 ## 🧪 Testing
 1. **Register**: Go to `http://localhost:5173/auth` and create an account.
 2. **Dashboard**: You should see 0/5 usage.
-3. **Generate**: Click "New Idea", select "Web Development" + "Beginner".
+3. **Generate**: Click "New Idea", select "Web Development".
 4. **Result**: Verify you get a structured blueprint.
-5. **Fresher Mode**: Try "Fresher" level to see the "Learning Path" section.
-6. **Save**: Click "Save Blueprint" and check "Saved" page.

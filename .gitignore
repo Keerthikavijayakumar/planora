@@ -4,7 +4,8 @@ client/node_modules/
 server/node_modules/
 
 # Environment variables
-.env
+/client/.env
+/server/.env
 .env.local
 .env.production
 .env.development
@@ -23,6 +24,8 @@ client/build/
 *.swp
 *.swo
 *~
+
+pass.txt
 
 # OS files
 .DS_Store

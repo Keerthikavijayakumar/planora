@@ -1,21 +1,25 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Trash2, Layers, ArrowRight, Eye, ChevronRight } from 'lucide-react';
+import { Trash2, Layers, ArrowRight, ChevronRight, Search, BookMarked, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 const SavedIdeas = () => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
     const [ideas, setIdeas] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchIdeas = async () => {
             if (!currentUser) return;
             try {
                 const token = await currentUser.getIdToken();
-                const res = await axios.get('http://localhost:5000/api/generate/saved', {
+                const res = await axios.get(`${apiBaseUrl}/api/generate/saved`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setIdeas(res.data.ideas || []);
@@ -32,7 +36,7 @@ const SavedIdeas = () => {
         e.stopPropagation();
         try {
             const token = await currentUser.getIdToken();
-            await axios.delete(`http://localhost:5000/api/generate/saved/${id}`, {
+            await axios.delete(`${apiBaseUrl}/api/generate/saved/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setIdeas(ideas.filter(i => i.id !== id));
@@ -41,142 +45,223 @@ const SavedIdeas = () => {
         }
     };
 
+    const filteredIdeas = ideas.filter(idea =>
+        idea.blueprint?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        idea.domain?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '64px' }}>
-                <div style={{
-                    width: '48px', height: '48px',
-                    border: '3px solid rgba(0,0,0,0.06)',
-                    borderTop: '3px solid var(--color-accent)',
-                    borderRadius: '50%',
-                    animation: 'spin-slow 1s linear infinite',
-                }} />
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--gradient-page)' }}>
+                <div style={{ width: '44px', height: '44px', border: '3px solid var(--glass-border)', borderTop: '3px solid var(--sakura-deep)', borderRadius: '50%', animation: 'spin-slow 1s linear infinite' }} />
             </div>
         );
     }
 
     return (
-        <div className="page-saved" style={{ minHeight: '100vh', paddingTop: '88px', padding: '88px 24px 60px', maxWidth: '900px', margin: '0 auto' }}>
-            <div className="animate-fadeInUp">
-                <h1 className="heading-serif" style={{ fontSize: '32px', fontWeight: 800, color: '#1a1a1a', marginBottom: '8px' }}>Saved Blueprints</h1>
-                <p style={{ color: '#999', fontSize: '15px', marginBottom: '36px' }}>
-                    {ideas.length} blueprint{ideas.length !== 1 ? 's' : ''} in your library
-                </p>
+        <div style={{
+            minHeight: '100vh',
+            background: 'var(--gradient-page)',
+            backgroundAttachment: 'fixed',
+            fontFamily: 'var(--font-sans)',
+            padding: '120px 5% 80px',
+            position: 'relative',
+        }}>
+            <style dangerouslySetInnerHTML={{ __html: `
+                .saved-card {
+                    background: rgba(255,255,255,0.80);
+                    border: 1.5px solid var(--glass-border);
+                    border-radius: 26px;
+                    padding: 32px;
+                    cursor: pointer;
+                    transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+                    position: relative;
+                    backdrop-filter: blur(16px);
+                    box-shadow: var(--shadow-card);
+                    font-family: var(--font-sans) !important;
+                }
+                .saved-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: var(--shadow-hover);
+                    border-color: var(--glass-border-strong);
+                    background: rgba(255,255,255,0.95);
+                }
+                .saved-search {
+                    width: 100%;
+                    padding: 14px 20px 14px 52px;
+                    border-radius: 18px;
+                    border: 1.5px solid var(--glass-border);
+                    background: rgba(255,255,255,0.8);
+                    outline: none;
+                    font-size: 15px;
+                    font-family: var(--font-sans) !important;
+                    color: var(--text-primary);
+                    backdrop-filter: blur(10px);
+                    transition: all 0.3s ease;
+                }
+                .saved-search:focus {
+                    border-color: var(--sakura-petal);
+                    box-shadow: 0 0 0 4px rgba(244,167,185,0.15);
+                    background: #fff;
+                }
+                .saved-search::placeholder { color: var(--text-placeholder); }
+                .domain-tag {
+                    font-size: 11px;
+                    font-weight: 800;
+                    background: var(--gradient-sakura);
+                    color: #fff;
+                    padding: 4px 14px;
+                    border-radius: 100px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                }
+                .level-tag {
+                    font-size: 11px;
+                    font-weight: 800;
+                    background: var(--sakura-blush);
+                    color: var(--sakura-deep);
+                    padding: 4px 14px;
+                    border-radius: 100px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                    border: 1px solid var(--glass-border);
+                }
+                .delete-btn {
+                    background: none;
+                    border: none;
+                    color: var(--text-muted);
+                    cursor: pointer;
+                    padding: 8px;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    transition: all 0.2s;
+                }
+                .delete-btn:hover {
+                    color: #e05a6d;
+                    background: rgba(224,90,109,0.12);
+                }
+            ` }} />
 
-                {ideas.length === 0 ? (
-                    <div className="glass-card" style={{
-                        padding: '64px 32px',
-                        textAlign: 'center',
-                    }}>
-                        <div style={{
-                            width: '64px', height: '64px', borderRadius: '16px',
-                            background: 'rgba(212,114,122,0.06)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            margin: '0 auto 20px',
-                        }}>
-                            <Layers size={28} style={{ color: 'var(--color-accent)' }} />
+            <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+                {/* Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '56px', flexWrap: 'wrap', gap: '28px' }}>
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                            <div style={{ width: '42px', height: '42px', background: 'var(--sakura-blush)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid var(--glass-border)' }}>
+                                <BookMarked size={22} color="var(--sakura-deep)" />
+                            </div>
+                            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 700, color: 'var(--sakura-bark)', letterSpacing: '-0.02em' }}>
+                                Your Library
+                            </h1>
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>No blueprints yet</h3>
-                        <p style={{ color: '#999', fontSize: '14px', marginBottom: '24px' }}>Generate your first project blueprint to get started.</p>
-                        <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                            Generate Idea <ArrowRight size={16} />
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '18px', fontWeight: 500, fontFamily: 'var(--font-sans)' }}>
+                            {ideas.length} technical blueprints architected by AI
+                        </p>
+                    </motion.div>
+
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} style={{ position: 'relative', width: '320px', minWidth: '240px' }}>
+                        <Search size={18} style={{ position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                        <input
+                            type="text"
+                            placeholder="Find a blueprint..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="saved-search"
+                        />
+                    </motion.div>
+                </div>
+
+                {/* Empty State */}
+                {ideas.length === 0 ? (
+                    <motion.div
+                        initial={{ opacity: 0, y: 24 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        style={{
+                            textAlign: 'center',
+                            padding: '120px 40px',
+                            background: 'rgba(255,255,255,0.78)',
+                            borderRadius: '32px',
+                            border: '1.5px solid var(--glass-border)',
+                            backdropFilter: 'blur(20px)',
+                            boxShadow: 'var(--shadow-card)',
+                        }}
+                    >
+                        <div style={{ fontSize: '64px', marginBottom: '24px' }}>🌸</div>
+                        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '32px', fontWeight: 700, marginBottom: '12px', color: 'var(--sakura-bark)' }}>Library is quiet</h3>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '40px', fontSize: '17px', fontWeight: 500, fontFamily: 'var(--font-sans)' }}>Generate your first technical vision to see it blooms here.</p>
+                        <Link to="/generate" className="btn-primary" style={{ textDecoration: 'none', padding: '18px 40px', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+                            <Sparkles size={18} /> CREATE BLUEPRINT <ArrowRight size={18} />
                         </Link>
-                    </div>
+                    </motion.div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        {ideas.map((idea) => {
-                            const bp = idea.blueprint;
-                            return (
-                                <div
+                    /* Cards Grid */
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '28px' }}>
+                        <AnimatePresence>
+                            {filteredIdeas.map((idea, idx) => (
+                                <motion.div
                                     key={idea.id}
-                                    className="glass-card saved-card"
+                                    initial={{ opacity: 0, y: 24 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ delay: idx * 0.05 }}
+                                    className="saved-card"
                                     onClick={() => navigate(`/blueprint/${idea.id}`)}
-                                    style={{
-                                        padding: '24px 28px',
-                                        transition: 'all 0.2s ease',
-                                        cursor: 'pointer',
-                                    }}
-                                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(212,114,122,0.2)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.06)'; }}
-                                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.04)'; }}
                                 >
-                                    {/* Top row: title + actions */}
-                                    <div className="saved-top" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                        <div style={{ flex: 1 }}>
-                                            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1a1a1a', marginBottom: '8px' }}>
-                                                {bp?.title || 'Untitled Blueprint'}
-                                            </h3>
-                                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                                                <span style={{
-                                                    padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                    background: 'rgba(212,114,122,0.08)', color: 'var(--color-accent-dark)',
-                                                }}>
-                                                    {idea.domain}
-                                                </span>
-                                                <span style={{
-                                                    padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                    background: 'rgba(139,92,138,0.06)', color: '#8B5C8A',
-                                                }}>
-                                                    {idea.skillLevel}
-                                                </span>
-                                                {bp?.market_potential_score && (
-                                                    <span style={{
-                                                        padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-                                                        background: 'rgba(34,197,94,0.06)', color: '#16a34a',
-                                                    }}>
-                                                        Score: {bp.market_potential_score}/10
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                            <button
-                                                onClick={(e) => handleDelete(e, idea.id)}
-                                                style={{
-                                                    background: 'none', border: 'none', color: '#ccc', cursor: 'pointer',
-                                                    padding: '10px', borderRadius: '10px', transition: 'all 0.2s ease',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                }}
-                                                onMouseEnter={e => { e.currentTarget.style.color = '#EF4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.06)'; }}
-                                                onMouseLeave={e => { e.currentTarget.style.color = '#ccc'; e.currentTarget.style.background = 'none'; }}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Problem statement preview */}
-                                    {bp?.problem_statement && (
-                                        <p style={{
-                                            fontSize: '13px', color: '#888', lineHeight: 1.5, marginBottom: '14px',
-                                            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+                                    {/* Card Top */}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                                        <div style={{
+                                            width: '48px', height: '48px',
+                                            background: 'var(--sakura-blush)',
+                                            borderRadius: '16px',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            border: '1.5px solid var(--glass-border)',
                                         }}>
-                                            {bp.problem_statement}
-                                        </p>
-                                    )}
+                                            <Layers size={22} color="var(--sakura-deep)" />
+                                        </div>
+                                        <button
+                                            onClick={(e) => handleDelete(e, idea.id)}
+                                            className="delete-btn"
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
+                                    </div>
 
-                                    {/* Quick stats preview */}
-                                    <div className="saved-bottom" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-                                        {bp?.recommended_tech_stack && (
-                                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                                {['frontend', 'backend', 'database'].map(key => (
-                                                    bp.recommended_tech_stack[key] && (
-                                                        <span key={key} style={{
-                                                            padding: '3px 10px', borderRadius: '6px', fontSize: '11px',
-                                                            background: 'rgba(0,0,0,0.03)', color: '#999', fontWeight: 500,
-                                                        }}>
-                                                            {bp.recommended_tech_stack[key]}
-                                                        </span>
-                                                    )
-                                                ))}
-                                            </div>
-                                        )}
-                                        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-accent)', fontSize: '12px', fontWeight: 600 }}>
-                                            View Full Plan <ChevronRight size={14} />
+                                    {/* Title */}
+                                    <h3 style={{
+                                        fontSize: '20px',
+                                        fontWeight: 700,
+                                        marginBottom: '16px',
+                                        height: '60px',
+                                        overflow: 'hidden',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical',
+                                        color: 'var(--text-primary)',
+                                        lineHeight: 1.4,
+                                        fontFamily: 'var(--font-sans)',
+                                    }}>
+                                        {idea.blueprint?.title || 'Untitled Project'}
+                                    </h3>
+
+                                    {/* Tags */}
+                                    <div style={{ display: 'flex', gap: '10px', marginBottom: '28px', flexWrap: 'wrap' }}>
+                                        <span className="domain-tag">{idea.domain}</span>
+                                        <span className="level-tag">{idea.skillLevel}</span>
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(244,167,185,0.2)', paddingTop: '20px' }}>
+                                        <span style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                                            {new Date(idea.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        </span>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, fontSize: '12px', color: 'var(--sakura-deep)', letterSpacing: '0.1em' }}>
+                                            OPEN <ChevronRight size={16} />
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
                     </div>
                 )}
             </div>

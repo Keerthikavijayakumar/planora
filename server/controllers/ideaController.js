@@ -41,6 +41,7 @@ exports.createIdea = async (req, res) => {
             const resetDate = new Date(userData.lastResetDate);
             resetDate.setDate(resetDate.getDate() + 7);
             const daysLeft = Math.max(1, Math.ceil((resetDate - new Date()) / (1000 * 60 * 60 * 24)));
+            console.log(`⚠️ User ${uid} reached weekly limit (${userData.weeklyUsageCount}/5) in ideaController. Reset in ${daysLeft} days.`);
             return res.status(403).json({
                 error: 'Weekly free limit reached! You can generate again in ' + daysLeft + ' day(s).',
                 limitReached: true,
