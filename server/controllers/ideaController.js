@@ -37,7 +37,9 @@ exports.createIdea = async (req, res) => {
             userData.weeklyUsageCount = 0;
         }
 
-        if (userData.weeklyUsageCount >= 5) {
+        // Allow unlimited usage for premium users (either stored on user doc or via custom claim)
+        const isPremium = !!(userData.isPremium || req.user?.premium || userData.role === 'premium');
+        if (!isPremium && userData.weeklyUsageCount >= 5) {
             const resetDate = new Date(userData.lastResetDate);
             resetDate.setDate(resetDate.getDate() + 7);
             const daysLeft = Math.max(1, Math.ceil((resetDate - new Date()) / (1000 * 60 * 60 * 24)));

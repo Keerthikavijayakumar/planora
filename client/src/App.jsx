@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
@@ -16,7 +17,8 @@ import Navbar from './components/Navbar';
 function App() {
   return (
     <Router>
-      <AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
         <div style={{ minHeight: '100vh', background: 'var(--gradient-page)', backgroundAttachment: 'fixed', color: 'var(--text-primary)', fontFamily: "'Inter', sans-serif" }} className="selection:bg-primary-100 selection:text-primary-800">
           <Navbar />
           <Routes>
@@ -33,7 +35,8 @@ function App() {
             </Route>
           </Routes>
         </div>
-      </AuthProvider>
+        </AuthProvider>
+      </ToastProvider>
     </Router>
   );
 }

@@ -4,7 +4,7 @@ import { LogOut, Menu, X, Sparkles, User } from 'lucide-react';
 import { useState } from 'react';
 
 const Navbar = () => {
-    const { currentUser, logout } = useAuth();
+    const { currentUser, logout, isPremium } = useAuth();
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -88,6 +88,13 @@ const Navbar = () => {
                                 onMouseEnter={e => { e.target.style.background = 'rgba(255,215,0,0.15)'; e.target.style.borderColor = 'rgba(255,215,0,0.3)'; }}
                                 onMouseLeave={e => { e.target.style.background = 'rgba(255,215,0,0.08)'; e.target.style.borderColor = 'rgba(255,215,0,0.2)'; }}
                             >👑 Premium</Link>
+
+                            {/* Premium Badge */}
+                            {isPremium && (
+                                <div style={{ marginRight: '8px' }}>
+                                    <span style={{ padding: '6px 8px', fontSize: '12px', fontWeight: 700, color: '#3b3b3b', background: 'linear-gradient(90deg,#fff7cc,#fff2b2)', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.06)' }}>Premium</span>
+                                </div>
+                            )}
 
                             {/* User Profile */}
                             <div style={{

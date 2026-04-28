@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Check, Sparkles, Zap, Crown, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const Premium = () => {
-    const { currentUser } = useAuth();
+    const { currentUser, refreshUser } = useAuth();
+    const { showToast } = useToast();
 
     const features = {
         free: [
@@ -214,7 +216,51 @@ const Premium = () => {
                     </p>
                     <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
                         {currentUser ? (
-                            <button className="btn-primary" style={{ padding: '14px 32px', fontSize: '15px' }}>
+                            <button
+                                className="btn-primary"
+                                style={{ padding: '14px 32px', fontSize: '15px' }}
+                                onClick={async () => {
+                                        try {
+                                            const token = localStorage.getItem('token');
+                                            const headers = {};
+                                            if (token) headers['Authorization'] = `Bearer ${token}`;
+                                            else if (currentUser && currentUser.uid) headers['x-mock-uid'] = currentUser.uid;
+
+                                            // During local dev (Vite on 5173) ensure we hit backend port 5000
+                                            const isViteDev = window.location.hostname === 'localhost' && window.location.port === '5173';
+                                            const base = isViteDev ? 'http://localhost:5000' : '';
+
+                                            const res = await fetch(`${base}/api/premium/activate`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    ...headers
+                                                }
+                                            });
+
+                                            // Try to parse JSON; if body is empty or not JSON, fall back to text
+                                            let data;
+                                            try {
+                                                data = await res.json();
+                                            } catch (parseErr) {
+                                                const text = await res.text().catch(() => '');
+                                                if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
+                                                // If response OK but not JSON, treat text as success message
+                                                try { await refreshUser(); } catch (e) {}
+                                                showToast(text || 'Premium activated — please refresh', 'info');
+                                                return;
+                                            }
+
+                                            if (!res.ok) throw new Error(data.error || 'Activation failed');
+                                            // Refresh user claims/state in AuthContext so UI updates without reload
+                                            try { await refreshUser(); } catch (e) { /* ignore */ }
+                                            showToast('Premium activated — enjoy unlimited usage!', 'info');
+                                        } catch (err) {
+                                            console.error('Upgrade error', err);
+                                            alert('Failed to activate premium: ' + (err.message || 'Unknown'));
+                                        }
+                                    }}
+                            >
                                 Upgrade Now <Crown size={18} style={{ marginLeft: '8px' }} />
                             </button>
                         ) : (
